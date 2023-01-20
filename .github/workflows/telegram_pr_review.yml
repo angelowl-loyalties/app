@@ -15,23 +15,18 @@ jobs:
     environment: production
 
     steps:
-      - name: Dump GitHub context
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: |
-          echo "$GITHUB_CONTEXT"
-          
-      # - name: Telegram Notify
-      #   uses: appleboy/telegram-action@master
-      #   with:
-      #     to: ${{ secrets.TELEGRAM_TO }}
-      #     token: ${{ secrets.TELEGRAM_TOKEN }}
-      #     format: markdown
-      #     message: |
-      #       [${{ github.actor }}](github.com/${{ github.actor }}) has approved a Pull Request
+      - name: Telegram Notify
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: markdown
+          message: |
+            [${{ github.actor }}](github.com/${{ github.actor }}) has submitted a PR review.
             
-      #       Title:
-      #       ${{ github.event.pull_request.title }}
+            Pull Request:
+            [${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
             
-      #       URL:
-      #       ${{ github.event.pull_request.html_url }}
+            Status:
+            ${{ github.event.review.state }}
+

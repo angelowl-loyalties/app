@@ -15,7 +15,6 @@ jobs:
     environment: production
 
     steps:
-          
       - name: Telegram Notify
         uses: appleboy/telegram-action@master
         with:
@@ -25,8 +24,5 @@ jobs:
           message: |
             [${{ github.actor }}](github.com/${{ github.actor }}) opened a Pull Request.
             
-            Title:
-            ${{ github.event.pull_request.title }}
-            
-            URL:
-            ${{ github.event.pull_request.html_url }}
+            Pull Request:
+            [${{ github.event.pull_request.title }}](${{ github.event.pull_request.html_url }})
