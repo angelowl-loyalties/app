@@ -12,7 +12,6 @@ jobs:
   send-telegram:
     name: Telegram Send (PR Open)
     runs-on: ubuntu-latest
-    environment: production
 
     steps:
       - name: Telegram Notify
