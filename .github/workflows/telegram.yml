@@ -31,9 +31,9 @@ jobs:
             [${{ github.actor }}](github.com/${{ github.actor }}) opened a Pull Request.
             
             Title:
-            ${{ github.pull_request.title }}
+            ${{ github.event.pull_request.title }}
             
             URL:
-            ${{ github.pull_request.html_url }}
+            ${{ github.event.pull_request.html_url }}
             
             
