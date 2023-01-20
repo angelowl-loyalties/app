@@ -1,0 +1,33 @@
+name: Deploy to Amazon ECS
+
+on:
+  pull_request_target:
+    branches: [ "master" ]
+    types: [ "opened" ]
+
+
+
+permissions:
+  contents: read
+
+jobs:
+  send-telegram:
+    name: Telegram Send (PR Open)
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+          
+      - name: Telegram Notify
+        uses: appleboy/telegram-action@0.0.3
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            ${{ github.sender }} created a new Pull Request.
+            
