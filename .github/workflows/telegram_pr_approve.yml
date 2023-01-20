@@ -1,0 +1,38 @@
+name: Telegram Send (PR Approved)
+
+on:
+  pull_request_target:
+    branches: [ "master" ]
+    types: [ "opened", "reopened" ]
+
+permissions:
+  contents: read
+
+jobs:
+  send-telegram:
+    if: github.event.review.state == 'approved'
+    name: Telegram Send (PR Approved)
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Dump GitHub context
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: |
+          echo "$GITHUB_CONTEXT"
+          
+      - name: Telegram Notify
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          format: markdown
+          message: |
+            [${{ github.actor }}](github.com/${{ github.actor }}) has approved a Pull Request
+            
+            Title:
+            ${{ github.event.pull_request.title }}
+            
+            URL:
+            ${{ github.event.pull_request.html_url }}
