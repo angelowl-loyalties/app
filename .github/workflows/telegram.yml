@@ -3,7 +3,7 @@ name: Telegram Send (PR Open)
 on:
   pull_request_target:
     branches: [ "master" ]
-    types: [ "opened" ]
+    types: [ "opened", "reopened" ]
 
 permissions:
   contents: read
