@@ -1,13 +1,22 @@
-FROM golang:1.19-alpine3.17 AS builder
+FROM golang:alpine AS builder
 
-WORKDIR /app
+RUN apk add --no-cache git
+
+WORKDIR $GOPATH/src/
 
 COPY . .
 
-RUN go build -o /service_executable
+RUN go mod download
+RUN go build -o /profiler
 
 FROM alpine:3.17
 
-COPY --from=builder /service_executable /service_executable
+RUN apk --no-cache add bash wget ca-certificates
+RUN apk update
 
-ENTRYPOINT ["/service_executable"]
+WORKDIR /
+
+# do we need wait-for-it.sh?
+COPY --from=builder /profiler .
+
+ENTRYPOINT ["/profiler"]
