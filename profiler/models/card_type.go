@@ -6,8 +6,11 @@ import (
 )
 
 type CardType struct {
-	CardType string    `json:"card_type" gorm:"primaryKey"`
-	ID       uuid.UUID `json:"id" gorm:"unique;type:uuid;<-:create"`
+	CardType    string    `json:"card_type" gorm:"primaryKey" binding:"required"`
+	Name        string    `json:"name" gorm:"not null" binding:"required"`
+	ID          uuid.UUID `json:"id" gorm:"unique;type:uuid;<-:create"`
+	RewardUnit  string    `json:"reward_unit" gorm:"not null" binding:"required"`
+	CardProgram string    `json:"card_program" gorm:"not null" binding:"required"`
 }
 
 func (cardType *CardType) BeforeCreate(tx *gorm.DB) (err error) {

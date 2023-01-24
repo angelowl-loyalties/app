@@ -7,7 +7,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func ConnectDB(dbConnString string) *gorm.DB {
+var DB *gorm.DB
+
+func ConnectDB(dbConnString string) {
 	db, err := gorm.Open(postgres.Open(dbConnString), &gorm.Config{})
 
 	if err != nil {
@@ -29,5 +31,5 @@ func ConnectDB(dbConnString string) *gorm.DB {
 	}
 	log.Println("Migrated CardType Table")
 
-	return db
+	DB = db
 }
