@@ -5,6 +5,15 @@ import (
 	"net/http"
 )
 
+// PingExample godoc
+// @Summary healthcheck example
+// @Schemes
+// @Description health check
+// @Tags example
+// @Accept json
+// @Produce json
+// @Success 200 {string} OK
+// @Router /health [get]
 func Health(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 }
