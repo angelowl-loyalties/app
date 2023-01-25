@@ -11,7 +11,7 @@ import (
 func GetCardTypes(c *gin.Context) {
 	var cardTypes []models.CardType
 
-	models.DB.Find(&cardTypes)
+	models.DB.Preload("Cards").Find(&cardTypes)
 
 	c.JSON(http.StatusOK, gin.H{"data": cardTypes})
 }
@@ -23,9 +23,9 @@ func GetCardTypePK(c *gin.Context) {
 
 	reqCardType := c.Param("cardType")
 
-	err := models.DB.Where("card_type = ?", reqCardType).First(&cardType).Error
+	err := models.DB.Where("card_type = ?", reqCardType).Preload("Cards").First(&cardType).Error
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"data": "Card Type: " + reqCardType + " not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Card Type: " + reqCardType + " not found"})
 		return
 	}
 
@@ -59,9 +59,9 @@ func UpdateCardType(c *gin.Context) {
 
 	reqCardType := c.Param("cardType")
 
-	err := models.DB.Where("card_type = ?", reqCardType).First(&cardType).Error
+	err := models.DB.Where("card_type = ?", reqCardType).Preload("Cards").First(&cardType).Error
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"data": "Card Type: " + reqCardType + " not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Card Type: " + reqCardType + " not found"})
 		return
 	}
 
@@ -92,7 +92,7 @@ func DeleteCardType(c *gin.Context) {
 
 	err := models.DB.Where("card_type = ?", reqCardType).First(&cardType).Error
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"data": "Card Type: " + reqCardType + " not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Card Type: " + reqCardType + " not found"})
 		return
 	}
 

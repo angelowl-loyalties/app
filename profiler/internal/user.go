@@ -13,7 +13,7 @@ import (
 func GetUsers(c *gin.Context) {
 	var users []models.User
 
-	models.DB.Find(&users)
+	models.DB.Preload("CreditCards").Find(&users)
 
 	c.JSON(http.StatusOK, gin.H{"data": users})
 }
@@ -25,9 +25,9 @@ func GetUser(c *gin.Context) {
 
 	uuid := c.Param("id")
 
-	err := models.DB.Where("id = ?", uuid).First(&user).Error
+	err := models.DB.Where("id = ?", uuid).Preload("CreditCards").First(&user).Error
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"data": "User with UUID: " + uuid + " not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "User with UUID: " + uuid + " not found"})
 		return
 	}
 
@@ -70,9 +70,9 @@ func CreateUser(c *gin.Context) {
 		Password:  hashedPassword,
 		Role:      "user",
 	}
-	result := models.DB.Create(&user)
+	result := models.DB.Omit("CreditCards").Create(&user)
 	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"data": result.Error.Error()})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
 		return
 	}
 
@@ -86,9 +86,9 @@ func UpdateUser(c *gin.Context) {
 
 	uuid := c.Param("id")
 
-	err := models.DB.Where("id = ?", uuid).First(&user).Error
+	err := models.DB.Where("id = ?", uuid).Preload("CreditCards").First(&user).Error
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"data": "User with UUID: " + uuid + " not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "User with UUID: " + uuid + " not found"})
 		return
 	}
 
@@ -104,7 +104,7 @@ func DeleteUser(c *gin.Context) {
 
 	err := models.DB.Where("id = ?", uuid).First(&user).Error
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"data": "User with UUID: " + uuid + " not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "User with UUID: " + uuid + " not found"})
 		return
 	}
 
