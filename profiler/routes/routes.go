@@ -12,14 +12,16 @@ func Health(c *gin.Context) {
 
 func InitialiseRoutes(router *gin.Engine) {
 	router.GET("/health", Health)
+	router.POST("/auth/login", internal.LoginUser)
 
-	//user := router.Group("/user")
-	//{
-	//	user.GET("/", internal.GetUsers)
-	//	user.GET("/:id", internal.GetUser)
-	//	user.POST("/", internal.CreateUser)
-	//	user.DELETE("/:id", internal.DeleteUser)
-	//}
+	user := router.Group("/user")
+	{
+		user.GET("/", internal.GetUsers)
+		user.GET("/:id", internal.GetUser)
+		user.POST("/", internal.CreateUser)
+		user.PUT("/", internal.UpdateUser)
+		user.DELETE("/:id", internal.DeleteUser)
+	}
 
 	cardType := router.Group("/card/type")
 	{

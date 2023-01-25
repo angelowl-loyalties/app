@@ -48,7 +48,7 @@ func CreateCardType(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": cardType})
+	c.JSON(http.StatusCreated, gin.H{"data": cardType})
 }
 
 // UpdateCardType - PUT /card/type/:cardType

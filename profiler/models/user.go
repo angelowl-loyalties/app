@@ -9,14 +9,29 @@ import (
 // User Model
 type User struct {
 	ID          uuid.UUID `json:"id" gorm:"type:uuid;primaryKey;<-:create"`
-	FirstName   string    `json:"first_name" gorm:"not null" validate:"required"`
-	LastName    string    `json:"last_name" gorm:"not null" validate:"required"`
-	Phone       string    `json:"phone" gorm:"not null" validate:"required"`
-	Email       string    `json:"email" gorm:"unique;not null" validate:"required"`
-	Password    string    `json:"password" gorm:"not null" validate:"required"`
+	FirstName   string    `json:"first_name" gorm:"type:varchar(255);not null"`
+	LastName    string    `json:"last_name" gorm:"type:varchar(255);not null"`
+	Phone       string    `json:"phone" gorm:"not null"`
+	Email       string    `json:"email" gorm:"unique;not null"`
+	Password    string    `json:"-" gorm:"not null"`
+	Role        string    `gorm:"type:varchar(255);not null"`
 	CreditCards []Card
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+}
+
+type NewUser struct {
+	FirstName       string `json:"first_name" binding:"required"`
+	LastName        string `json:"last_name" binding:"required"`
+	Phone           string `json:"phone" binding:"required,e164"`
+	Email           string `json:"email" binding:"required,email"`
+	Password        string `json:"password" binding:"required"`
+	ConfirmPassword string `json:"confirm_password" binding:"required"`
+}
+
+type SignIn struct {
+	Email    string `json:"email" binding:"required,email"`
+	Password string `json:"password" binding:"required"`
 }
 
 func (user *User) BeforeCreate(tx *gorm.DB) (err error) {
