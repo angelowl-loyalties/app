@@ -6,11 +6,10 @@ import (
 )
 
 type Card struct {
-	ID         uuid.UUID `json:"id" gorm:"type:uuid;primaryKey;<-:create"`
-	CardPan    string    `json:"card_pan" gorm:"not null" validate:"required;credit_card"`
-	UserID     uuid.UUID `json:"user_id" gorm:"type:uuid"`
-	CardTypeID uuid.UUID `json:"card_type_id" gorm:"type:uuid"`
-	CardType   CardType
+	ID               uuid.UUID `json:"id" gorm:"type:uuid;primaryKey;<-:create"`
+	CardPan          string    `json:"card_pan" gorm:"unique;not null" binding:"required,credit_card"`
+	UserID           uuid.UUID `json:"user_id" gorm:"type:uuid" binding:"required"` // card belongs to one user
+	CardTypeCardType string    `json:"card_type" binding:"required"`                // card belongs to one card type
 }
 
 func (card *Card) BeforeCreate(tx *gorm.DB) (err error) {

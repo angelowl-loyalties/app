@@ -32,8 +32,11 @@ func InitialiseRoutes(router *gin.Engine) {
 		cardType.DELETE("/:cardType", internal.DeleteCardType)
 	}
 
-	//card := router.Group("/card")
-	//{
-	//	card.GET("/")
-	//}
+	card := router.Group("/card")
+	{
+		card.GET("/", internal.GetCards)
+		card.GET("/:id", internal.GetCard)
+		card.POST("/", internal.CreateCard)
+		card.DELETE("/:id", internal.DeleteCard)
+	}
 }

@@ -11,6 +11,7 @@ type CardType struct {
 	ID          uuid.UUID `json:"id" gorm:"unique;type:uuid;<-:create"`
 	RewardUnit  string    `json:"reward_unit" gorm:"not null" binding:"required"`
 	CardProgram string    `json:"card_program" gorm:"not null" binding:"required"`
+	Cards       []Card    // one card type has many cards of that type
 }
 
 func (cardType *CardType) BeforeCreate(tx *gorm.DB) (err error) {

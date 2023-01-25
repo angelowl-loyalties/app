@@ -15,7 +15,7 @@ type User struct {
 	Email       string    `json:"email" gorm:"unique;not null"`
 	Password    string    `json:"-" gorm:"not null"`
 	Role        string    `gorm:"type:varchar(255);not null"`
-	CreditCards []Card
+	CreditCards []Card    // one user has many credit cards
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
