@@ -37,7 +37,7 @@ func GetUser(c *gin.Context) {
 // CreateUser - POST /user
 // Creates a new user
 func CreateUser(c *gin.Context) {
-	var newUser models.NewUser
+	var newUser models.UserInput
 	var user models.User
 
 	if err := c.ShouldBindJSON(&newUser); err != nil {
@@ -83,6 +83,7 @@ func CreateUser(c *gin.Context) {
 // Updates a user
 func UpdateUser(c *gin.Context) {
 	var user models.User
+	var updatedUser models.UserInput
 
 	uuid := c.Param("id")
 
@@ -92,7 +93,41 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	// TODO: logic for updating a user
+	if err = c.ShouldBindJSON(&updatedUser); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = models.DB.Where("email = ?", updatedUser.Email).First(&user).Error
+	if updatedUser.Email != user.Email && err == nil {
+		// if provided email is different and corresponding user has been found in DB
+		c.JSON(http.StatusBadRequest, gin.H{"error": "User with that email already exists"})
+		return
+	}
+
+	if updatedUser.Password != updatedUser.ConfirmPassword {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Passwords do not match"})
+		return
+	}
+
+	hashedPassword, err := utils.HashPassword(updatedUser.Password)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	user.FirstName = updatedUser.FirstName
+	user.LastName = updatedUser.LastName
+	user.Email = updatedUser.Email
+	user.Password = hashedPassword
+
+	result := models.DB.Save(&user)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": user})
 }
 
 // DeleteUser - DELETE /user/:id

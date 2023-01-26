@@ -3,7 +3,6 @@ package internal
 import (
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/profiler/models"
 	"github.com/gin-gonic/gin"
-	//"github.com/go-playground/validator/v10"
 	"net/http"
 )
 

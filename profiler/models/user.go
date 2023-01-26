@@ -20,7 +20,7 @@ type User struct {
 	UpdatedAt   time.Time
 }
 
-type NewUser struct {
+type UserInput struct {
 	FirstName       string `json:"first_name" binding:"required"`
 	LastName        string `json:"last_name" binding:"required"`
 	Phone           string `json:"phone" binding:"required,e164"`

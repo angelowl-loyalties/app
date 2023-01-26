@@ -19,7 +19,7 @@ func InitialiseRoutes(router *gin.Engine) {
 		user.GET("/", internal.GetUsers)
 		user.GET("/:id", internal.GetUser)
 		user.POST("/", internal.CreateUser)
-		user.PUT("/", internal.UpdateUser)
+		user.PUT("/:id", internal.UpdateUser)
 		user.DELETE("/:id", internal.DeleteUser)
 	}
 
