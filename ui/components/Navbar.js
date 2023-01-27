@@ -1,24 +1,24 @@
-import { Box, Divider, Flex, Heading, HStack, Stack, Text, VStack } from '@chakra-ui/react';
-import { AnimatePresence, motion } from 'framer-motion';
-import Image from 'next/image';
-import NextLink from 'next/link'
-import { useRouter } from 'next/router';
-import { RiLogoutCircleRLine } from 'react-icons/ri';
-import MainContent from './MainContent';
-import React, { useMemo } from 'react';
-import CustomMarquee from './CustomMarquee';
-import { signOut } from "next-auth/react";
+import { Box, Divider, Heading, HStack, Stack, Text, VStack } from '@chakra-ui/react';
+import { signOut } from 'next-auth/react';
 import Head from 'next/head';
+import Image from 'next/image';
+import NextLink from 'next/link';
+import { useRouter } from 'next/router';
+import React, { useMemo } from 'react';
+import { RiLogoutCircleRLine } from 'react-icons/ri';
+
+import CustomMarquee from './CustomMarquee';
+import MainContent from './MainContent';
 
 function Navbar(props) {
     const router = useRouter()
 
     var routes = [
-        {
-            'path': '/',
-            'tab': 'Dashboard',
-            'header': 'Dashboard'
-        },
+        // {
+        //     'path': '/',
+        //     'tab': 'Dashboard',
+        //     'header': 'Dashboard'
+        // },
         {
             'path': '/transactions',
             'tab': 'Transaction history',

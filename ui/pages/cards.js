@@ -1,5 +1,4 @@
 import {
-    Badge,
     Box,
     Divider,
     Heading,
