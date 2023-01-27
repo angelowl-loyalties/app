@@ -77,7 +77,7 @@ export default function Login() {
                 maxW={{ lg: 'md' }}
             >
                 <Box pt={8}>
-                    <Image priority={true} src="/ascenda.png" width='0' height='0' sizes="100vw" style={{ width: '150px', height: 'auto' }} alt="ascenda logo" />
+                    <Image priority={true} src="/ascenda.webp" width='0' height='0' sizes="100vw" style={{ width: '150px', height: 'auto' }} alt="ascenda logo" />
                 </Box>
                 <Box minW={{ base: "90%", md: "100%" }}>
                     <form>

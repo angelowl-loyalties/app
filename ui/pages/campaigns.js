@@ -85,7 +85,7 @@ export default function Campaigns() {
                                     <Card key={num} w="full" mb={4} border="1px" borderColor="gray.200">
                                         <HStack>
                                             <Box w={180} textAlign="-webkit-center">
-                                                <Image src="/ascenda.png" height="150" width="150" style={{ objectFit: 'cover' }} alt='campaign image' />
+                                                <Image src="/ascenda.webp" height="150" width="150" style={{ objectFit: 'cover' }} alt='campaign image' />
                                             </Box>
                                             <CardBody px={0} py={4}>
                                                 <VStack alignItems="start">

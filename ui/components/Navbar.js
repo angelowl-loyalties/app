@@ -44,7 +44,7 @@ function Navbar(props) {
             <Stack minH='100vh' direction={{ base: 'column', md: 'row' }}>
                 <VStack alignItems="start" backgroundColor="#f5f7f9" w="26%">
                     <Box p={8}>
-                        <Image priority={true} src="/ascenda.png" width='0' height='0' sizes="100vw" style={{ width: '150px', height: 'auto' }} alt="ascenda logo" />
+                        <Image priority={true} src="/ascenda.webp" width='0' height='0' sizes="100vw" style={{ width: '150px', height: 'auto' }} alt="ascenda logo" />
                     </Box>
                     <Box flex={1} w="100%">
                         <Stack spacing={6}>
