@@ -221,11 +221,9 @@ export default function Cards() {
                     </HStack>
 
                     <TabPanels>
-                        {data.map((cards1) => {
-                            console.log(data)
-                            console.log(cards1)
+                        {data && data.map((cards1) => {
                             return (
-                                <TabPanel key={cards1[0].card_id}>
+                                <TabPanel key={cards1[0] && cards1[0].card_id}>
                                     <Table size='sm'>
                                         <Thead>
                                             <Tr>
@@ -238,16 +236,16 @@ export default function Cards() {
                                             </Tr>
                                         </Thead>
                                         <Tbody>
-                                            {cards1.map((card) => {
+                                            {cards1 && cards1.map((card) => {
                                                 return (
                                                     <>
-                                                        <Tr key={card.card_id}>
-                                                            <Td><Text fontSize='xs' color='gray.500'>{renderIssuer(card.card_pan)}</Text></Td>
-                                                            <Td><Text fontSize='xs'>{card.card_pan.substring(card.card_pan.length - 4)}</Text></Td>
-                                                            <Td><Text fontSize='xs'>{card.card_id}</Text></Td>
-                                                            <Td><Text fontSize='xs' color='gray.500'>{renderProgram(card.card_type)}</Text></Td>
-                                                            <Td><Text fontSize='xs'>{card.created_at.split(" ")[0]}</Text></Td>
-                                                            <Td><Text fontSize='xs'>{card.updated_at.split(" ")[0]}</Text></Td>
+                                                        <Tr key={card && card.card_id}>
+                                                            <Td><Text fontSize='xs' color='gray.500'>{card && renderIssuer(card.card_pan)}</Text></Td>
+                                                            <Td><Text fontSize='xs'>{card && card.card_pan.substring(card.card_pan.length - 4)}</Text></Td>
+                                                            <Td><Text fontSize='xs'>{card && card.card_id}</Text></Td>
+                                                            <Td><Text fontSize='xs' color='gray.500'>{card && renderProgram(card.card_type)}</Text></Td>
+                                                            <Td><Text fontSize='xs'>{card && card.created_at.split(" ")[0]}</Text></Td>
+                                                            <Td><Text fontSize='xs'>{card && card.updated_at.split(" ")[0]}</Text></Td>
                                                         </Tr>
                                                     </>
                                                 )
