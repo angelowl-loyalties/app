@@ -88,9 +88,7 @@ export default function Login() {
                             <FormControl>
                                 <InputGroup>
                                     <InputLeftElement
-                                        color="gray.300"
-                                        children={<FaUserAlt />}
-                                    />
+                                        color="gray.300"><FaUserAlt /></InputLeftElement>
                                     <Input type="email" placeholder="john@doe.com" ref={email} />
                                 </InputGroup>
                             </FormControl>
@@ -98,8 +96,7 @@ export default function Login() {
                                 <InputGroup>
                                     <InputLeftElement
                                         color="gray.300"
-                                        children={<FaLock />}
-                                    />
+                                    ><FaLock /></InputLeftElement>
                                     <Input
                                         type={showPassword ? "text" : "password"}
                                         placeholder="Password"

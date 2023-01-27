@@ -12,13 +12,14 @@ function CustomMarquee() {
             {full.map((array, index) => {
                 return (
                     <Marquee
+                        key={index}
                         gradientColor={false}
                         direction={index % 2 ? 'right' : 'left'}
                     >
                         {array.map((num) => {
                             return (
                                 <Box mx={4} my={3} key={num}>
-                                    <Image id={`/merchant${num}.png`} priority={true} src={`/merchant${num}.png`} width="0" height="0" sizes="100vw" style={{ width: '35px', height: 'auto' }} alt={`merchant ${num}`} />
+                                    <Image key={num} id={`/merchant${num}.png`} priority={true} src={`/merchant${num}.png`} width="0" height="0" sizes="100vw" style={{ width: '35px', height: 'auto' }} alt={`merchant ${num}`} />
                                 </Box>
                             )
                         })}

@@ -73,9 +73,7 @@ export default function Campaigns() {
                         <Spacer />
                         <InputGroup w="30%">
                             <InputLeftElement
-                                pointerEvents='none'
-                                children={<Search2Icon color='gray.300' />}
-                            />
+                                pointerEvents='none'><Search2Icon color='gray.300' /></InputLeftElement>
                             <Input type='text' placeholder='Search' fontSize="sm" />
                         </InputGroup>
                     </HStack>
@@ -84,10 +82,10 @@ export default function Campaigns() {
                         <TabPanel>
                             {[...Array(15).keys()].map((num) => {
                                 return (
-                                    <Card w="full" mb={4} border="1px" borderColor="gray.200">
+                                    <Card key={num} w="full" mb={4} border="1px" borderColor="gray.200">
                                         <HStack>
                                             <Box w={180} textAlign="-webkit-center">
-                                                <Image src="/ascenda.png" height="150" width="150" style={{ objectFit: 'cover' }} />
+                                                <Image src="/ascenda.png" height="150" width="150" style={{ objectFit: 'cover' }} alt='campaign image' />
                                             </Box>
                                             <CardBody px={0} py={4}>
                                                 <VStack alignItems="start">

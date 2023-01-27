@@ -55,7 +55,7 @@ function Navbar(props) {
                         <Heading fontWeight="bold" mb={3} mt={2} fontSize="2xl">Manage account</Heading>
                         {routes.map((route) => {
                             return (
-                                <Text fontSize="sm" fontWeight={600} lineHeight="6" textStyle={router.pathname == route.path ? 'navactive' : 'nav'}>
+                                <Text key={route} fontSize="sm" fontWeight={600} lineHeight="6" textStyle={router.pathname == route.path ? 'navactive' : 'nav'}>
                                     <NextLink href={route.path} verticalalign="middle">
                                         {(router.pathname == route.path ? "> " : "") + route.tab}
                                     </NextLink>

@@ -225,7 +225,7 @@ export default function Cards() {
                             console.log(data)
                             console.log(cards1)
                             return (
-                                <TabPanel>
+                                <TabPanel key={cards1[0].card_id}>
                                     <Table size='sm'>
                                         <Thead>
                                             <Tr>
@@ -241,7 +241,7 @@ export default function Cards() {
                                             {cards1.map((card) => {
                                                 return (
                                                     <>
-                                                        <Tr>
+                                                        <Tr key={card.card_id}>
                                                             <Td><Text fontSize='xs' color='gray.500'>{renderIssuer(card.card_pan)}</Text></Td>
                                                             <Td><Text fontSize='xs'>{card.card_pan.substring(card.card_pan.length - 4)}</Text></Td>
                                                             <Td><Text fontSize='xs'>{card.card_id}</Text></Td>
