@@ -1,13 +1,13 @@
-FROM golang:1.19-alpine3.17 AS builder
+FROM golang:1.19-alpine3.17
+
+RUN apk add --no-cache git
+
+RUN go install github.com/githubnemo/CompileDaemon@v1.4.0
 
 WORKDIR /app
 
 COPY . .
 
-RUN go build -o /service_executable
+RUN chmod +x build_app.sh
 
-FROM alpine:3.17
-
-COPY --from=builder /service_executable /service_executable
-
-ENTRYPOINT ["/service_executable"]
+CMD ["CompileDaemon", "-build", "./build_app.sh", "-command", "./service_executable", "-polling=true"]
