@@ -8,12 +8,12 @@ const theme = extendTheme({
             'color': "gray",
             'cursor': "pointer",
             '_hover': {
-                'color': '#00a3c4'
+                'color': '#7c4cc4'
             },
         },
         navactive: {
             'cursor': "pointer",
-            'color': "#00a3c4",
+            'color': "#7c4cc4",
         }
     },
     fonts: {

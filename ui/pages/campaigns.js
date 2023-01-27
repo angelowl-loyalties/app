@@ -40,7 +40,7 @@ export default function Campaigns() {
                         </Text>
                     </VStack>
                 </HStack>
-                <Tabs variant='solid-rounded' colorScheme="cyan" w="full">
+                <Tabs variant='solid-rounded' colorScheme="purple" w="full">
                     <HStack>
                         <Box p={2} bgColor="gray.100" borderRadius="xl" >
                             <TabList>
