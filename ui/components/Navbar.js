@@ -14,11 +14,11 @@ function Navbar(props) {
     const router = useRouter()
 
     var routes = [
-        // {
-        //     'path': '/',
-        //     'tab': 'Dashboard',
-        //     'header': 'Dashboard'
-        // },
+        {
+            'path': '/',
+            'tab': 'Dashboard',
+            'header': 'Dashboard'
+        },
         {
             'path': '/transactions',
             'tab': 'Transaction history',
