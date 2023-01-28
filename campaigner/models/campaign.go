@@ -8,13 +8,13 @@ import (
 
 type Campaign struct {
 	ID uuid.UUID `json:"id" gorm:"type:uuid;primaryKey;<-:create"`
-	MinSpend float64 `json:"minSpend"`
-	Start time.Time `json:"startDate`
-	Duration time.Time `json:"endDate"`
-	RewardProgram string `json:"rewardProgram"`
-	RewardAmount int `json:"rewardAmount"` 
-	// add other fields here accordingly
-
+	MinSpend float64 `json:"min_spend"`
+	Start time.Time `json:"start_date`
+	Duration time.Time `json:"end_date"`
+	RewardProgram string `json:"reward_program"`
+	RewardAmount int `json:"reward_amount"` 
+	MCC int `json:"mcc"`
+	Merchant string `json:"merchant"`
 }
 
 func (campaign *Campaign) BeforeCreate(tx *gorm.DB) (err error) {

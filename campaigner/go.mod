@@ -2,7 +2,7 @@ module github.com/cs301-itsa/project-2022-23t2-g1-t7/campaigner
 
 go 1.19
 
-require github.com/swaggo/swag v1.8.9
+require github.com/swaggo/swag v1.8.10
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect

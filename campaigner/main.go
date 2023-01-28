@@ -9,7 +9,7 @@ import (
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaigner/routes"
 	"github.com/gin-gonic/gin"
 
-	docs "github.com/cs301-itsa/project-2022-23t2-g1-t7/campaigner/docs"
+	_ "github.com/cs301-itsa/project-2022-23t2-g1-t7/campaigner/docs"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
@@ -31,7 +31,7 @@ func main() {
 
 	router = gin.Default()
 
-	docs.SwaggerInfo.BasePath = "/api/v1"
+	// docs.SwaggerInfo.BasePath = "/api/v1"
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	routes.InitialiseRoutes(router)
 

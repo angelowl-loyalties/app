@@ -4,6 +4,29 @@
         "contact": {}
     },
     "paths": {
+        "/campaign": {
+            "get": {
+                "description": "Get all campaigns",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "example"
+                ],
+                "summary": "Get all campaigns",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/health": {
             "get": {
                 "description": "health check",

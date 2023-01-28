@@ -1,6 +1,21 @@
 info:
   contact: {}
 paths:
+  /campaign:
+    get:
+      consumes:
+      - application/json
+      description: Get all campaigns
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Get all campaigns
+      tags:
+      - example
   /health:
     get:
       consumes:

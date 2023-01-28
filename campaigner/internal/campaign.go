@@ -9,6 +9,14 @@ import (
 
 // GetCampaigns - GET /campaign
 // Get all campaigns
+// @Summary Get all campaigns
+// @Schemes
+// @Description Get all campaigns
+// @Tags example
+// @Accept json
+// @Produce json
+// @Success 200 {string} OK
+// @Router /campaign [get]
 func GetCampaigns(c *gin.Context) {
 	var campaigns []models.Campaign
 	models.DB.Find(&campaigns)
