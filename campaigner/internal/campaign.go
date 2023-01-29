@@ -130,7 +130,11 @@ func DeleteCampaign(c *gin.Context) {
 		return
 	}
 
-	models.DB.Delete(&campaign)
+	result := models.DB.Delete(&campaign)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		return
+	}
 
 	c.Status(http.StatusNoContent)
 }
