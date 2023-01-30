@@ -2,6 +2,7 @@ package internal
 
 import (
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/informer/models"
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/informer/db"
 	"github.com/gin-gonic/gin"
 	"github.com/gocql/gocql"
 	"net/http"
@@ -13,7 +14,7 @@ func GetTransactions(c *gin.Context) {
 	var transactions []models.Transaction
 	m := map[string]interface{}{}
 
-	iter := models.DB.Query("SELECT * FROM transactions").Iter()
+	iter := db.DB.Query("SELECT * FROM transactions").Iter()
 	for iter.MapScan(m) {
 		transactions = append(transactions, models.Transaction{
 			ID: m["id"].(gocql.UUID),

@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/informer/config"
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/informer/models"
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/informer/db"
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/informer/routes"
 	"github.com/gin-gonic/gin"
 )
@@ -24,7 +24,7 @@ func main() {
 	dbKeyspace := c.DBKeyspace
 	dbUser := c.DBUser
 	dbPass := c.DBPass
-	models.ConnectDB(dbConnString, dbKeyspace, dbUser, dbPass)
+	db.ConnectDB(dbConnString, dbKeyspace, dbUser, dbPass)
 
 	router = gin.Default()
 	routes.InitialiseRoutes(router)
