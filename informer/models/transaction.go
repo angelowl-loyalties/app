@@ -16,5 +16,4 @@ type Transaction struct {
 	TransactionDate string     `json:"transaction_date"`
 	CardPAN         string     `json:"card_pan"`
 	CardType        string     `json:"card_type"`
-	// add/remove fields for the processed transaction accordingly, above was taken from their example
 }

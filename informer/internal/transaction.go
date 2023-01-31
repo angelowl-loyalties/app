@@ -10,18 +10,27 @@ import (
 
 // GetTransactions - GET /transaction
 // Get all transactions
-func GetTransactions(c *gin.Context) {
-	var transactions []models.Transaction
+func GetAllTransactions(c *gin.Context) {
+	var transaction []models.Transaction
 	m := map[string]interface{}{}
 
-	iter := db.DB.Query("SELECT * FROM transactions").Iter()
+	iter := db.DB.Query("SELECT * FROM transaction").Iter()
 	for iter.MapScan(m) {
-		transactions = append(transactions, models.Transaction{
+		transaction = append(transaction, models.Transaction{
 			ID: m["id"].(gocql.UUID),
-			// add other fields accordingly
+			CardID: m["card_id"].(gocql.UUID),
+			Merchant: m["merchant"].(string),
+			MCC: m["mcc"].(int),
+			Currency: m["currency"].(string),
+			Amount: m["amount"].(float64),
+			SGDAmount: m["sgd_amount"].(float64),
+			TransactionID: m["transaction_id"].(string),  
+			TransactionDate: m["transaction_date"].(string),
+			CardPAN: m["card_pan"].(string),
+			CardType: m["card_type"].(string),
 		})
 		m = map[string]interface{}{}
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": transactions})
+	c.JSON(http.StatusOK, gin.H{"data": transaction})
 }

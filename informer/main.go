@@ -22,13 +22,13 @@ func main() {
 
 	dbConnString := c.DBConnString
 	dbKeyspace := c.DBKeyspace
-	dbUser := c.DBUser
-	dbPass := c.DBPass
-	db.ConnectDB(dbConnString, dbKeyspace, dbUser, dbPass)
+	// dbUser := c.DBUser
+	// dbPass := c.DBPass
+	db.ConnectDB(dbConnString, dbKeyspace)
 
 	router = gin.Default()
 	routes.InitialiseRoutes(router)
-	
+
 	port := c.Port
 	router.Run(":" + port)
 }
