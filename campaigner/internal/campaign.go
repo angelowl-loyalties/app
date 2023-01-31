@@ -33,9 +33,13 @@ func GetCampaigns(c *gin.Context) {
 func GetCampaignById(c *gin.Context) {
 	var campaign models.Campaign
 
-	id := c.Param("id")
+	uuid := c.Param("id")
 
-	models.DB.Where("id = ?", id).Find(&campaign)
+	err := models.DB.Where("id = ?", uuid).First(&campaign).Error
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Campaign with UUID: " + uuid + " not found"})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{"data": campaign})
 }
