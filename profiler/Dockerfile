@@ -1,22 +1,15 @@
-FROM golang:alpine AS builder
+FROM golang:alpine
+
+WORKDIR /app
 
 RUN apk add --no-cache git
 
-WORKDIR $GOPATH/src/
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+
+RUN go install github.com/githubnemo/CompileDaemon@v1.4.0
 
 COPY . .
 
-RUN go mod download
-RUN go build -o /profiler
+RUN chmod +x /app/build_app.sh
 
-FROM alpine:3.17
-
-RUN apk --no-cache add bash wget ca-certificates
-RUN apk update
-
-WORKDIR /
-
-# do we need wait-for-it.sh?
-COPY --from=builder /profiler .
-
-ENTRYPOINT ["/profiler"]
+CMD ["CompileDaemon", "-build", "./build_app.sh", "-command", "./service_executable", "-polling=true", "-exclude-dir=docs"]

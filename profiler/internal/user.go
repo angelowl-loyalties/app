@@ -9,7 +9,12 @@ import (
 )
 
 // GetUsers - GET /user
-// Get all users
+// @Summary Get all users
+// @Description Get all users
+// @Tags user
+// @Produce json
+// @Success 200 {array} models.User
+// @Router /user [get]
 func GetUsers(c *gin.Context) {
 	var users []models.User
 
@@ -19,7 +24,13 @@ func GetUsers(c *gin.Context) {
 }
 
 // GetUser - GET /user/:id
-// Get a user with UUID
+// @Summary Get a user
+// @Description Get a single user by its UUID
+// @Tags user
+// @Produce json
+// @Success 200 {object} models.User
+// @Param user_id path string true "User ID"
+// @Router /user/{user_id} [get]
 func GetUser(c *gin.Context) {
 	var user models.User
 
@@ -35,7 +46,14 @@ func GetUser(c *gin.Context) {
 }
 
 // CreateUser - POST /user
-// Creates a new user
+// @Summary Create a user
+// @Description Create a user
+// @Tags user
+// @Accept json
+// @Produce json
+// @Success 201 {object} models.User
+// @Param user body models.UserInput true "New User"
+// @Router /user [post]
 func CreateUser(c *gin.Context) {
 	var newUser models.UserInput
 	var user models.User
@@ -48,11 +66,6 @@ func CreateUser(c *gin.Context) {
 	err := models.DB.Where("email = ?", newUser.Email).First(&user).Error
 	if err == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User with that email already exists"})
-		return
-	}
-
-	if newUser.Password != newUser.ConfirmPassword {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Passwords do not match"})
 		return
 	}
 
@@ -80,7 +93,15 @@ func CreateUser(c *gin.Context) {
 }
 
 // UpdateUser - PUT /user/:id
-// Updates a user
+// @Summary Update a user
+// @Description Update a user
+// @Tags user
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.User
+// @Param user body models.UserInput true "Updated User"
+// @Param user_id path string true "User ID"
+// @Router /user/{user_id} [put]
 func UpdateUser(c *gin.Context) {
 	var user models.User
 	var updatedUser models.UserInput
@@ -105,11 +126,6 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	if updatedUser.Password != updatedUser.ConfirmPassword {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Passwords do not match"})
-		return
-	}
-
 	hashedPassword, err := utils.HashPassword(updatedUser.Password)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
@@ -131,7 +147,13 @@ func UpdateUser(c *gin.Context) {
 }
 
 // DeleteUser - DELETE /user/:id
-// Deletes a user
+// @Summary Delete a user
+// @Description Delete a user
+// @Tags user
+// @Produce json
+// @Success 204 {object} nil
+// @Param user_id path string true "User ID"
+// @Router /user/{user_id} [delete]
 func DeleteUser(c *gin.Context) {
 	var user models.User
 
@@ -143,13 +165,24 @@ func DeleteUser(c *gin.Context) {
 		return
 	}
 
-	models.DB.Delete(&user)
+	result := models.DB.Delete(&user)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		return
+	}
 
 	c.Status(http.StatusNoContent)
 }
 
 // LoginUser - POST /user/login
-// Returns user when provided credentials are valid
+// @Summary User login
+// @Description Returns user when provided credentials are valid
+// @Tags user
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.User
+// @Param credentials body models.SignIn true "Credentials"
+// @Router /user/login [post]
 func LoginUser(c *gin.Context) {
 	var credentials models.SignIn
 

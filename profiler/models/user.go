@@ -26,7 +26,7 @@ type UserInput struct {
 	Phone           string `json:"phone" binding:"required,e164"`
 	Email           string `json:"email" binding:"required,email"`
 	Password        string `json:"password" binding:"required"`
-	ConfirmPassword string `json:"confirm_password" binding:"required"`
+	ConfirmPassword string `json:"confirm_password" binding:"required,eqfield=Password"`
 }
 
 type SignIn struct {

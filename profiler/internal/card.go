@@ -9,7 +9,12 @@ import (
 //var validate = validator.New()
 
 // GetCards - GET /card
-// Get all cards
+// @Summary Get all cards
+// @Description Get all cards
+// @Tags card
+// @Produce json
+// @Success 200 {array} models.Card
+// @Router /card [get]
 func GetCards(c *gin.Context) {
 	var cards []models.Card
 
@@ -19,7 +24,13 @@ func GetCards(c *gin.Context) {
 }
 
 // GetCard - GET /card/:id
-// Get a card given UUID
+// @Summary Get a card
+// @Description Get a single card by its UUID
+// @Tags card
+// @Produce json
+// @Success 200 {object} models.Card
+// @Param card_id path string true "Card ID"
+// @Router /card/{card_id} [get]
 func GetCard(c *gin.Context) {
 	var card models.Card
 
@@ -35,13 +46,20 @@ func GetCard(c *gin.Context) {
 }
 
 // CreateCard - POST /card
-// Creates a new card
+// @Summary Create a card
+// @Description Create a card
+// @Tags card
+// @Accept json
+// @Produce json
+// @Success 201 {object} models.Card
+// @Param card body models.Card true "New Card"
+// @Router /card [post]
 func CreateCard(c *gin.Context) {
 	var newCard models.Card
 	var user models.User
 	var cardType models.CardType
 
-	if err := c.BindJSON(&newCard); err != nil {
+	if err := c.ShouldBindJSON(&newCard); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
@@ -77,7 +95,13 @@ func CreateCard(c *gin.Context) {
 }
 
 // DeleteCard - DELETE /card/:id
-// Deletes a card
+// @Summary Delete a card
+// @Description Delete a card
+// @Tags card
+// @Produce json
+// @Success 204 {object} nil
+// @Param card_id path string true "Card ID"
+// @Router /card/{card_id} [delete]
 func DeleteCard(c *gin.Context) {
 	var card models.Card
 
@@ -89,7 +113,11 @@ func DeleteCard(c *gin.Context) {
 		return
 	}
 
-	models.DB.Delete(&card)
+	result := models.DB.Delete(&card)
+	if result.Error != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+		return
+	}
 
 	c.Status(http.StatusNoContent)
 }

@@ -50,7 +50,7 @@ func GetCampaignById(c *gin.Context) {
 // @Tags campaign
 // @Accept json
 // @Produce json
-// @Success 200 {object} models.Campaign
+// @Success 201 {object} models.Campaign
 // @Param campaign body models.Campaign true "New Campaign"
 // @Router /campaign [post]
 func CreateCampaign(c *gin.Context) {

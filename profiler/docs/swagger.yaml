@@ -1,0 +1,400 @@
+definitions:
+  models.Card:
+    properties:
+      card_pan:
+        type: string
+      card_type:
+        description: card belongs to one card type
+        type: string
+      id:
+        type: string
+      user_id:
+        description: card belongs to one user
+        type: string
+    required:
+    - card_pan
+    - card_type
+    - user_id
+    type: object
+  models.CardType:
+    properties:
+      card_program:
+        type: string
+      card_type:
+        type: string
+      cards:
+        description: one card type has many cards of that type
+        items:
+          $ref: '#/definitions/models.Card'
+        type: array
+      id:
+        type: string
+      name:
+        type: string
+      reward_unit:
+        type: string
+    required:
+    - card_program
+    - card_type
+    - name
+    - reward_unit
+    type: object
+  models.SignIn:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    required:
+    - email
+    - password
+    type: object
+  models.User:
+    properties:
+      createdAt:
+        type: string
+      creditCards:
+        description: one user has many credit cards
+        items:
+          $ref: '#/definitions/models.Card'
+        type: array
+      email:
+        type: string
+      first_name:
+        type: string
+      id:
+        type: string
+      last_name:
+        type: string
+      phone:
+        type: string
+      role:
+        type: string
+      updatedAt:
+        type: string
+    type: object
+  models.UserInput:
+    properties:
+      confirm_password:
+        type: string
+      email:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+    required:
+    - confirm_password
+    - email
+    - first_name
+    - last_name
+    - password
+    - phone
+    type: object
+info:
+  contact: {}
+paths:
+  /card:
+    get:
+      description: Get all cards
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Card'
+            type: array
+      summary: Get all cards
+      tags:
+      - card
+    post:
+      consumes:
+      - application/json
+      description: Create a card
+      parameters:
+      - description: New Card
+        in: body
+        name: card
+        required: true
+        schema:
+          $ref: '#/definitions/models.Card'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Card'
+      summary: Create a card
+      tags:
+      - card
+  /card/{card_id}:
+    delete:
+      description: Delete a card
+      parameters:
+      - description: Card ID
+        in: path
+        name: card_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Delete a card
+      tags:
+      - card
+    get:
+      description: Get a single card by its UUID
+      parameters:
+      - description: Card ID
+        in: path
+        name: card_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Card'
+      summary: Get a card
+      tags:
+      - card
+  /card/type:
+    get:
+      description: Get all card types
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.CardType'
+            type: array
+      summary: Get all card types
+      tags:
+      - card_type
+    post:
+      consumes:
+      - application/json
+      description: Create a card type
+      parameters:
+      - description: New Card Type
+        in: body
+        name: card_type
+        required: true
+        schema:
+          $ref: '#/definitions/models.CardType'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.CardType'
+      summary: Create a card type
+      tags:
+      - card_type
+  /card/type/{card_type_pk}:
+    delete:
+      description: Delete a card type
+      parameters:
+      - description: Card Type PK
+        in: path
+        name: card_type_pk
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Delete a card type
+      tags:
+      - card_type
+    put:
+      consumes:
+      - application/json
+      description: Update a card type
+      parameters:
+      - description: New Card Type
+        in: body
+        name: card_type
+        required: true
+        schema:
+          $ref: '#/definitions/models.CardType'
+      - description: Campaign Type PK
+        in: path
+        name: card_type_pk
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CardType'
+      summary: Update a card type
+      tags:
+      - card_type
+  /card/type/{card_type}:
+    get:
+      description: Get a single card type by its PK
+      parameters:
+      - description: Card Type PK
+        in: path
+        name: card_type
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.CardType'
+      summary: Get a card type
+      tags:
+      - card_type
+  /health:
+    get:
+      description: health check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: health
+  /user:
+    get:
+      description: Get all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.User'
+            type: array
+      summary: Get all users
+      tags:
+      - user
+    post:
+      consumes:
+      - application/json
+      description: Create a user
+      parameters:
+      - description: New User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserInput'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Create a user
+      tags:
+      - user
+  /user/{user_id}:
+    delete:
+      description: Delete a user
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Delete a user
+      tags:
+      - user
+    get:
+      description: Get a single user by its UUID
+      parameters:
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Get a user
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: Update a user
+      parameters:
+      - description: Updated User
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserInput'
+      - description: User ID
+        in: path
+        name: user_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: Update a user
+      tags:
+      - user
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: Returns user when provided credentials are valid
+      parameters:
+      - description: Credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/models.SignIn'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.User'
+      summary: User login
+      tags:
+      - user
+swagger: "2.0"
