@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/informer/internal"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -12,6 +13,8 @@ func Health(c *gin.Context) {
 func InitialiseRoutes(router *gin.Engine) {
 	router.GET("/health", Health)
 
-	//transactions := router.Group("/transaction")
-	// add your other routes accordingly
+	transaction := router.Group("/transaction")
+	{
+		transaction.GET("/", internal.GetAllTransactions)
+	}
 }

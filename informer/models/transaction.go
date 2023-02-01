@@ -5,15 +5,15 @@ import (
 )
 
 type Transaction struct {
-	ID              gocql.UUID `json:"id"`
-	CardID          gocql.UUID `json:"card_id"`
-	Merchant        string     `json:"merchant"`
-	MCC             int        `json:"mcc"`
-	Currency        string     `json:"currency"`
-	Amount          float64    `json:"amount"`
-	SGDAmount       float64    `json:"sgd_amount"`
-	TransactionID   string     `json:"transaction_id"`
-	TransactionDate string     `json:"transaction_date"`
-	CardPAN         string     `json:"card_pan"`
-	CardType        string     `json:"card_type"`
+	ID              gocql.UUID `json:"ID"`
+	CardID          gocql.UUID `json:"CardID"`
+	Merchant        string     `json:"Merchant"`
+	MCC             int        `json:"MCC"`
+	Currency        string     `json:"Currency"`
+	Amount          float64    `json:"Amount"`
+	SGDAmount       float64    `json:"SGDAmount"`
+	TransactionID   string     `json:"TransactionID"`
+	TransactionDate string     `json:"TransactionDate"`
+	CardPAN         string     `json:"CardPAN"`
+	CardType        string     `json:"CardType"`
 }
