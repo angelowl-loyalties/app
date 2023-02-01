@@ -1,0 +1,15 @@
+info:
+  contact: {}
+paths:
+  /health:
+    get:
+      description: health check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: health
+swagger: "2.0"

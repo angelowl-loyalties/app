@@ -8,6 +8,10 @@ import (
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/excluder/models"
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/excluder/routes"
 	"github.com/gin-gonic/gin"
+
+	_ "github.com/cs301-itsa/project-2022-23t2-g1-t7/excluder/docs"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 var router *gin.Engine
@@ -26,6 +30,9 @@ func main() {
 	port := c.Port
 
 	router = gin.Default()
+
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	routes.InitialiseRoutes(router)
+
 	router.Run(":" + port)
 }
