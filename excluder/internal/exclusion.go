@@ -6,8 +6,13 @@ import (
 	"net/http"
 )
 
-// GetExclusions - GET /exclusion
-// Get all exclusions
+// GetCampaigns - GET /exclusion
+// @Summary Get all exclusion
+// @Description Get all exclusions
+// @Tags exclusion
+// @Produce json
+// @Success 200 {array} models.Exclusion
+// @Router /exclusion [get]
 func GetExclusions(c *gin.Context) {
 	var exclusions []models.Exclusion
 

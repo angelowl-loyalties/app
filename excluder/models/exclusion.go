@@ -6,9 +6,8 @@ import (
 )
 
 type Exclusion struct {
-	ID uuid.UUID `json:"id" gorm:"type:uuid;primaryKey;<-:create"`
-	// add other fields here accordingly
-
+	ID  uuid.UUID `json:"id" gorm:"type:uuid;primaryKey;<-:create"`
+	MCC int       `json:"mcc" binding:"required,gte=0,lte=9999"`
 }
 
 func (exclusion *Exclusion) BeforeCreate(tx *gorm.DB) (err error) {
