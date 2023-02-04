@@ -119,9 +119,11 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	err = models.DB.Where("email = ?", updatedUser.Email).First(&user).Error
-	if updatedUser.Email != user.Email && err == nil {
-		// if provided email is different and corresponding user has been found in DB
+	var temp models.User
+	err = models.DB.Where("email = ?", updatedUser.Email).First(&temp).Error
+	if updatedUser.Email != user.Email && updatedUser.Email == temp.Email {
+		// if provided email is different from current email, user wants to change their email
+		// check if another user has the same email, if so, error
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User with that email already exists"})
 		return
 	}
