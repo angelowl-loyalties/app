@@ -1,9 +1,11 @@
 package models
 
 import (
+	"errors"
+	"time"
+
 	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"time"
 )
 
 type Campaign struct {
@@ -21,4 +23,38 @@ type Campaign struct {
 func (campaign *Campaign) BeforeCreate(tx *gorm.DB) (err error) {
 	campaign.ID = uuid.New()
 	return
+}
+
+func CampaignGetAll() (campaigns []Campaign, err error) {
+	err = DB.Find(&campaigns).Error
+
+	return campaigns, err
+}
+
+func CampaignGetById(uuid string) (campaign *Campaign, err error) {
+	err = DB.Where("id = ?", uuid).First(&campaign).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return campaign, err
+}
+
+func CampaignSave(updatedCampaign *Campaign) (campaign *Campaign, err error) {
+	err = DB.Save(&updatedCampaign).Error
+
+	return campaign, err
+}
+
+func CampaignCreate(campaign *Campaign) (_ *Campaign, err error) {
+	err = DB.Create(&campaign).Error
+
+	return campaign, err
+}
+
+func CampaignDelete(campaign *Campaign) (_ *Campaign, err error) {
+	err = DB.Delete(&campaign).Error
+
+	return campaign, err
 }
