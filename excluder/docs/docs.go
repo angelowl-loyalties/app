@@ -15,6 +15,153 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/exclusion": {
+            "get": {
+                "description": "Get all exclusions",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "exclusion"
+                ],
+                "summary": "Get all exclusions",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Exclusion"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Create an exclusion",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "exclusion"
+                ],
+                "summary": "Create an exclusion",
+                "parameters": [
+                    {
+                        "description": "New Exclusion",
+                        "name": "exclusion",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Exclusion"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Exclusion"
+                        }
+                    }
+                }
+            }
+        },
+        "/exclusion/{exclusion_id}": {
+            "get": {
+                "description": "Get a single exclusion by its UUID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "exclusion"
+                ],
+                "summary": "Get an exclusion",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Exclusion ID",
+                        "name": "exclusion_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Exclusion"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a exclusion",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "exclusion"
+                ],
+                "summary": "Update a exclusion",
+                "parameters": [
+                    {
+                        "description": "New Exclusion",
+                        "name": "exclusion",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.Exclusion"
+                        }
+                    },
+                    {
+                        "type": "string",
+                        "description": "Exclusion ID",
+                        "name": "exclusion_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.Exclusion"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Delete a exclusion",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "exclusion"
+                ],
+                "summary": "Delete a exclusion",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Exclusion ID",
+                        "name": "exclusion_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
+                    }
+                }
+            }
+        },
         "/health": {
             "get": {
                 "description": "health check",
@@ -29,6 +176,24 @@ const docTemplate = `{
                             "type": "string"
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Exclusion": {
+            "type": "object",
+            "required": [
+                "mcc"
+            ],
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "mcc": {
+                    "type": "integer",
+                    "maximum": 9999,
+                    "minimum": 0
                 }
             }
         }

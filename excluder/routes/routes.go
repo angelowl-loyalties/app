@@ -1,9 +1,10 @@
 package routes
 
 import (
+	"net/http"
+
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/excluder/internal"
 	"github.com/gin-gonic/gin"
-	"net/http"
 )
 
 // Health godoc
@@ -22,10 +23,9 @@ func InitialiseRoutes(router *gin.Engine) {
 	exclusion := router.Group("/exclusion")
 	{
 		exclusion.GET("/", internal.GetExclusions)
-	// 	campaign.GET("/:id", internal.GetExclusionById)
-	// 	campaign.POST("/", internal.CreateExclusion)
-	// 	campaign.PUT("/:id", internal.UpdateExclusion)
-	// 	campaign.DELETE("/:id", internal.DeleteExclusion)
+		exclusion.GET("/:id", internal.GetExclusionById)
+		exclusion.POST("/", internal.CreateExclusion)
+		exclusion.PUT("/:id", internal.UpdateExclusion)
+		exclusion.DELETE("/:id", internal.DeleteExclusion)
 	}
-	// add your other routes accordingly
 }
