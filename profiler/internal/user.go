@@ -63,8 +63,10 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	err := models.DB.Where("email = ?", newUser.Email).First(&user).Error
-	if err == nil {
+	var temp models.User
+	err := models.DB.Where("email = ?", newUser.Email).First(&temp).Error
+	if newUser.Email == temp.Email {
+		// check if another user has the same email, if so, error
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User with that email already exists"})
 		return
 	}
