@@ -499,29 +499,22 @@ const docTemplate = `{
         "models.CardType": {
             "type": "object",
             "required": [
-                "card_program",
                 "card_type",
                 "name",
+                "reward_program",
                 "reward_unit"
             ],
             "properties": {
-                "card_program": {
-                    "type": "string"
-                },
                 "card_type": {
                     "type": "string"
-                },
-                "cards": {
-                    "description": "one card type has many cards of that type",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/models.Card"
-                    }
                 },
                 "id": {
                     "type": "string"
                 },
                 "name": {
+                    "type": "string"
+                },
+                "reward_program": {
                     "type": "string"
                 },
                 "reward_unit": {

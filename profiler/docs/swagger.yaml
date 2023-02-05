@@ -18,25 +18,20 @@ definitions:
     type: object
   models.CardType:
     properties:
-      card_program:
-        type: string
       card_type:
         type: string
-      cards:
-        description: one card type has many cards of that type
-        items:
-          $ref: '#/definitions/models.Card'
-        type: array
       id:
         type: string
       name:
         type: string
+      reward_program:
+        type: string
       reward_unit:
         type: string
     required:
-    - card_program
     - card_type
     - name
+    - reward_program
     - reward_unit
     type: object
   models.SignIn:

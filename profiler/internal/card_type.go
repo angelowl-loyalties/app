@@ -96,7 +96,7 @@ func UpdateCardType(c *gin.Context) {
 		return
 	}
 
-	cardType.CardProgram = updatedCardType.CardProgram
+	cardType.RewardProgram = updatedCardType.RewardProgram
 	cardType.Name = updatedCardType.Name
 	cardType.RewardUnit = updatedCardType.RewardUnit
 
