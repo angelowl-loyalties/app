@@ -34,6 +34,20 @@ resource "aws_security_group" "angelowl_kafka" {
   }
 }
 
+resource "aws_security_group" "angelowl_openvpn" {
+    name        = "angelowl-openvpn-access"
+    description = "Allows inbound OpenVPN traffic"
+    vpc_id      = aws_vpc.angelowl.id
+    
+    ingress {
+        description = "OpenVPN"
+        from_port   = 1194
+        to_port     = 1194
+        protocol    = "udp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+}
+
 resource "aws_security_group" "angelowl_outbound" {
   name        = "angelowl-outbound-access"
   description = "Allows outbound traffic"
@@ -47,3 +61,7 @@ resource "aws_security_group" "angelowl_outbound" {
   }
 }
 
+resource "aws_key_pair" "angelowl_vpn" {
+  key_name   = "angelowl-vpn-key"
+  public_key = file("ssh/vpn.pub")
+}
