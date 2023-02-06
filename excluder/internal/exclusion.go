@@ -113,6 +113,7 @@ func UpdateExclusion(c *gin.Context) {
 	}
 
 	exclusion.MCC = updatedExclusion.MCC
+	exclusion.ValidFrom = updatedExclusion.ValidFrom
 
 	exclusion, err = models.ExclusionSave(exclusion)
 
