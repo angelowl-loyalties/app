@@ -6,6 +6,12 @@ import (
 	"net/http"
 )
 
+// Health godoc
+// @Summary health
+// @Description health check
+// @Produce json
+// @Success 200 {string} OK
+// @Router /health [get]
 func Health(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"status": "OK"})
 }
@@ -13,8 +19,8 @@ func Health(c *gin.Context) {
 func InitialiseRoutes(router *gin.Engine) {
 	router.GET("/health", Health)
 
-	transaction := router.Group("/transaction")
+	transaction := router.Group("/reward")
 	{
-		transaction.GET("/", internal.GetAllTransactions)
+		transaction.GET("/", internal.GetRewards)
 	}
 }

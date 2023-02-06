@@ -9,6 +9,7 @@ type Config struct {
 	Port         string `mapstructure:"PORT"`
 	DBConnString string `mapstructure:"DB_CONN_STRING"`
 	DBKeyspace   string `mapstructure:"DB_KEYSPACE"`
+	DBTable      string `mapstructure:"DB_TABLE"`
 	// DBUser       string `mapstructure:"DB_USER"`
 	// DBPass       string `mapstructure:"DB_PASS"`
 }
@@ -28,6 +29,7 @@ func LoadConfig() (config Config, err error) {
 		_ = viper.BindEnv("PORT")
 		_ = viper.BindEnv("DB_CONN_STRING")
 		_ = viper.BindEnv("DB_KEYSPACE")
+		_ = viper.BindEnv("DB_TABLE")
 		// _ = viper.BindEnv("DB_USER")
 		// _ = viper.BindEnv("DB_PASS")
 		err = viper.Unmarshal(&config)
