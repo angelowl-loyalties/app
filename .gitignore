@@ -2,3 +2,10 @@
 .DS_Store
 /.idea/
 service_executable
+
+# Ignore all SSH files except pub
+**/ssh/**
+!**/ssh/**.pub
+
+# Local .terraform directories
+**/.terraform/*

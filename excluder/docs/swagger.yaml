@@ -1,0 +1,124 @@
+definitions:
+  models.Exclusion:
+    properties:
+      id:
+        type: string
+      mcc:
+        maximum: 9999
+        minimum: 0
+        type: integer
+    required:
+    - mcc
+    type: object
+info:
+  contact: {}
+paths:
+  /exclusion:
+    get:
+      description: Get all exclusions
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Exclusion'
+            type: array
+      summary: Get all exclusions
+      tags:
+      - exclusion
+    post:
+      consumes:
+      - application/json
+      description: Create an exclusion
+      parameters:
+      - description: New Exclusion
+        in: body
+        name: exclusion
+        required: true
+        schema:
+          $ref: '#/definitions/models.Exclusion'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Exclusion'
+      summary: Create an exclusion
+      tags:
+      - exclusion
+  /exclusion/{exclusion_id}:
+    delete:
+      description: Delete a exclusion
+      parameters:
+      - description: Exclusion ID
+        in: path
+        name: exclusion_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+      summary: Delete a exclusion
+      tags:
+      - exclusion
+    get:
+      description: Get a single exclusion by its UUID
+      parameters:
+      - description: Exclusion ID
+        in: path
+        name: exclusion_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Exclusion'
+      summary: Get an exclusion
+      tags:
+      - exclusion
+    put:
+      consumes:
+      - application/json
+      description: Update a exclusion
+      parameters:
+      - description: New Exclusion
+        in: body
+        name: exclusion
+        required: true
+        schema:
+          $ref: '#/definitions/models.Exclusion'
+      - description: Exclusion ID
+        in: path
+        name: exclusion_id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Exclusion'
+      summary: Update a exclusion
+      tags:
+      - exclusion
+  /health:
+    get:
+      description: health check
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: health
+swagger: "2.0"
