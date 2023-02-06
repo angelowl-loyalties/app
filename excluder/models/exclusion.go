@@ -2,14 +2,16 @@ package models
 
 import (
 	"errors"
+	"time"
 
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
 
 type Exclusion struct {
-	ID  uuid.UUID `json:"id" gorm:"type:uuid;primaryKey;<-:create"`
-	MCC int       `json:"mcc" binding:"required,gte=0,lte=9999"`
+	ID    uuid.UUID `json:"id" gorm:"type:uuid;primaryKey;<-:create"`
+	MCC   int       `json:"mcc" binding:"required,gte=1,lte=9999"`
+	Start time.Time `json:"start_date" binding:"required,gte"` // should be later than time.Now()
 }
 
 func (exclusion *Exclusion) BeforeCreate(tx *gorm.DB) (err error) {
