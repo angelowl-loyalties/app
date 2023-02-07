@@ -48,6 +48,21 @@ resource "aws_security_group" "angelowl_openvpn" {
     }
 }
 
+resource "aws_security_group" "angelowl_kubeservices" {
+    name        = "angelowl-kubeservices-access"
+    description = "Allows inbound Kubernetes Services traffic"
+    vpc_id      = aws_vpc.angelowl.id
+    
+    ingress {
+        description = "Kubernetes Services"
+        from_port   = 30000
+        to_port     = 32767
+        protocol    = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+}
+
+
 resource "aws_security_group" "angelowl_outbound" {
   name        = "angelowl-outbound-access"
   description = "Allows outbound traffic"
@@ -64,4 +79,9 @@ resource "aws_security_group" "angelowl_outbound" {
 resource "aws_key_pair" "angelowl_vpn" {
   key_name   = "angelowl-vpn-key"
   public_key = file("ssh/vpn.pub")
+}
+
+resource "aws_key_pair" "angelowl_k3s" {
+  key_name   = "angelowl-k3s-key"
+  public_key = file("ssh/k3s.pub")
 }
