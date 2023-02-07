@@ -39,6 +39,11 @@ resource "aws_subnet" "angelowl_private_c" {
 resource "aws_route_table" "angelowl_private_default" {
   vpc_id = aws_vpc.angelowl.id
 
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.angelowl_nat.id
+  }
+
   tags = {
     Name = "angelowl_private_default_rtb"
   }
@@ -105,4 +110,24 @@ resource "aws_route_table_association" "angelowl_public_b" {
 resource "aws_route_table_association" "angelowl_public_c" {
   route_table_id = aws_route_table.angelowl_public_default.id
   subnet_id      = aws_subnet.angelowl_public_c.id
+}
+
+# NAT gateway for internet access
+
+resource "aws_nat_gateway" "angelowl_nat" {
+  allocation_id = aws_eip.angelowl_nat.id
+  subnet_id     = aws_subnet.angelowl_public_a.id
+  private_ip    = "10.10.11.5"
+
+  tags = {
+    Name = "angelowl-natgw"
+  }
+
+  depends_on = [
+    aws_internet_gateway.angelowl
+  ]
+}
+
+resource "aws_eip" "angelowl_nat" {
+  vpc = true
 }
