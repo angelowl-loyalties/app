@@ -18,7 +18,11 @@ import (
 func GetUsers(c *gin.Context) {
 	var users []models.User
 
-	models.DB.Preload("CreditCards").Find(&users)
+	users, err := models.UserGetAll()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{"data": users})
 }
@@ -32,13 +36,16 @@ func GetUsers(c *gin.Context) {
 // @Param user_id path string true "User ID"
 // @Router /user/{user_id} [get]
 func GetUser(c *gin.Context) {
-	var user models.User
-
 	uuid := c.Param("id")
 
-	err := models.DB.Where("id = ?", uuid).Preload("CreditCards").First(&user).Error
+	user, err := models.UserGetById(uuid)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User with UUID: " + uuid + " not found"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if user == nil {
+		c.JSON(http.StatusNotFound, gin.H{"data": user})
 		return
 	}
 
@@ -56,15 +63,12 @@ func GetUser(c *gin.Context) {
 // @Router /user [post]
 func CreateUser(c *gin.Context) {
 	var newUser models.UserInput
-	var user models.User
-
 	if err := c.ShouldBindJSON(&newUser); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	var temp models.User
-	err := models.DB.Where("email = ?", newUser.Email).First(&temp).Error
+	temp, err := models.UserGetByEmail(newUser.Email)
 	if newUser.Email == temp.Email {
 		// check if another user has the same email, if so, error
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User with that email already exists"})
@@ -77,7 +81,7 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
-	user = models.User{
+	user := &models.User{
 		FirstName: newUser.FirstName,
 		LastName:  newUser.LastName,
 		Phone:     newUser.Phone,
@@ -85,9 +89,9 @@ func CreateUser(c *gin.Context) {
 		Password:  hashedPassword,
 		Role:      "user",
 	}
-	result := models.DB.Omit("CreditCards").Create(&user)
-	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+	user, err = models.UserCreate(user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -105,14 +109,16 @@ func CreateUser(c *gin.Context) {
 // @Param user_id path string true "User ID"
 // @Router /user/{user_id} [put]
 func UpdateUser(c *gin.Context) {
-	var user models.User
 	var updatedUser models.UserInput
 
 	uuid := c.Param("id")
-
-	err := models.DB.Where("id = ?", uuid).Preload("CreditCards").First(&user).Error
+	user, err := models.UserGetById(uuid)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User with UUID: " + uuid + " not found"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if user == nil {
+		c.JSON(http.StatusNotFound, gin.H{"data": user})
 		return
 	}
 
@@ -121,8 +127,7 @@ func UpdateUser(c *gin.Context) {
 		return
 	}
 
-	var temp models.User
-	err = models.DB.Where("email = ?", updatedUser.Email).First(&temp).Error
+	temp, err := models.UserGetByEmail(updatedUser.Email)
 	if updatedUser.Email != user.Email && updatedUser.Email == temp.Email {
 		// if provided email is different from current email, user wants to change their email
 		// check if another user has the same email, if so, error
@@ -141,9 +146,9 @@ func UpdateUser(c *gin.Context) {
 	user.Email = updatedUser.Email
 	user.Password = hashedPassword
 
-	result := models.DB.Save(&user)
-	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+	user, err = models.UserSave(user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -159,19 +164,20 @@ func UpdateUser(c *gin.Context) {
 // @Param user_id path string true "User ID"
 // @Router /user/{user_id} [delete]
 func DeleteUser(c *gin.Context) {
-	var user models.User
-
 	uuid := c.Param("id")
-
-	err := models.DB.Where("id = ?", uuid).First(&user).Error
+	user, err := models.UserGetById(uuid)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "User with UUID: " + uuid + " not found"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if user == nil {
+		c.JSON(http.StatusNotFound, gin.H{"data": user})
 		return
 	}
 
-	result := models.DB.Delete(&user)
-	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+	_, err = models.UserDelete(user)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -195,9 +201,12 @@ func LoginUser(c *gin.Context) {
 		return
 	}
 
-	var user models.User
-	result := models.DB.First(&user, "email = ?", strings.ToLower(credentials.Email))
-	if result.Error != nil {
+	user, err := models.UserGetByEmail(strings.ToLower(credentials.Email))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if user != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid Email or Password"})
 		return
 	}

@@ -18,7 +18,11 @@ import (
 func GetCards(c *gin.Context) {
 	var cards []models.Card
 
-	models.DB.Find(&cards)
+	cards, err := models.CardGetAll()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{"data": cards})
 }
@@ -32,13 +36,16 @@ func GetCards(c *gin.Context) {
 // @Param card_id path string true "Card ID"
 // @Router /card/{card_id} [get]
 func GetCard(c *gin.Context) {
-	var card models.Card
-
 	uuid := c.Param("id")
 
-	err := models.DB.Where("id = ?", uuid).First(&card).Error
+	card, err := models.CardGetById(uuid)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Card with UUID: " + uuid + " not found"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if card == nil {
+		c.JSON(http.StatusNotFound, gin.H{"data": card})
 		return
 	}
 
@@ -56,42 +63,51 @@ func GetCard(c *gin.Context) {
 // @Router /card [post]
 func CreateCard(c *gin.Context) {
 	var newCard models.Card
-	var user models.User
-	var cardType models.CardType
 
 	if err := c.ShouldBindJSON(&newCard); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	var temp models.Card
-	err := models.DB.Where("card_pan = ?", newCard.CardPan).First(&temp).Error
-	if err == nil {
+	temp, err := models.CardGetByPan(newCard.CardPan)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if temp != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Card with that PAN already exists"})
 		return
 	}
 
 	userID := newCard.UserID.String()
-	err = models.DB.Where("id = ?", userID).First(&user).Error
+	user, err := models.UserGetById(userID)
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if user != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid User with UUID: " + userID})
 		return
 	}
 
 	reqCardType := newCard.CardTypeCardType
-	err = models.DB.Where("card_type = ?", reqCardType).First(&cardType).Error
+	cardType, err := models.CardTypeGetByType(reqCardType)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Card Type: " + reqCardType + " not found"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if cardType != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Card Type: " + reqCardType})
 		return
 	}
 
-	result := models.DB.Create(&newCard)
-	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+	card, err := models.CardCreate(&newCard)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"data": newCard})
+	c.JSON(http.StatusCreated, gin.H{"data": card})
 }
 
 // DeleteCard - DELETE /card/:id
@@ -103,19 +119,21 @@ func CreateCard(c *gin.Context) {
 // @Param card_id path string true "Card ID"
 // @Router /card/{card_id} [delete]
 func DeleteCard(c *gin.Context) {
-	var card models.Card
-
 	uuid := c.Param("id")
 
-	err := models.DB.Where("id = ?", uuid).First(&card).Error
+	card, err := models.CardGetById(uuid)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Card with UUID: " + uuid + " not found"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	if card == nil {
+		c.JSON(http.StatusNotFound, gin.H{"data": card})
 		return
 	}
 
-	result := models.DB.Delete(&card)
-	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+	_, err = models.CardDelete(card)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

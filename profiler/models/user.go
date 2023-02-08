@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"time"
@@ -37,4 +38,48 @@ type SignIn struct {
 func (user *User) BeforeCreate(tx *gorm.DB) (err error) {
 	user.ID = uuid.New()
 	return
+}
+
+func UserGetAll() (users []User, err error) {
+	err = DB.Find(&users).Error
+
+	return users, err
+}
+
+func UserGetById(uuid string) (user *User, err error) {
+	err = DB.Where("id = ?", uuid).Preload("CreditCards").First(&user).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return user, err
+}
+
+func UserGetByEmail(email string) (user *User, err error) {
+	err = DB.Where("email = ?", email).First(&user).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return user, err
+}
+
+func UserCreate(user *User) (_ *User, err error) {
+	err = DB.Omit("CreditCards").Create(&user).Error
+
+	return user, err
+}
+
+func UserSave(updatedUser *User) (_ *User, err error) {
+	err = DB.Save(&updatedUser).Error
+
+	return updatedUser, err
+}
+
+func UserDelete(user *User) (_ *User, err error) {
+	err = DB.Delete(&user).Error
+
+	return user, err
 }

@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 )
@@ -17,4 +18,38 @@ type CardType struct {
 func (cardType *CardType) BeforeCreate(tx *gorm.DB) (err error) {
 	cardType.ID = uuid.New()
 	return
+}
+
+func CardTypeGetAll() (cardTypes []CardType, err error) {
+	err = DB.Preload("Cards").Find(&cardTypes).Error
+
+	return cardTypes, err
+}
+
+func CardTypeGetByType(cardType string) (cardTypeResult *CardType, err error) {
+	err = DB.Where("card_type = ?", cardType).Preload("Cards").First(&cardTypeResult).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
+	return cardTypeResult, err
+}
+
+func CardTypeCreate(cardType *CardType) (_ *CardType, err error) {
+	err = DB.Create(&cardType).Error
+
+	return cardType, err
+}
+
+func CardTypeSave(updatedCardType *CardType) (_ *CardType, err error) {
+	err = DB.Save(&updatedCardType).Error
+
+	return updatedCardType, err
+}
+
+func CardTypeDelete(cardType *CardType) (_ *CardType, err error) {
+	err = DB.Delete(&cardType).Error
+
+	return cardType, err
 }
