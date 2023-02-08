@@ -1,9 +1,10 @@
 package internal
 
 import (
+	"net/http"
+
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaigner/models"
 	"github.com/gin-gonic/gin"
-	"net/http"
 	// "io/ioutil"
 )
 
@@ -15,9 +16,12 @@ import (
 // @Success 200 {array} models.Campaign
 // @Router /campaign [get]
 func GetCampaigns(c *gin.Context) {
-	var campaigns []models.Campaign
+	campaigns, err := models.CampaignGetAll()
 
-	models.DB.Find(&campaigns)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	c.JSON(http.StatusOK, gin.H{"data": campaigns})
 }
@@ -31,13 +35,17 @@ func GetCampaigns(c *gin.Context) {
 // @Param campaign_id path string true "Campaign ID"
 // @Router /campaign/{campaign_id} [get]
 func GetCampaignById(c *gin.Context) {
-	var campaign models.Campaign
-
 	uuid := c.Param("id")
 
-	err := models.DB.Where("id = ?", uuid).First(&campaign).Error
+	campaign, err := models.CampaignGetById(uuid)
+
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Campaign with UUID: " + uuid + " not found"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	if campaign == nil {
+		c.JSON(http.StatusNotFound, gin.H{"data": campaign})
 		return
 	}
 
@@ -61,13 +69,14 @@ func CreateCampaign(c *gin.Context) {
 		return
 	}
 
-	result := models.DB.Create(&newCampaign)
-	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+	campaign, err := models.CampaignCreate(&newCampaign)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"data": newCampaign})
+	c.JSON(http.StatusCreated, gin.H{"data": campaign})
 }
 
 // UpdateCampaign - PUT /campaign/:id
@@ -81,14 +90,21 @@ func CreateCampaign(c *gin.Context) {
 // @Param campaign_id path string true "Campaign ID"
 // @Router /campaign/{campaign_id} [put]
 func UpdateCampaign(c *gin.Context) {
-	var campaign models.Campaign
 	var updatedCampaign models.Campaign
 
 	uuid := c.Param("id")
 
-	err := models.DB.Where("id = ?", uuid).First(&campaign).Error
+	campaign, err := models.CampaignGetById(uuid)
+
+	// Error in DB during CampaignGetById
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Campaign with UUID: " + uuid + " not found"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Not found
+	if campaign == nil {
+		c.JSON(http.StatusNotFound, gin.H{"data": campaign})
 		return
 	}
 
@@ -106,9 +122,10 @@ func UpdateCampaign(c *gin.Context) {
 	campaign.MCC = updatedCampaign.MCC
 	campaign.Merchant = updatedCampaign.Merchant
 
-	result := models.DB.Save(&campaign)
-	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+	campaign, err = models.CampaignSave(campaign)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -124,19 +141,26 @@ func UpdateCampaign(c *gin.Context) {
 // @Param campaign_id path string true "Campaign ID"
 // @Router /campaign/{campaign_id} [delete]
 func DeleteCampaign(c *gin.Context) {
-	var campaign models.Campaign
-
 	uuid := c.Param("id")
 
-	err := models.DB.Where("id = ?", uuid).First(&campaign).Error
+	campaign, err := models.CampaignGetById(uuid)
+
+	// Error in DB during CampaignGetById
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Campaign with UUID: " + uuid + " not found"})
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	result := models.DB.Delete(&campaign)
-	if result.Error != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": result.Error.Error()})
+	// Not found
+	if campaign == nil {
+		c.JSON(http.StatusNotFound, gin.H{"data": campaign})
+		return
+	}
+
+	_, err = models.CampaignDelete(campaign)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
