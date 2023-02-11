@@ -37,18 +37,8 @@ func RewardGetAll() (rewards []Reward, _ error) {
 	var remarks string
 	var rewardAmount float64
 
-	// temp hard code to work with docker until gocql bug is fixed
-	cluster := gocql.NewCluster("cassandra_db")
-	cluster.Keyspace = "transactions"
+	scanner := DB.Query("SELECT * FROM transactions.rewards").Iter().Scanner()
 
-	session, err := cluster.CreateSession()
-	if err != nil {
-		log.Fatalln(err)
-		return nil, err
-	}
-	// end
-
-	scanner := session.Query("SELECT * FROM transactions.rewards").Iter().Scanner()
 	for scanner.Next() {
 		err := scanner.Scan(&id, &amount, &cardId, &cardPan, &cardType, &currency, &mcc,
 			&merchant, &remarks, &rewardAmount, &sgdAmount, &tranDate, &tranId)

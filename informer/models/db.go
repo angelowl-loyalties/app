@@ -6,7 +6,7 @@ import (
 	"github.com/gocql/gocql"
 )
 
-//var DB *gocql.Session
+var DB *gocql.Session
 
 func InitDB(dbConnString string, keyspace string, table string) {
 	cluster := gocql.NewCluster(dbConnString)
@@ -14,7 +14,7 @@ func InitDB(dbConnString string, keyspace string, table string) {
 	if err != nil {
 		log.Fatalln(err)
 	}
-	//defer session.Close()
+	defer session.Close()
 
 	err = session.Query("CREATE KEYSPACE IF NOT EXISTS " + keyspace +
 		" WITH REPLICATION = {'class' : 'SimpleStrategy', 'replication_factor' : 1};").Exec()
@@ -53,8 +53,7 @@ func ConnectDB(dbConnString string, keyspace string) {
 		log.Fatalln(err)
 	}
 
-	defer session.Close()
 	log.Println("Connected to Rewards DB")
 
-	//DB = session
+	DB = session
 }
