@@ -7,8 +7,8 @@ import (
 )
 
 type Config struct {
-	Port   string `mapstructure:"PORT"`
 	Broker string `mapstructure:"BROKER_HOST"`
+	Topic  string `mapstructure:"TOPIC"`
 }
 
 func LoadConfig() (config Config, err error) {
@@ -23,8 +23,8 @@ func LoadConfig() (config Config, err error) {
 	if err != nil {
 		fmt.Println(err)
 		// production use
-		_ = viper.BindEnv("PORT")
 		_ = viper.BindEnv("BROKER_HOST")
+		_ = viper.BindEnv("TOPIC")
 		err = viper.Unmarshal(&config)
 		return
 	}

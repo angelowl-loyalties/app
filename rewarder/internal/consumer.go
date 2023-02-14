@@ -27,8 +27,8 @@ var (
 	verbose  = false
 )
 
-func SaramaConsume() {
-	flag.StringVar(&brokers, "brokers", "angelowlmsk.aznt6t.c3.kafka.ap-southeast-1.amazonaws.com:9092", "Kafka bootstrap brokers to connect to, as a comma separated list")
+func SaramaConsume(broker string, topic string) {
+	flag.StringVar(&brokers, "brokers", broker, "Kafka bootstrap brokers to connect to, as a comma separated list")
 	flag.StringVar(&group, "group", "reward", "Kafka consumer group definition")
 	flag.StringVar(&version, "version", "2.1.1", "Kafka cluster version")
 	flag.StringVar(&topics, "topics", "transaction7", "Kafka topics to be consumed, as a comma separated list")
@@ -170,6 +170,7 @@ func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, clai
 	for {
 		select {
 		case message := <-claim.Messages():
+			// Code of what needs to be done when you receive the message
 			session.MarkMessage(message, "")
 			// log.Printf("Message claimed: value = %s, timestamp = %v, topic = %s", string(message.Value), message.Timestamp, message.Topic)
 
