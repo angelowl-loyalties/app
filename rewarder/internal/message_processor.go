@@ -1,41 +1,89 @@
 package internal
 
 import (
-	"fmt"
+	"encoding/json"
 	"time"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
+	"github.com/gocql/gocql"
 )
 
-func ProcessMessage(transaction models.Transaction) {
-	campaigns := models.Seed_campaigns
-	exclusions := models.Seed_exclusions
-	//TODO: Consume from etcd and MQ
-	// var campaigns []models.Campaign
-	// var exclusions []models.Exclusion
-	layout := "02-01-06"
+const (
+	layout = "02-01-06"
+)
+
+func ProcessMesageJSON(messageJSON string) error {
+	var transaction models.Transaction
+
+	json.Unmarshal([]byte(messageJSON), &transaction) // Convert JSON message to transaction object
+
+	return ProcessMessage(transaction)
+}
+
+func ProcessMessage(transaction models.Transaction) error {
 	transactionDate, _ := time.Parse(layout, transaction.TransactionDate)
 	if isExcluded(transactionDate, transaction.MCC) {
-		delta := 0
-		remark := "Campaigns don't apply"
+		// Delta and remarks for the exclusion case
+		var delta float64 = 0
+		var remarks string = "Campaigns don't apply"
+		reward := models.Reward{
+			ID:              gocql.UUID(transaction.ID),
+			CardID:          gocql.UUID(transaction.CardID),
+			Merchant:        transaction.Merchant,
+			MCC:             transaction.MCC,
+			Currency:        transaction.Currency,
+			Amount:          transaction.Amount,
+			SGDAmount:       transaction.SGDAmount,
+			TransactionID:   transaction.TransactionID,
+			TransactionDate: transaction.TransactionDate,
+			CardPAN:         transaction.CardPAN,
+			CardType:        transaction.CardType,
+			RewardAmount:    delta,
+			Remarks:         remarks,
+		}
+		err := models.RewardCreate(reward)
 
-		// TODO: The function below adds a reward object to cassandra
-		fmt.Println(delta, remark)
+		if err != nil {
+			return err
+		}
 	} else {
 		campaign := getMatchingCampaign(transaction.CardType)
 		// Should not be since we will have base campaign, can consider throwing error(?)
 		if campaign == nil {
-			return
+			return nil // Reconsider what to return here
 		}
-		fmt.Println(campaign.RewardAmount)
+
 		delta := calculateDeltaType(campaign.RewardAmount, transaction.Amount)
-		fmt.Println(delta)
+		remarks := "" // TODO: Map campaigns to appropriate remarks
+
+		reward := models.Reward{
+			ID:              gocql.UUID(transaction.ID),
+			CardID:          gocql.UUID(transaction.CardID),
+			Merchant:        transaction.Merchant,
+			MCC:             transaction.MCC,
+			Currency:        transaction.Currency,
+			Amount:          transaction.Amount,
+			SGDAmount:       transaction.SGDAmount,
+			TransactionID:   transaction.TransactionID,
+			TransactionDate: transaction.TransactionDate,
+			CardPAN:         transaction.CardPAN,
+			CardType:        transaction.CardType,
+			RewardAmount:    delta,
+			Remarks:         remarks,
+		}
+		err := models.RewardCreate(reward)
+
+		if err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
 func isExcluded(transactionDate time.Time, mcc int) bool {
 	//TODO: View exclusions in etcd
 	exclusions := models.Seed_exclusions
+
 	//change to txn date
 	today := time.Now()
 	for _, ex := range exclusions {
@@ -49,6 +97,7 @@ func isExcluded(transactionDate time.Time, mcc int) bool {
 func getMatchingCampaign(cardType string) (campaign *models.Campaign) {
 	//TODO: View campaigns in etcd
 	campaigns := models.Seed_campaigns
+
 	//Change today to transaction date
 	today := time.Now()
 	for _, campaign := range campaigns {
