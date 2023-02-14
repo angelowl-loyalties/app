@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"github.com/gocql/gocql"
 	"log"
 )
@@ -23,19 +22,10 @@ type Reward struct {
 }
 
 func RewardGetAll() (rewards []Reward, _ error) {
-	var id gocql.UUID
-	var cardId gocql.UUID
-	var merchant string
+	var id, cardId gocql.UUID
+	var merchant, currency, tranId, tranDate, cardPan, cardType, remarks string
 	var mcc int
-	var currency string
-	var amount float64
-	var sgdAmount float64
-	var tranId string
-	var tranDate string
-	var cardPan string
-	var cardType string
-	var remarks string
-	var rewardAmount float64
+	var amount, sgdAmount, rewardAmount float64
 
 	scanner := DB.Query("SELECT * FROM transactions.rewards").Iter().Scanner()
 
@@ -46,7 +36,45 @@ func RewardGetAll() (rewards []Reward, _ error) {
 			log.Fatalln(err)
 			return nil, err
 		}
-		fmt.Println(id)
+
+		rewards = append(rewards, Reward{
+			ID:              id,
+			CardID:          cardId,
+			Merchant:        merchant,
+			MCC:             mcc,
+			Currency:        currency,
+			Amount:          amount,
+			SGDAmount:       sgdAmount,
+			TransactionID:   tranId,
+			TransactionDate: tranDate,
+			CardPAN:         cardPan,
+			CardType:        cardType,
+			RewardAmount:    rewardAmount,
+			Remarks:         remarks,
+		})
+	}
+
+	return rewards, nil
+}
+
+func RewardGetByCardID(reqCardId string) (rewards []Reward, _ error) {
+	var id, cardId gocql.UUID
+	var merchant, currency, tranId, tranDate, cardPan, cardType, remarks string
+	var mcc int
+	var amount, sgdAmount, rewardAmount float64
+
+	query := DB.Query("SELECT * FROM transactions.rewards WHERE card_id = " + reqCardId)
+	log.Println(query.String())
+	scanner := query.Iter().Scanner()
+
+	for scanner.Next() {
+		err := scanner.Scan(&id, &amount, &cardId, &cardPan, &cardType, &currency, &mcc,
+			&merchant, &remarks, &rewardAmount, &sgdAmount, &tranDate, &tranId)
+		if err != nil {
+			log.Fatalln(err)
+			return nil, err
+		}
+
 		rewards = append(rewards, Reward{
 			ID:              id,
 			CardID:          cardId,

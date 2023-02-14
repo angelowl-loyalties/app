@@ -22,5 +22,6 @@ func InitialiseRoutes(router *gin.Engine) {
 	transaction := router.Group("/reward")
 	{
 		transaction.GET("/", internal.GetRewards)
+		transaction.GET("/:cardId", internal.GetRewardsByCardID)
 	}
 }
