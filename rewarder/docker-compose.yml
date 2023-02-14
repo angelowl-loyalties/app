@@ -10,7 +10,9 @@ services:
       - "9042:9042"
 
   rewarder-service:
-    build: .
+    build: 
+      context: .
+      dockerfile: Dockerfile.prod
     image: rewarder
     depends_on:
       - cassandra
