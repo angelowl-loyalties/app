@@ -7,8 +7,11 @@ import (
 )
 
 type Config struct {
-	Broker string `mapstructure:"BROKER_HOST"`
-	Topic  string `mapstructure:"TOPIC"`
+	DBConnString string `mapstructure:"DB_CONN_STRING"`
+	DBKeyspace   string `mapstructure:"DB_KEYSPACE"`
+	DBTable      string `mapstructure:"DB_TABLE"`
+	Broker       string `mapstructure:"BROKER_HOST"`
+	Topic        string `mapstructure:"TOPIC"`
 }
 
 func LoadConfig() (config Config, err error) {
@@ -23,8 +26,12 @@ func LoadConfig() (config Config, err error) {
 	if err != nil {
 		fmt.Println(err)
 		// production use
+		_ = viper.BindEnv("DB_CONN_STRING")
+		_ = viper.BindEnv("DB_KEYSPACE")
+		_ = viper.BindEnv("DB_TABLE")
 		_ = viper.BindEnv("BROKER_HOST")
 		_ = viper.BindEnv("TOPIC")
+
 		err = viper.Unmarshal(&config)
 		return
 	}

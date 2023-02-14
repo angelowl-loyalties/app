@@ -15,6 +15,14 @@ func main() {
 		log.Fatalln("Failed at config", err)
 	}
 
+	dbConnString := c.DBConnString
+	dbKeyspace := c.DBKeyspace
+	dbTable := c.DBTable
+	// dbUser := c.DBUser
+	// dbPass := c.DBPass
+	models.InitDB(dbConnString, dbKeyspace, dbTable)
+	models.ConnectDB(dbConnString, dbKeyspace)
+
 	// Broker address and topic
 	kafkaBroker := c.Broker
 	consumeFromTopic := c.Topic
