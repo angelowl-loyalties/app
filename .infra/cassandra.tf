@@ -21,12 +21,12 @@ resource "aws_vpc_endpoint" "keyspaces" {
   }
 }
 
-resource "aws_keyspaces_table" "transactions" {
-  table_name    = "transactions"
+resource "aws_keyspaces_table" "rewards" {
+  table_name    = "rewards"
   keyspace_name = aws_keyspaces_keyspace.angelowl.name
 
   comment {
-    message = "Transactions table"
+    message = "Table for rewards issued."
   }
 
   capacity_specification {
@@ -118,22 +118,24 @@ resource "aws_keyspaces_table" "transactions" {
   }
 }
 
+# CREATE TABLE angelowl.rewards (
+#     card_id uuid,
+#     transaction_date date,
+#     amount double,
+#     currency ascii,
+#     id uuid,
+#     mcc int,
+#     merchant ascii,
+#     remarks text,
+#     reward_amount double,
+#     sgd_amount double,
+#     transaction_id ascii,
+#     card_pan ascii static,
+#     card_type ascii static,
+#     PRIMARY KEY (card_id, transaction_date)
+# ) WITH CLUSTERING ORDER BY (transaction_date DESC)
+
 output "keyspaces_endpoint_dns" {
   value = aws_vpc_endpoint.keyspaces.dns_entry
 }
 
-# (
-#     id               uuid primary key,
-#     amount           double,
-#     card_id          uuid,
-#     card_pan         text,
-#     card_type        text,
-#     currency         text,
-#     mcc              int,
-#     merchant         text,
-#     remarks          text,
-#     reward_amount    double,
-#     sgd_amount       double,
-#     transaction_date date,
-#     transaction_id   text
-# );
