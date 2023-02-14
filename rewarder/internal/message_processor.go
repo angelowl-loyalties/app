@@ -18,12 +18,12 @@ func ProcessMessage(transaction models.Transaction) {
 	if isExcluded(transactionDate, transaction.MCC) {
 		delta := 0
 		remark := "Campaigns don't apply"
-		
+
 		// TODO: The function below adds a reward object to cassandra
 		fmt.Println(delta, remark)
 	} else {
 		campaign := getMatchingCampaign(transaction.CardType)
-		//Should not be since we will have base campaign, can consider throwing error(?)
+		// Should not be since we will have base campaign, can consider throwing error(?)
 		if campaign == nil {
 			return
 		}
