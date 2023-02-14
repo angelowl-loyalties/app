@@ -1,6 +1,9 @@
 package main
 
 import (
+	"log"
+
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/config"
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/internal"
 )
 
@@ -20,6 +23,5 @@ func main() {
 	kafkaBroker := c.Broker
 	consumeFromTopic := c.Topic
 
-	// internal.Consume(ctx, c.Broker)
-	internal.SaramaConsume()
+	internal.SaramaConsume(kafkaBroker, consumeFromTopic)
 }
