@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"log"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/config"
@@ -26,10 +25,6 @@ func main() {
 	// Broker address and topic
 	kafkaBroker := c.Broker
 	consumeFromTopic := c.Topic
-
-	var transaction = models.Seed_transaction
-	fmt.Println(transaction)
-	internal.ProcessMessage(transaction)
 
 	internal.SaramaConsume(kafkaBroker, consumeFromTopic)
 }
