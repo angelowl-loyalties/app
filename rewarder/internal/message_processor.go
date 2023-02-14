@@ -8,19 +8,16 @@ import (
 )
 
 func ProcessMessage(transaction models.Transaction) {
-	//TODO: Consume from etcd and MQ
-	campaigns := models.Seed_campaigns
-	exclusions := models.Seed_exclusions
-	// var campaigns []models.Campaign
-	// var exclusions []models.Exclusion
 	layout := "02-01-06"
 	transactionDate, _ := time.Parse(layout, transaction.TransactionDate)
-	if isExcluded(transactionDate, transaction.MCC, exclusions) {
+	if isExcluded(transactionDate, transaction.MCC) {
 		delta := 0
 		remark := "Campaigns don't apply"
+		
+		// TODO: The function below adds a reward object to cassandra
 		fmt.Println(delta, remark)
 	} else {
-		campaign := getMatchingCampaign(transaction.CardType, campaigns)
+		campaign := getMatchingCampaign(transaction.CardType)
 		//Should not be since we will have base campaign, can consider throwing error(?)
 		if campaign == nil {
 			return
@@ -31,8 +28,10 @@ func ProcessMessage(transaction models.Transaction) {
 	}
 }
 
-func isExcluded(transactionDate time.Time, mcc int, exclusions []models.Exclusion) bool {
-	//chang eto txn date
+func isExcluded(transactionDate time.Time, mcc int) bool {
+	//TODO: View exclusions in etcd
+	exclusions := models.Seed_exclusions
+	//change to txn date
 	today := time.Now()
 	for _, ex := range exclusions {
 		if ex.MCC == mcc && ex.ValidFrom.Before(today) {
@@ -42,7 +41,9 @@ func isExcluded(transactionDate time.Time, mcc int, exclusions []models.Exclusio
 	return false
 }
 
-func getMatchingCampaign(cardType string, campaigns []models.Campaign) (campaign *models.Campaign) {
+func getMatchingCampaign(cardType string) (campaign *models.Campaign) {
+	//TODO: View campaigns in etcd
+	campaigns := models.Seed_campaigns
 	//Change today to transaction date
 	today := time.Now()
 	for _, campaign := range campaigns {
