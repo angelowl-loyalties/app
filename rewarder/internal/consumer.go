@@ -172,6 +172,7 @@ func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, clai
 		case message := <-claim.Messages():
 			// Code of what needs to be done when you receive the message
 			session.MarkMessage(message, "")
+			ProcessMesageJSON(string(message.Value)) // Process raw json string
 			// log.Printf("Message claimed: value = %s, timestamp = %v, topic = %s", string(message.Value), message.Timestamp, message.Topic)
 
 		case <-session.Context().Done():
