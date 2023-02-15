@@ -1,11 +1,14 @@
 package internal
 
 import (
+	"context"
 	"encoding/json"
+	"log"
 	"time"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
 	"github.com/gocql/gocql"
+	clientv3 "go.etcd.io/etcd/client/v3"
 )
 
 const (
@@ -81,10 +84,34 @@ func ProcessMessage(transaction models.Transaction) error {
 }
 
 func isExcluded(transactionDate time.Time, mcc int) bool {
-	//TODO: View exclusions in etcd
-	exclusions := models.Seed_exclusions
+	var exclusions []models.Exclusion
 
-	//change to txn date
+	cli, err := clientv3.New(clientv3.Config{
+		Endpoints:   []string{"http://etcd:2379"},
+		DialTimeout: 2 * time.Second,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer cli.Close()
+
+	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	defer cancel()
+
+	// retrieve all exclusion raw JSON Strings with prefix exclusion
+	resp, err := cli.Get(ctx, "exclusion", clientv3.WithPrefix())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	// Iterate over exclusions etcd returned and read raw json
+	for _, ev := range resp.Kvs {
+		// fmt.Printf("%s : %s\n", ev.Key, ev.Value)
+		var exclusion models.Exclusion
+		json.Unmarshal([]byte(ev.Value), &exclusion)
+		exclusions = append(exclusions, exclusion)
+	}
+
 	today := time.Now()
 	for _, ex := range exclusions {
 		if ex.MCC == mcc && ex.ValidFrom.Before(today) {
