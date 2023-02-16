@@ -5,11 +5,14 @@ import (
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/config"
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/internal"
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
 )
 
 func main() {
-	// create a new context
-	// ctx := context.Background()
+	c, err := config.LoadConfig()
+	if err != nil {
+		log.Fatalln("Failed at config", err)
+	}
 
 	dbConnString := c.DBConnString
 	dbKeyspace := c.DBKeyspace
