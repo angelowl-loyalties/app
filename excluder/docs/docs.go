@@ -99,7 +99,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Update a exclusion",
+                "description": "Update an exclusion",
                 "consumes": [
                     "application/json"
                 ],
@@ -109,7 +109,7 @@ const docTemplate = `{
                 "tags": [
                     "exclusion"
                 ],
-                "summary": "Update a exclusion",
+                "summary": "Update an exclusion",
                 "parameters": [
                     {
                         "description": "New Exclusion",
@@ -138,14 +138,14 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "Delete a exclusion",
+                "description": "Delete an exclusion",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "exclusion"
                 ],
-                "summary": "Delete a exclusion",
+                "summary": "Delete an exclusion",
                 "parameters": [
                     {
                         "type": "string",
@@ -184,7 +184,8 @@ const docTemplate = `{
         "models.Exclusion": {
             "type": "object",
             "required": [
-                "mcc"
+                "mcc",
+                "valid_from"
             ],
             "properties": {
                 "id": {
@@ -193,7 +194,11 @@ const docTemplate = `{
                 "mcc": {
                     "type": "integer",
                     "maximum": 9999,
-                    "minimum": 0
+                    "minimum": 1
+                },
+                "valid_from": {
+                    "description": "should be later than time.Now()",
+                    "type": "string"
                 }
             }
         }
