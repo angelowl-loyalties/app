@@ -50,8 +50,8 @@
                     }
                 ],
                 "responses": {
-                    "200": {
-                        "description": "OK",
+                    "201": {
+                        "description": "Created",
                         "schema": {
                             "$ref": "#/definitions/models.Campaign"
                         }
@@ -192,7 +192,7 @@
                 "mcc": {
                     "type": "integer",
                     "maximum": 9999,
-                    "minimum": 0
+                    "minimum": 1
                 },
                 "merchant": {
                     "type": "string",

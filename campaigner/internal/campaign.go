@@ -70,8 +70,15 @@ func CreateCampaign(c *gin.Context) {
 	}
 
 	campaign, err := models.CampaignCreate(&newCampaign)
-
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = etcdPutCampaign(campaign) // put into etcd
+	if err != nil {
+		// roll back persist to DB if put to etcd fails
+		_, _ = models.CampaignDelete(campaign)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -113,6 +120,7 @@ func UpdateCampaign(c *gin.Context) {
 		return
 	}
 
+	originalCampaign := campaign
 	campaign.Name = updatedCampaign.Name
 	campaign.MinSpend = updatedCampaign.MinSpend
 	campaign.Start = updatedCampaign.Start
@@ -122,9 +130,17 @@ func UpdateCampaign(c *gin.Context) {
 	campaign.MCC = updatedCampaign.MCC
 	campaign.Merchant = updatedCampaign.Merchant
 
-	campaign, err = models.CampaignSave(campaign)
-
+	// put into etcd, nothing to roll back if failure
+	err = etcdPutCampaign(campaign)
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	campaign, err = models.CampaignSave(campaign)
+	if err != nil {
+		// since persist to DB fails, we roll back update to etcd
+		_ = etcdPutCampaign(originalCampaign)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -157,9 +173,16 @@ func DeleteCampaign(c *gin.Context) {
 		return
 	}
 
-	_, err = models.CampaignDelete(campaign)
-
+	_, err = etcdDeleteCampaign(campaign.ID.String()) // delete from etcd
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	_, err = models.CampaignDelete(campaign)
+	if err != nil {
+		// since deletion fails, we need to restore etcd copy of campaign
+		_ = etcdPutCampaign(campaign)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

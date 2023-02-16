@@ -6,8 +6,9 @@ import (
 )
 
 type Config struct {
-	Port         string `mapstructure:"PORT"`
-	DBConnString string `mapstructure:"DB_CONN_STRING"`
+	Port          string `mapstructure:"PORT"`
+	DBConnString  string `mapstructure:"DB_CONN_STRING"`
+	EtcdEndpoints string `mapstructure:"ETCD_ENDPOINTS"`
 }
 
 func LoadConfig() (config Config, err error) {
@@ -24,6 +25,7 @@ func LoadConfig() (config Config, err error) {
 		// production use
 		_ = viper.BindEnv("PORT")
 		_ = viper.BindEnv("DB_CONN_STRING")
+		_ = viper.BindEnv("ETCD_ENDPOINTS")
 		err = viper.Unmarshal(&config)
 		return
 	}
