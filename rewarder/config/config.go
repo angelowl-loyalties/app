@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	"go.etcd.io/etcd/clientv3"
+	"go.etcd.io/etcd/client/v3"
 
 	"github.com/spf13/viper"
 )
@@ -37,8 +37,8 @@ func LoadConfig() (config Config, err error) {
 
 	ctx := context.Background()
 
-	exclusionsWatchCh := cli.Watch(ctx, "exclusions", clientv3.WithPrefix())
-	campaignsWatchCh := cli.Watch(ctx, "campaigns", clientv3.WithPrefix())
+	exclusionsWatchCh := cli.Watch(ctx, "exclusion", clientv3.WithPrefix())
+	campaignsWatchCh := cli.Watch(ctx, "campaign", clientv3.WithPrefix())
 
 	go handleWatchEvents(exclusionsWatchCh)
 	go handleWatchEvents(campaignsWatchCh)

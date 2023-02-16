@@ -6,15 +6,12 @@ require (
 	github.com/Shopify/sarama v1.38.1
 	github.com/gocql/gocql v1.3.1
 	github.com/google/uuid v1.3.0
-	go.etcd.io/etcd/client/v3 v3.5.6
+	go.etcd.io/etcd/client/v3 v3.5.7
 )
 
 require (
-	github.com/coreos/etcd v3.3.27+incompatible // indirect
 	github.com/coreos/go-semver v0.3.0 // indirect
-	github.com/coreos/go-systemd v0.0.0-20191104093116-d3cd4ed1dbcf // indirect
 	github.com/coreos/go-systemd/v22 v22.3.2 // indirect
-	github.com/coreos/pkg v0.0.0-20230209195159-6f3db454fdf8 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/eapache/go-resiliency v1.3.0 // indirect
 	github.com/eapache/go-xerial-snappy v0.0.0-20230111030713-bf00bc1b83b6 // indirect
@@ -43,8 +40,8 @@ require (
 	github.com/spf13/jwalterweatherman v1.1.0 // indirect
 	github.com/spf13/pflag v1.0.5 // indirect
 	github.com/subosito/gotenv v1.4.2 // indirect
-	go.etcd.io/etcd/api/v3 v3.5.6 // indirect
-	go.etcd.io/etcd/client/pkg/v3 v3.5.6 // indirect
+	go.etcd.io/etcd/api/v3 v3.5.7 // indirect
+	go.etcd.io/etcd/client/pkg/v3 v3.5.7 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.8.0 // indirect
 	go.uber.org/zap v1.21.0 // indirect
@@ -64,5 +61,4 @@ require (
 	github.com/klauspost/compress v1.15.14 // indirect
 	github.com/pierrec/lz4/v4 v4.1.17 // indirect
 	github.com/spf13/viper v1.15.0
-	go.etcd.io/etcd v3.3.27+incompatible
 )
