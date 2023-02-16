@@ -1,14 +1,13 @@
 package internal
 
 import (
-	"context"
 	"encoding/json"
-	"log"
+	"strings"
 	"time"
 
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/config"
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
 	"github.com/gocql/gocql"
-	clientv3 "go.etcd.io/etcd/client/v3"
 )
 
 const (
@@ -86,30 +85,12 @@ func ProcessMessage(transaction models.Transaction) error {
 func isExcluded(transactionDate time.Time, mcc int) bool {
 	var exclusions []models.Exclusion
 
-	cli, err := clientv3.New(clientv3.Config{
-		Endpoints:   []string{"http://etcd:2379"},
-		DialTimeout: 2 * time.Second,
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer cli.Close()
-
-	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
-	defer cancel()
-
-	// retrieve all exclusion raw JSON Strings with prefix exclusion
-	resp, err := cli.Get(ctx, "exclusion", clientv3.WithPrefix())
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	// Iterate over exclusions etcd returned and read raw json
-	for _, ev := range resp.Kvs {
-		// fmt.Printf("%s : %s\n", ev.Key, ev.Value)
-		var exclusion models.Exclusion
-		json.Unmarshal([]byte(ev.Value), &exclusion)
-		exclusions = append(exclusions, exclusion)
+	for k, v := range config.ExclusionsEtcd {
+		if strings.HasPrefix(k, "exclusion") {
+			var exclusion models.Exclusion
+			json.Unmarshal([]byte(v), &exclusion)
+			exclusions = append(exclusions, exclusion)
+		}
 	}
 
 	today := time.Now()
@@ -122,8 +103,15 @@ func isExcluded(transactionDate time.Time, mcc int) bool {
 }
 
 func getMatchingCampaign(cardType string) (campaign *models.Campaign) {
-	//TODO: View campaigns in etcd
-	campaigns := models.Seed_campaigns
+	var campaigns []models.Campaign
+
+	for k, v := range config.CampaignsEtcd {
+		if strings.HasPrefix(k, "campaign") {
+			var campaign models.Campaign
+			json.Unmarshal([]byte(v), &campaign)
+			campaigns = append(campaigns, campaign)
+		}
+	}
 
 	//Change today to transaction date
 	today := time.Now()
