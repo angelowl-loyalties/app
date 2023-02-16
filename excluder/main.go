@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/excluder/internal"
 	"log"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/excluder/config"
@@ -24,15 +25,19 @@ func main() {
 		log.Fatalln("Failed at config", err)
 	}
 
+	// setup DB connection
 	dbConnString := c.DBConnString
 	models.ConnectDB(dbConnString)
 
-	port := c.Port
+	// setup etcd connection
+	etcdEndpoints := c.EtcdEndpoints
+	internal.InitClient(etcdEndpoints)
 
+	// setup routes
 	router = gin.Default()
-
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	routes.InitialiseRoutes(router)
 
+	port := c.Port
 	router.Run(":" + port)
 }

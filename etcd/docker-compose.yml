@@ -22,7 +22,7 @@ services:
       - "--initial-cluster-state=new"
       - *flag_initial_cluster_token
     ports:
-      - "4001:2379"
+      - "2379:2379"
     volumes:
       - etcd1:/etcd_data
 
@@ -40,7 +40,7 @@ services:
       - "--initial-cluster-state=new"
       - *flag_initial_cluster_token
     ports:
-      - "4002:2379"
+      - "22379:2379"
     volumes:
       - etcd2:/etcd_data
 
@@ -58,7 +58,7 @@ services:
       - "--initial-cluster-state=new"
       - *flag_initial_cluster_token
     ports:
-      - "4003:2379"
+      - "32379:2379"
     volumes:
       - etcd3:/etcd_data
 
