@@ -28,6 +28,8 @@ func InitClient(endpointsString string) {
 
 	if err != nil {
 		log.Fatalln(err)
+	} else {
+		log.Println("Connected to: " + endpointsString)
 	}
 }
 
