@@ -2,10 +2,8 @@ package internal
 
 import (
 	"encoding/json"
-	"strings"
 	"time"
 
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/config"
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
 	"github.com/gocql/gocql"
 )
@@ -14,7 +12,7 @@ const (
 	layout = "02-01-06"
 )
 
-func ProcessMesageJSON(messageJSON string) error {
+func ProcessMessageJSON(messageJSON string) error {
 	var transaction models.Transaction
 
 	json.Unmarshal([]byte(messageJSON), &transaction) // Convert JSON message to transaction object
@@ -27,7 +25,7 @@ func ProcessMessage(transaction models.Transaction) error {
 	if isExcluded(transactionDate, transaction.MCC) {
 		// Delta and remarks for the exclusion case
 		var delta float64 = 0
-		var remarks string = "Campaigns don't apply"
+		var remarks = "Campaigns don't apply"
 		reward := models.Reward{
 			ID:              gocql.UUID(transaction.ID),
 			CardID:          gocql.UUID(transaction.CardID),
@@ -83,18 +81,8 @@ func ProcessMessage(transaction models.Transaction) error {
 }
 
 func isExcluded(transactionDate time.Time, mcc int) bool {
-	var exclusions []models.Exclusion
-
-	for k, v := range config.ExclusionsEtcd {
-		if strings.HasPrefix(k, "exclusion") {
-			var exclusion models.Exclusion
-			json.Unmarshal([]byte(v), &exclusion)
-			exclusions = append(exclusions, exclusion)
-		}
-	}
-
 	today := time.Now()
-	for _, ex := range exclusions {
+	for _, ex := range ExclusionsEtcd {
 		if ex.MCC == mcc && ex.ValidFrom.Before(today) {
 			return true
 		}
@@ -103,20 +91,10 @@ func isExcluded(transactionDate time.Time, mcc int) bool {
 }
 
 func getMatchingCampaign(cardType string) (campaign *models.Campaign) {
-	var campaigns []models.Campaign
-
-	for k, v := range config.CampaignsEtcd {
-		if strings.HasPrefix(k, "campaign") {
-			var campaign models.Campaign
-			json.Unmarshal([]byte(v), &campaign)
-			campaigns = append(campaigns, campaign)
-		}
-	}
-
-	//Change today to transaction date
+	// TODO: @oversparkling - change current time to transaction date
 	today := time.Now()
-	for _, campaign := range campaigns {
-		if campaign.CardType == cardType && campaign.Start.Before(today) && campaign.End.After(today) {
+	for _, campaign := range CampaignsEtcd {
+		if campaign.RewardProgram == cardType && campaign.Start.Before(today) && campaign.End.After(today) {
 			return &campaign
 		}
 	}
@@ -124,7 +102,7 @@ func getMatchingCampaign(cardType string) (campaign *models.Campaign) {
 }
 
 func calculateDeltaType(rewardAmount int, spentAmount float64) float64 {
-	//To include other logic here
+	// TODO: include other logic here
 	// Min spend
 	return float64(rewardAmount) * spentAmount
 }
