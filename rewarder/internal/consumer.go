@@ -108,7 +108,7 @@ func SaramaConsume(kafkaBroker string, topic string) {
 		}
 	}()
 
-	<-consumer.ready // Await till the consumer has been set up
+	<-consumer.ready // wait till the consumer has been set up
 	log.Println("Sarama consumer up and running!...")
 
 	sigusr1 := make(chan os.Signal, 1)
@@ -172,7 +172,7 @@ func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, clai
 		case message := <-claim.Messages():
 			// Code of what needs to be done when you receive the message
 			session.MarkMessage(message, "")
-			ProcessMesageJSON(string(message.Value)) // Process raw json string
+			ProcessMessageJSON(string(message.Value)) // Process raw json string
 			// log.Printf("Message claimed: value = %s, timestamp = %v, topic = %s", string(message.Value), message.Timestamp, message.Topic)
 
 		case <-session.Context().Done():

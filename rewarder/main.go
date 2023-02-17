@@ -14,6 +14,7 @@ func main() {
 		log.Fatalln("Failed at config", err)
 	}
 
+	// setup DB and connect
 	dbConnString := c.DBConnString
 	dbKeyspace := c.DBKeyspace
 	dbTable := c.DBTable
@@ -21,6 +22,14 @@ func main() {
 	// dbPass := c.DBPass
 	models.InitDB(dbConnString, dbKeyspace, dbTable)
 	models.ConnectDB(dbConnString, dbKeyspace)
+
+	// setup etcd connection
+	etcdEndpoints := c.EtcdEndpoints
+	internal.InitEtcdClient(etcdEndpoints)
+	internal.WatchEtcd()
+
+	// while loop to test etcd without consuming from kafka
+	//for {}
 
 	// Broker address and topic
 	kafkaBroker := c.Broker
