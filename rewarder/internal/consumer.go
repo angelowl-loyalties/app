@@ -27,11 +27,11 @@ var (
 	verbose  = false
 )
 
-func SaramaConsume() {
-	flag.StringVar(&brokers, "brokers", "angelowlmsk.aznt6t.c3.kafka.ap-southeast-1.amazonaws.com:9092", "Kafka bootstrap brokers to connect to, as a comma separated list")
+func SaramaConsume(kafkaBroker string, topic string) {
+	flag.StringVar(&brokers, "brokers", kafkaBroker, "Kafka bootstrap brokers to connect to, as a comma separated list")
 	flag.StringVar(&group, "group", "reward", "Kafka consumer group definition")
 	flag.StringVar(&version, "version", "2.1.1", "Kafka cluster version")
-	flag.StringVar(&topics, "topics", "transaction7", "Kafka topics to be consumed, as a comma separated list")
+	flag.StringVar(&topics, "topics", topic, "Kafka topics to be consumed, as a comma separated list")
 	flag.StringVar(&assignor, "assignor", "range", "Consumer group partition assignment strategy (range, roundrobin, sticky)")
 	flag.BoolVar(&oldest, "oldest", true, "Kafka consumer consume initial offset from oldest")
 	flag.BoolVar(&verbose, "verbose", false, "Sarama logging")
