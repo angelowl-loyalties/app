@@ -2,6 +2,7 @@ import {
     Box,
     Divider,
     Heading,
+    Select,
     HStack,
     Spacer,
     Switch,
@@ -31,7 +32,7 @@ import Navbar from '../components/Navbar';
 export default function Cards() {
     const router = useRouter()
     const [toggle, setToggle] = useState(true)
-    
+
 
     const style = {
         height: 300,
@@ -164,51 +165,72 @@ export default function Cards() {
     return (
         <Navbar>
             <VStack alignItems='start' w="full">
-                <HStack mb={8}>
+                <HStack mb={{base: 4, lg: 6}}>
                     <VStack alignItems='start'>
-                        <Heading fontWeight='bold' fontSize='2xl'>View linked cards</Heading>
-                        <Text fontSize='sm' fontWeight={600} color={'gray.500'} lineHeight='4'>
+                        <Text textStyle="title">View linked cards</Text>
+                        <Text textStyle="subtitle" >
                             Supercharge your credit cards and get rewarded when you spend
                         </Text>
                     </VStack>
                 </HStack>
                 <Tabs variant='solid-rounded' colorScheme="purple" w="full">
                     <HStack>
-                        <Box p={2} bgColor="gray.100" borderRadius="xl" >
+                        <Select
+                            w="25%"
+                            fontSize="small"
+                            display={{base: "inline-block", lg: "none"}}
+                            placeholder='All'>
+                            <option>
+                                {toggle ? 'AMEX' : 'Shopping'}
+                            </option>
+                            <option >
+                                {toggle ? 'Visa' : 'PremiumMiles'}
+                            </option>
+                            <option>
+                                {toggle ? 'Mastercard' : 'PlatinumMiles'}
+                            </option>
+                            <option>
+                                {toggle ? 'Discover' : 'Freedom'}
+                            </option>
+                            <option>
+                                Others
+                            </option>
+                        </Select>
+                        <Box p={2} bgColor="gray.100" borderRadius="xl" display={{base: "none", lg: "inline-block"}}>
                             <HStack>
-                                <TabList>
-                                    <Tab borderRadius='lg' isSelected>
-                                        <Text mx={1} fontSize="sm">
+                                <TabList maxW={{ base: "xs", md: "2xl" }} >
+                                    <Tab borderRadius='lg'>
+                                        <Text mx={1} textStyle="tab">
                                             All
                                         </Text>
                                     </Tab>
-                                    <Tab fontSize='md' borderRadius='lg'>
+                                    <Tab borderRadius='lg'>
                                         {toggle ? <FaCcAmex size={23} /> : <GiShoppingBag size={23} />}
-                                        <Text ml={1} fontSize="sm">
+                                        <Text ml={1} textStyle="tab" isSelected>
                                             {toggle ? 'AMEX' : 'Shopping'}
                                         </Text>
                                     </Tab>
-                                    <Tab fontSize='md' borderRadius='lg'>
+                                    <Tab borderRadius='lg'>
                                         {toggle ? <FaCcVisa size={23} /> : <MdOutlineFlightTakeoff size={23} />}
-                                        <Text ml={1} fontSize="sm">
+                                        <Text ml={1} textStyle="tab">
                                             {toggle ? 'Visa' : 'PremiumMiles'}
                                         </Text>
                                     </Tab>
-                                    <Tab fontSize='md' borderRadius='lg'>
+                                    <Tab borderRadius='lg'>
                                         {toggle ? <FaCcMastercard size={23} /> : <IoDiamond size={23} />}
-                                        <Text ml={1} fontSize="sm">
+                                        <Text ml={1} textStyle="tab">
                                             {toggle ? 'Mastercard' : 'PlatinumMiles'}
                                         </Text>
                                     </Tab>
-                                    <Tab fontSize='md' borderRadius='lg'>
+                                    <Tab borderRadius='lg'>
                                         {toggle ? <FaCcDiscover size={23} /> : <GiLibertyWing size={23} />}
-                                        <Text ml={1} fontSize="sm">
+                                        <Text ml={1} textStyle="tab">
                                             {toggle ? 'Discover' : 'Freedom'}
                                         </Text>
                                     </Tab>
-                                    <Tab fontSize='md' borderRadius='lg' display={!toggle ? 'none' : 'flex'}>
+                                    <Tab borderRadius='lg' display={!toggle ? 'none' : 'flex'}>
                                         <FaCreditCard size={23} />
-                                        <Text ml={1} fontSize="sm">
+                                        <Text ml={1} textStyle="tab">
                                             Others
                                         </Text>
                                     </Tab>
@@ -220,10 +242,10 @@ export default function Cards() {
                         <Switch defaultChecked onChange={handleToggle} colorScheme='purple' size='md' />
                     </HStack>
 
-                    <TabPanels>
+                    <TabPanels >
                         {data && data.map((cards1) => {
                             return (
-                                <TabPanel key={cards1[0] && cards1[0].card_id}>
+                                <TabPanel p={{base: 0, lg: 4}} mt={{base: 4, lg: 0}} key={cards1[0] && cards1[0].card_id}>
                                     <Table size='sm'>
                                         <Thead>
                                             <Tr>
@@ -242,10 +264,10 @@ export default function Cards() {
                                                         <Tr key={card && card.card_id}>
                                                             <Td><Text fontSize='xs' color='gray.500'>{card && renderIssuer(card.card_pan)}</Text></Td>
                                                             <Td><Text fontSize='xs'>{card && card.card_pan.substring(card.card_pan.length - 4)}</Text></Td>
-                                                            <Td><Text fontSize='xs'>{card && card.card_id}</Text></Td>
+                                                            <Td><Text fontSize='xs' noOfLines={1} overflow="hidden">{card && card.card_id}</Text></Td>
                                                             <Td><Text fontSize='xs' color='gray.500'>{card && renderProgram(card.card_type)}</Text></Td>
-                                                            <Td><Text fontSize='xs'>{card && card.created_at.split(" ")[0]}</Text></Td>
-                                                            <Td><Text fontSize='xs'>{card && card.updated_at.split(" ")[0]}</Text></Td>
+                                                            <Td><Text fontSize='xs'>{card && card.created_at.split(" ")[0].replace('202', '2')}</Text></Td>
+                                                            <Td><Text fontSize='xs'>{card && card.updated_at.split(" ")[0].replace('202', '2')}</Text></Td>
                                                         </Tr>
                                                     </>
                                                 )

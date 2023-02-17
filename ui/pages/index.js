@@ -1,4 +1,4 @@
-import { Heading, Text } from '@chakra-ui/react';
+import { Heading, Text, HStack, VStack } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 
@@ -9,10 +9,14 @@ export default function Home() {
 
     return (
         <Navbar>
-            <Heading fontWeight="bold" mb={4} fontSize='2xl'>Dashboard</Heading>
-            <Text fontSize="sm" fontWeight={600} color={'gray.600'} lineHeight="4">
-                Supercharge your everyday credit cards and get rewarded when you spend
-            </Text>
+            <HStack mb={{ base: 4, lg: 6 }}>
+                <VStack alignItems='start'>
+                    <Text textStyle="title">Dashboard</Text>
+                    <Text textStyle="subtitle">
+                        Supercharge your everyday credit cards and get rewarded when you spend
+                    </Text>
+                </VStack>
+            </HStack>
         </Navbar>
     );
 }

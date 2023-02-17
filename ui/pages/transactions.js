@@ -3,6 +3,7 @@ import {
     Accordion,
     AccordionButton,
     AccordionIcon,
+    Select,
     AccordionItem,
     AccordionPanel,
     Badge,
@@ -35,7 +36,7 @@ export default function Transactions() {
     const cards = ['6771-8930-6970-2407', '4775-8833-1918-5512', '5380-3907-2820-7063']
     const [filteredTransactions, setFilteredTransactions] = useState([])
 
-    
+
     useEffect(() => {
         const transactions = [
             {
@@ -156,17 +157,38 @@ export default function Transactions() {
     return (
         <Navbar>
             <VStack alignItems='start' w="full">
-                <HStack mb={8}>
+                <HStack  mb={{base: 4, lg: 6}}>
                     <VStack alignItems='start'>
-                        <Heading fontWeight='bold' fontSize='2xl'>Transactions and points history</Heading>
-                        <Text fontSize='sm' fontWeight={600} color={'gray.500'} lineHeight='4'>
+                        <Text textStyle="title">Transactions and points history</Text>
+                        <Text textStyle="subtitle">
                             Supercharge your credit cards and get rewarded when you spend
                         </Text>
                     </VStack>
                 </HStack>
                 <Tabs variant='solid-rounded' colorScheme="purple" w="full">
                     <HStack>
-                        <Box p={2} bgColor="gray.100" borderRadius="xl" >
+                        <Select
+                            w="25%"
+                            fontSize="small"
+                            display={{ base: "inline-block", lg: "none" }}
+                            placeholder='All'>
+                            {cards.map((card) => {
+                                const num = card.slice(-4)
+                                switch (card.charAt(0)) {
+                                    case '3':
+                                        return <option fontSize='sm' borderRadius='lg'>(AMEX) {num}</option>
+                                    case '4':
+                                        return <option fontSize='sm' borderRadius='lg'>(VISA) {num}</option>
+                                    case '5':
+                                        return <option fontSize='sm' borderRadius='lg'>(MCC) {num}</option>
+                                    case '6':
+                                        return <option fontSize='sm' borderRadius='lg'>(DISC) {num}</option>
+                                    default:
+                                        return <option fontSize='sm' borderRadius='lg'>(OTHERS){num}</option>
+                                }
+                            })}
+                        </Select>
+                        <Box p={2} bgColor="gray.100" borderRadius="xl" display={{base: "none", lg: "inline-block"}}>
                             <TabList>
                                 <Tab fontSize='sm' borderRadius='lg'><Text mx={1}>All</Text></Tab>
                                 {cards.map((card) => {
@@ -200,26 +222,26 @@ export default function Transactions() {
                                 return el.card_pan === card;
                             })
                             return (
-                                <TabPanel initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }} key={card}>
+                                <TabPanel p={{base: 0, lg: 4}} mt={{base: 4, lg: 0}} initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    exit={{ opacity: 0 }} key={card}>
                                     <Accordion allowMultiple w="full">
                                         {data.map((transaction) => {
                                             return (
                                                 <AccordionItem key={transaction}>
-                                                    <AccordionButton>
+                                                    <AccordionButton p={{base: 1, lg: 2}}>
                                                         <Box as="span" flex='1' textAlign='left'>
-                                                            <HStack pr={8}>
-                                                                {(transaction.mcc == '5499' | transaction.mcc == '5411') ? <CiShoppingBasket size={20} color='gray' /> : (transaction.mcc == '5541' | transaction.mcc == '5542') ? <CiDeliveryTruck size={20} color='gray' /> : (transaction.mcc == '5499') ? <CiForkAndKnife size={20} color='gray' /> : (transaction.mcc == '4121' | transaction.mcc == '5734' | transaction.mcc == '6540' | transaction.mcc == '4111') ? <CiRoute size={20} color='gray' /> : (transaction.mcc == '5999' | transaction.mcc == '5964' | transaction.mcc == '5691' | transaction.mcc == '5311' | transaction.mcc == '5411' | transaction.mcc == '5399' | transaction.mcc == '5311') ? <CiShoppingBasket size={20} color='gray' /> : <CiWallet size={20} color='gray' />}
-                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' w={20}>{transaction.transaction_date}</Text>
-                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' w={200}>{transaction.merchant}</Text>
-                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' w={200}>Shopee 11.11 Sale</Text>
-                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' w={100}>{transaction.currency + " -" + transaction.amount}</Text>
+                                                            <HStack pr={{base: 0, lg: 8}}>
+                                                                <Text display={{base: "none", md: "block"}}>{(transaction.mcc == '5499' | transaction.mcc == '5411') ? <CiShoppingBasket size={20} color='gray' /> : (transaction.mcc == '5541' | transaction.mcc == '5542') ? <CiDeliveryTruck size={20} color='gray' /> : (transaction.mcc == '5499') ? <CiForkAndKnife size={20} color='gray' /> : (transaction.mcc == '4121' | transaction.mcc == '5734' | transaction.mcc == '6540' | transaction.mcc == '4111') ? <CiRoute size={20} color='gray' /> : (transaction.mcc == '5999' | transaction.mcc == '5964' | transaction.mcc == '5691' | transaction.mcc == '5311' | transaction.mcc == '5411' | transaction.mcc == '5399' | transaction.mcc == '5311') ? <CiShoppingBasket size={20} color='gray' /> : <CiWallet size={20} color='gray' />}</Text>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' w={{base: 14, lg: 20}}>{transaction.transaction_date}</Text>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' noOfLines={1} oOfLines={1} overflow="hidden" w={{base: 100, lg: 200}}>{transaction.merchant}</Text>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' noOfLines={1} oOfLines={1} overflow="hidden" w={{base: 110, lg: 200}}>Shopee 11.11 Sale</Text>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' w={{base: 100, lg: 100}}>{"- " + transaction.currency + " " + transaction.amount}</Text>
                                                                 <Spacer />
                                                                 <Badge fontSize='xs' colorScheme="green" py={1} px={2} >+200 Miles</Badge>
                                                             </HStack>
                                                         </Box>
-                                                        <AccordionIcon />
+                                                        <AccordionIcon display={{base: "none", md: "block"}}/>
                                                     </AccordionButton>
                                                     <AccordionPanel pb={4}>
 

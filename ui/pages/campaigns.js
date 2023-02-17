@@ -6,6 +6,7 @@ import {
     Divider,
     Heading,
     HStack,
+    Select,
     Input,
     InputGroup,
     InputLeftElement,
@@ -32,39 +33,57 @@ export default function Campaigns() {
     return (
         <Navbar>
             <VStack alignItems='start' w="full">
-                <HStack mb={8}>
+                <HStack  mb={{base: 4, lg: 6}}>
                     <VStack alignItems='start'>
-                        <Heading fontWeight='bold' fontSize='2xl' pb={0}>Payment campaigns</Heading>
-                        <Text fontSize='sm' fontWeight={600} color={'gray.500'} lineHeight='4'>
+                        <Text textStyle="title">Payment campaigns</Text>
+                        <Text textStyle="subtitle">
                             Supercharge your credit cards and get rewarded when you spend
                         </Text>
                     </VStack>
                 </HStack>
                 <Tabs variant='solid-rounded' colorScheme="purple" w="full">
                     <HStack>
-                        <Box p={2} bgColor="gray.100" borderRadius="xl" >
+                        <Select
+                            w="25%"
+                            fontSize="small"
+                            display={{ base: "inline-block", lg: "none" }}
+                            placeholder='All'>
+                            <option>
+                                Shopping
+                            </option>
+                            <option >
+                            PremiumMiles
+                            </option>
+                            <option>
+                            PlatinumMiles
+                            </option>
+                            <option>
+                            Freedom
+                            </option>
+                        </Select>
+                        <Box p={2} bgColor="gray.100" borderRadius="xl" display={{base: "none", lg: "inline-block"}}>
                             <TabList>
                                 <Tab fontSize='md' borderRadius='lg'>
                                     <GiShoppingBag size={23} />
-                                    <Text ml={1} fontSize="sm">
+                                    <Text ml={1} textStyle="tab">
                                         Shopping
                                     </Text>
                                 </Tab>
                                 <Tab fontSize='md' borderRadius='lg'>
                                     <MdOutlineFlightTakeoff size={23} />
-                                    <Text ml={1} fontSize="sm">
+                                    <Text ml={1} textStyle="tab">
                                         PremiumMiles
                                     </Text>
                                 </Tab>
                                 <Tab fontSize='md' borderRadius='lg'>
                                     <IoDiamond size={23} />
-                                    <Text ml={1} fontSize="sm">
+                                    <Text ml={1} textStyle="tab">
                                         PlatinumMiles
                                     </Text>
                                 </Tab>
                                 <Tab fontSize='md' borderRadius='lg'>
                                     <GiLibertyWing size={23} />
-                                    <Text ml={1} fontSize="sm">
+                                    <Text ml={1} textStyle="tab">
                                         Freedom
                                     </Text>
                                 </Tab>
@@ -79,7 +98,7 @@ export default function Campaigns() {
                     </HStack>
 
                     <TabPanels>
-                        <TabPanel>
+                        <TabPanel p={{base: 0, lg: 4}} mt={{base: 4, lg: 0}} >
                             {[...Array(15).keys()].map((num) => {
                                 return (
                                     <Card key={num} w="full" mb={4} border="1px" borderColor="gray.200">
