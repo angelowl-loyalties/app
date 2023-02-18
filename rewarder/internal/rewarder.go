@@ -47,7 +47,7 @@ func ProcessMessage(transaction models.Transaction) error {
 			Amount:          transaction.Amount,
 			SGDAmount:       transaction.SGDAmount,
 			TransactionID:   transaction.TransactionID,
-			TransactionDate: transactionDate,
+			TransactionDate: transaction.TransactionDate,
 			CardPAN:         transaction.CardPAN,
 			CardType:        transaction.CardType,
 			RewardAmount:    delta,
