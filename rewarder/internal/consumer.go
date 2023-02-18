@@ -92,13 +92,9 @@ func SaramaConsume(kafkaBroker string, topic string) {
 	go func() {
 		defer wg.Done()
 		for {
-			// `Consume` should be called inside an infinite loop, when a
-			// server-side rebalance happens, the consumer session will need to be
-			// recreated to get the new claims
 			if err := client.Consume(ctx, strings.Split(topics, ","), &consumer); err != nil {
 				log.Panicf("Error from consumer: %v", err)
 			}
-			// check if context was cancelled, signaling that the consumer should stop
 			if ctx.Err() != nil {
 				return
 			}
@@ -106,7 +102,7 @@ func SaramaConsume(kafkaBroker string, topic string) {
 		}
 	}()
 
-	<-consumer.ready // wait till the consumer has been set up
+	<-consumer.ready
 	log.Println("Sarama consumer up and running!...")
 
 	sigusr1 := make(chan os.Signal, 1)
@@ -146,14 +142,11 @@ func toggleConsumptionFlow(client sarama.ConsumerGroup, isPaused *bool) {
 	*isPaused = !*isPaused
 }
 
-// Consumer represents a Sarama consumer group consumer
 type Consumer struct {
 	ready chan bool
 }
 
-// Setup is run at the beginning of a new session, before ConsumeClaim
 func (consumer *Consumer) Setup(sarama.ConsumerGroupSession) error {
-	// Mark the consumer as ready
 	close(consumer.ready)
 	return nil
 }
@@ -163,28 +156,18 @@ func (consumer *Consumer) Cleanup(sarama.ConsumerGroupSession) error {
 }
 
 func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
-	// i := 0
-	// start := time.Now()
 	for {
 		select {
 		case message := <-claim.Messages():
-			// Code of what needs to be done when you receive the message
 			session.MarkMessage(message, "")
-			err := ProcessMessageJSON(string(message.Value)) // Process raw json string
+			err := ProcessMessageJSON(string(message.Value))
 			if err != nil {
-				log.Fatalln(err)
-				print(err)
+				// log.Fatalln(err)
+				log.Println("Error back to consumer")
 			}
-			// log.Printf("Message claimed: value = %s, timestamp = %v, topic = %s", string(message.Value), message.Timestamp, message.Topic)
 
 		case <-session.Context().Done():
 			return nil
 		}
-		// i++
-		// if i%1000 == 0 && i != 0 {
-		// 	end := time.Now()
-		// 	fmt.Println(end.Sub(start))
-		// 	start = time.Now()
-		// }
 	}
 }

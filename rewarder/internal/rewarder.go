@@ -2,43 +2,37 @@ package internal
 
 import (
 	"encoding/json"
-	"log"
 	"time"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
 	"github.com/gocql/gocql"
 )
 
-// const (
-// 	layout = "02-01-06"
-// )
+const (
+	layout = "02-01-06"
+)
 
 func ProcessMessageJSON(messageJSON string) error {
 	var transaction models.Transaction
 
 	err := json.Unmarshal([]byte(messageJSON), &transaction) // Convert JSON message to transaction object
 	if err != nil {
-		log.Print("In process messageJSON: ")
-		log.Fatalln(err)
-		return err
+		// log.Fatalln(err)
+		return nil
 	}
-
-	// log.Print(transaction)
 
 	return ProcessMessage(transaction)
 }
 
 func ProcessMessage(transaction models.Transaction) error {
-	// TODO: Change to proper error handling
-	// transactionDate, err := time.Parse(layout, transaction.TransactionDate)
-	// if err != nil {
-	// 	log.Print("In process message transaction date: ", transaction.TransactionDate)
-	// 	log.Println(err)
-	// 	return nil //TODO: Fix this to do something when date couldnt be parsed
-	// }
+	//TODO: Proper error handling
+	transactionDate, err := time.Parse(layout, transaction.TransactionDate)
 
-	// TODO: remove
-	transactionDate := time.Now()
+	// TODO: Proper Error handling
+	if err != nil {
+		// log.Fatalln(err)
+		return nil //TODO: Fix this to do something when date couldnt be parsed
+	}
 
 	if isExcluded(transactionDate, transaction.MCC) {
 		// Delta and remarks for the exclusion case
@@ -53,26 +47,24 @@ func ProcessMessage(transaction models.Transaction) error {
 			Amount:          transaction.Amount,
 			SGDAmount:       transaction.SGDAmount,
 			TransactionID:   transaction.TransactionID,
-			TransactionDate: transaction.TransactionDate,
+			TransactionDate: transactionDate,
 			CardPAN:         transaction.CardPAN,
 			CardType:        transaction.CardType,
 			RewardAmount:    delta,
 			Remarks:         remarks,
 		}
 		err := models.RewardCreate(reward)
+		// TODO: Proper Error handling
 		if err != nil {
-			log.Print("In process message transaction create 1: ")
-			log.Fatalln(err)
+			// log.Fatalln(err)
 			return err
 		}
 
 	} else {
 		campaign := getMatchingCampaign(transaction.CardType, transaction.TransactionDate)
 
-		// Should not be since we will have base campaign, can consider throwing error(?)
 		if campaign == nil {
-			// Skip first
-			return nil // Reconsider what to return here
+			return nil // TODO: Reconsider what to return here
 		}
 
 		delta := calculateDeltaType(campaign.RewardAmount, transaction.Amount)
@@ -94,9 +86,9 @@ func ProcessMessage(transaction models.Transaction) error {
 			Remarks:         remarks,
 		}
 		err := models.RewardCreate(reward)
+		// TODO: Proper Error handling
 		if err != nil {
-			log.Print("In process message transaction create 2: ")
-			log.Fatalln(err)
+			// log.Fatalln(err)
 			return err
 		}
 
@@ -105,6 +97,7 @@ func ProcessMessage(transaction models.Transaction) error {
 }
 
 func isExcluded(transactionDate time.Time, mcc int) bool {
+	// TODO: Replace with transactionDate
 	today := time.Now()
 	for _, ex := range ExclusionsEtcd {
 		if ex.MCC == mcc && ex.ValidFrom.Before(today) {

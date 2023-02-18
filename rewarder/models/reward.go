@@ -36,6 +36,5 @@ func RewardCreate(reward Reward) error {
 		log.Fatalln(err)
 		return err
 	}
-	log.Println("Reward created")
 	return nil
 }
