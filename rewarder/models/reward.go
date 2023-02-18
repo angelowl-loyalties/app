@@ -25,15 +25,17 @@ type Reward struct {
 
 func RewardCreate(reward Reward) error {
 	ctx := context.Background()
-
-	if err := DB.Query(`INSERT INTO transactions.rewards 
-						(id, card_id, merchant, mcc, currency, amount, sgd_amount, transaction_id, transaction_date, card_pan, card_type, reward_amount, remarks) 
-						VALUES 
-						(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+	err := DB.Query(`INSERT INTO transactions.rewards 
+	(id, card_id, merchant, mcc, currency, amount, sgd_amount, transaction_id, transaction_date, card_pan, card_type, reward_amount, remarks) 
+	VALUES 
+	(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
 		reward.ID, reward.CardID, reward.Merchant, reward.MCC, reward.Currency, reward.Amount, reward.SGDAmount, reward.TransactionID,
-		reward.TransactionDate, reward.CardPAN, reward.CardType, reward.RewardAmount, reward.Remarks).WithContext(ctx).Exec(); err != nil {
-		log.Fatal(err)
+		reward.TransactionDate, reward.CardPAN, reward.CardType, reward.RewardAmount, reward.Remarks).WithContext(ctx).Exec()
+
+	if err != nil {
+		log.Fatalln(err)
 		return err
 	}
+	log.Println("Reward created")
 	return nil
 }

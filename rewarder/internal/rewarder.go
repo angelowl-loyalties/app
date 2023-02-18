@@ -2,26 +2,44 @@ package internal
 
 import (
 	"encoding/json"
+	"log"
 	"time"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
 	"github.com/gocql/gocql"
 )
 
-const (
-	layout = "02-01-06"
-)
+// const (
+// 	layout = "02-01-06"
+// )
 
 func ProcessMessageJSON(messageJSON string) error {
 	var transaction models.Transaction
 
-	json.Unmarshal([]byte(messageJSON), &transaction) // Convert JSON message to transaction object
+	err := json.Unmarshal([]byte(messageJSON), &transaction) // Convert JSON message to transaction object
+	if err != nil {
+		log.Print("In process messageJSON: ")
+		log.Fatalln(err)
+		return err
+	}
+
+	// log.Print(transaction)
 
 	return ProcessMessage(transaction)
 }
 
 func ProcessMessage(transaction models.Transaction) error {
-	transactionDate, _ := time.Parse(layout, transaction.TransactionDate)
+	// TODO: Change to proper error handling
+	// transactionDate, err := time.Parse(layout, transaction.TransactionDate)
+	// if err != nil {
+	// 	log.Print("In process message transaction date: ", transaction.TransactionDate)
+	// 	log.Println(err)
+	// 	return nil //TODO: Fix this to do something when date couldnt be parsed
+	// }
+
+	// TODO: remove
+	transactionDate := time.Now()
+
 	if isExcluded(transactionDate, transaction.MCC) {
 		// Delta and remarks for the exclusion case
 		var delta float64 = 0
@@ -42,14 +60,18 @@ func ProcessMessage(transaction models.Transaction) error {
 			Remarks:         remarks,
 		}
 		err := models.RewardCreate(reward)
-
 		if err != nil {
+			log.Print("In process message transaction create 1: ")
+			log.Fatalln(err)
 			return err
 		}
+
 	} else {
-		campaign := getMatchingCampaign(transaction.CardType)
+		campaign := getMatchingCampaign(transaction.CardType, transaction.TransactionDate)
+
 		// Should not be since we will have base campaign, can consider throwing error(?)
 		if campaign == nil {
+			// Skip first
 			return nil // Reconsider what to return here
 		}
 
@@ -72,10 +94,12 @@ func ProcessMessage(transaction models.Transaction) error {
 			Remarks:         remarks,
 		}
 		err := models.RewardCreate(reward)
-
 		if err != nil {
+			log.Print("In process message transaction create 2: ")
+			log.Fatalln(err)
 			return err
 		}
+
 	}
 	return nil
 }
@@ -90,11 +114,12 @@ func isExcluded(transactionDate time.Time, mcc int) bool {
 	return false
 }
 
-func getMatchingCampaign(cardType string) (campaign *models.Campaign) {
-	// TODO: @oversparkling - change current time to transaction date
-	today := time.Now()
+func getMatchingCampaign(cardType string, transactionDateStr string) (campaign *models.Campaign) {
+	// TODO: start using the transactions start date instead of time now
+	// transactionDate, _ := time.Parse(layout, transactionDateStr)
+	transactionDate := time.Now()
 	for _, campaign := range CampaignsEtcd {
-		if campaign.RewardProgram == cardType && campaign.Start.Before(today) && campaign.End.After(today) {
+		if campaign.RewardProgram == cardType && campaign.Start.Before(transactionDate) && campaign.End.After(transactionDate) {
 			return &campaign
 		}
 	}

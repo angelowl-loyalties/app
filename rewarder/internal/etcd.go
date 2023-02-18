@@ -4,12 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
 	"log"
 	"strings"
 	"time"
 
-	"go.etcd.io/etcd/client/v3"
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
+	"github.com/google/uuid"
+
+	clientv3 "go.etcd.io/etcd/client/v3"
 )
 
 const (
@@ -51,13 +53,18 @@ func WatchEtcd() {
 		log.Fatalln(err)
 	}
 
-	//testPrint()
-
 	exclusionsWatchCh := ETCD.Watch(ctx, "exclusion", clientv3.WithPrefix())
 	campaignsWatchCh := ETCD.Watch(ctx, "campaign", clientv3.WithPrefix())
 
 	go handleWatchEvents(exclusionsWatchCh, "exclusion")
 	go handleWatchEvents(campaignsWatchCh, "campaign")
+
+	err = etcdAddInitial()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	testPrint()
 }
 
 func handleWatchEvents(watchCh clientv3.WatchChan, key string) {
@@ -65,7 +72,7 @@ func handleWatchEvents(watchCh clientv3.WatchChan, key string) {
 		for _, event := range watchResp.Events {
 			switch event.Type {
 			case clientv3.EventTypePut:
-				//testPrint()
+				// testPrint()
 				if key == "campaign" {
 					var campaign models.Campaign
 					err := json.Unmarshal(event.Kv.Value, &campaign)
@@ -81,7 +88,7 @@ func handleWatchEvents(watchCh clientv3.WatchChan, key string) {
 					}
 					ExclusionsEtcd[string(event.Kv.Key)] = exclusion
 				}
-				//testPrint()
+				testPrint()
 			case clientv3.EventTypeDelete:
 				//testPrint()
 				if key == "campaign" {
@@ -132,6 +139,47 @@ func etcdGetExclusions() (err error) {
 		ExclusionsEtcd[string(ev.Key)] = exclusion
 	}
 
+	return nil
+}
+
+func etcdAddInitial() (err error) {
+	var campaign = models.Campaign{
+		ID:            uuid.MustParse("ddb0a58f-6dca-41f3-a3a9-d40961670b5b"),
+		Name:          "Spring Fling",
+		MinSpend:      75.0,
+		Start:         time.Date(2023, 3, 1, 0, 0, 0, 0, time.UTC),
+		End:           time.Date(2023, 5, 31, 23, 59, 59, 0, time.UTC),
+		RewardProgram: "Discount",
+		RewardAmount:  10,
+		MCC:           9311,
+		Merchant:      "Petco",
+	}
+
+	seed_campaign, err := json.Marshal(campaign)
+	if err != nil {
+		return err
+	}
+
+	_, err = ETCD.Put(context.Background(), "campaign_ddb0a58f-6dca-41f3-a3a9-d40961670b5b", string(seed_campaign))
+	if err != nil {
+		return err
+	}
+
+	var exclusion = models.Exclusion{
+		ID:        uuid.MustParse("e38adb10-a96a-4b55-aebd-7cdc9b973e7b"),
+		MCC:       4125,
+		ValidFrom: time.Date(2023, 2, 1, 0, 0, 0, 0, time.UTC),
+	}
+
+	seed_exclusion, err := json.Marshal(exclusion)
+	if err != nil {
+		return err
+	}
+
+	_, err = ETCD.Put(context.Background(), "exclusion_e38adb10-a96a-4b55-aebd-7cdc9b973e7b", string(seed_exclusion))
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

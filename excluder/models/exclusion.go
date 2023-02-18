@@ -9,9 +9,10 @@ import (
 )
 
 type Exclusion struct {
-	ID        uuid.UUID `json:"id" gorm:"type:uuid;primaryKey;<-:create"`
-	MCC       int       `json:"mcc" binding:"required,gte=1,lte=9999"`
-	ValidFrom time.Time `json:"valid_from" binding:"required,gte"` // should be later than time.Now()
+	ID  uuid.UUID `json:"id" gorm:"type:uuid;primaryKey;<-:create"`
+	MCC int       `json:"mcc" binding:"required,gte=1,lte=9999"`
+	// TODO: Add back the gte to add validation after time now
+	ValidFrom time.Time `json:"valid_from" binding:"required"` // should be later than time.Now()
 }
 
 func (exclusion *Exclusion) BeforeCreate(tx *gorm.DB) (err error) {

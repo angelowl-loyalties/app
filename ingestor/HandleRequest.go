@@ -8,14 +8,30 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
+	"github.com/google/uuid"
 	"github.com/segmentio/kafka-go"
 )
+
+type Transaction struct {
+	ID              uuid.UUID `json:"id"`
+	CardID          uuid.UUID `json:"card_id"`
+	Merchant        string    `json:"merchant"`
+	MCC             int       `json:"mcc"`
+	Currency        string    `json:"currency"`
+	Amount          float64   `json:"amount"`
+	SGDAmount       float64   `json:"sgd_amount"`
+	TransactionID   string    `json:"transaction_id"`
+	TransactionDate string    `json:"transaction_date"`
+	CardPAN         string    `json:"card_pan"`
+	CardType        string    `json:"card_type"`
+}
 
 type S3Event struct {
 	Records []struct {
@@ -25,6 +41,20 @@ type S3Event struct {
 			} `json:"object"`
 		} `json:"s3"`
 	} `json:"Records"`
+}
+
+func (transaction *Transaction) Parse(transactionCsv []string) {
+	transaction.ID = uuid.MustParse(transactionCsv[0])
+	transaction.CardID = uuid.MustParse(transactionCsv[1])
+	transaction.Merchant = transactionCsv[2]
+	transaction.MCC, _ = strconv.Atoi(transactionCsv[3])
+	transaction.Currency = transactionCsv[4]
+	transaction.Amount, _ = strconv.ParseFloat(transactionCsv[5], 64)
+	transaction.SGDAmount, _ = strconv.ParseFloat(transactionCsv[6], 64)
+	transaction.TransactionID = transactionCsv[7]
+	transaction.TransactionDate = transactionCsv[8]
+	transaction.CardPAN = transactionCsv[9]
+	transaction.CardType = transactionCsv[10]
 }
 
 func HandleRequest(ctx context.Context, event S3Event) (string, error) {
@@ -50,18 +80,18 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 	// Read the contents of the file
 	reader := csv.NewReader(bufio.NewReader(result.Body))
 
-	// Read the header line
-	header, err := reader.Read()
+	_, err = reader.Read()
+
 	if err != nil {
 		fmt.Printf("Error reading header: %v\n", err)
 		os.Exit(1)
 	}
 
 	producer := kafka.NewWriter(kafka.WriterConfig{
-		Brokers: []string{"angelowlmsk.aznt6t.c3.kafka.ap-southeast-1.amazonaws.com:9092"},
-		Topic:   "transaction6",
-		Balancer: &kafka.LeastBytes{},
-		BatchSize: 1000,
+		Brokers:      []string{"angelowlmsk.aznt6t.c3.kafka.ap-southeast-1.amazonaws.com:9092"},
+		Topic:        "transaction",
+		Balancer:     &kafka.LeastBytes{},
+		BatchSize:    1000,
 		BatchTimeout: 100 * time.Millisecond,
 	})
 	defer producer.Close()
@@ -76,10 +106,13 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 			fmt.Printf("Error reading record from .csv file: %v", err)
 		}
 
-		m := map[string]string{}
-		for i, h := range header {
-			m[h] = record[i]
-		}
+		var m Transaction
+		m.Parse(record)
+
+		// m := map[string]string
+		// for i, h := range header {
+		// 	m[h] = record[i]
+		// }
 
 		b, err := json.Marshal(m)
 		if err != nil {

@@ -4,14 +4,12 @@ package internal
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
 	"strings"
 	"sync"
 	"syscall"
-	"time"
 
 	"github.com/Shopify/sarama"
 )
@@ -165,24 +163,28 @@ func (consumer *Consumer) Cleanup(sarama.ConsumerGroupSession) error {
 }
 
 func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, claim sarama.ConsumerGroupClaim) error {
-	i := 0
-	start := time.Now()
+	// i := 0
+	// start := time.Now()
 	for {
 		select {
 		case message := <-claim.Messages():
 			// Code of what needs to be done when you receive the message
 			session.MarkMessage(message, "")
-			ProcessMessageJSON(string(message.Value)) // Process raw json string
+			err := ProcessMessageJSON(string(message.Value)) // Process raw json string
+			if err != nil {
+				log.Fatalln(err)
+				print(err)
+			}
 			// log.Printf("Message claimed: value = %s, timestamp = %v, topic = %s", string(message.Value), message.Timestamp, message.Topic)
 
 		case <-session.Context().Done():
 			return nil
 		}
-		i++
-		if i%1000 == 0 && i != 0 {
-			end := time.Now()
-			fmt.Println(end.Sub(start))
-			start = time.Now()
-		}
+		// i++
+		// if i%1000 == 0 && i != 0 {
+		// 	end := time.Now()
+		// 	fmt.Println(end.Sub(start))
+		// 	start = time.Now()
+		// }
 	}
 }

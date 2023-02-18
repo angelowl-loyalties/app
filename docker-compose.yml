@@ -1,0 +1,162 @@
+# Docker compose to run the following flow
+# - Start ingestor lambda to allow producing messages into Prod Kafka
+# - Start cassandra (for rewarder to write into)
+# - Start etcd: excluder and campaigner will write into these and rewarder listens for changes
+# - Start postgres for excluder and campaigner to write into
+# - Start excluder and campaigner. These will write into etcd
+# - Start rewarder. This will begin consumption from the queue
+# - Start informer. /reward endpoint will show you the transactions that have successfully been processed
+
+version: "3.1"
+
+volumes:
+  etcd_data:
+    driver: local
+
+services:
+  ingestor-service:
+    build:
+      context: ./ingestor
+      dockerfile: Dockerfile
+    image: ingestor
+    ports:
+      - 9000:8080
+    environment:
+      AWS_REGION: ap-southeast-1
+      AWS_ACCESS_KEY_ID: AKIAUAWJVJ7I7A4V3QI6
+      AWS_SECRET_ACCESS_KEY: 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
+    networks:
+      default:
+        aliases:
+          - ingestor-service
+  
+  cassandra:
+    image: cassandra:4
+    networks:
+      default:
+        aliases:
+          - cassandra_db
+    ports:
+      - "9042:9042"
+
+  etcd:
+    image: 'bitnami/etcd:latest'
+    restart: unless-stopped
+    networks:
+      default:
+        aliases:
+          - etcd
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+    ports:
+      - "2379:2379"
+
+  postgres:
+    image: postgres:14.5
+    networks:
+      default:
+        aliases:
+          - postgres_db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+  
+  pgadmin:
+    image: dpage/pgadmin4:6
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@itsa.com
+      PGADMIN_DEFAULT_PASSWORD: itsa_password
+    ports:
+      - "5431:80"
+  
+  excluder-service:
+    build: 
+      context: ./excluder
+      dockerfile: Dockerfile.prod
+    image: excluder
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - etcd
+    environment:
+      PORT: 8081
+      DB_CONN_STRING: postgresql://admin:admin@postgres_db
+      ETCD_ENDPOINTS: etcd:2379
+    volumes:
+      - .:/app
+    networks:
+      default:
+        aliases:
+          - excluder_service
+    ports:
+      - "8081:8081"
+  
+  campaigner-service:
+    build: 
+      context: ./campaigner
+      dockerfile: Dockerfile.prod
+    image: campaigner
+    restart: unless-stopped
+    depends_on:
+      - postgres
+    environment:
+      PORT: 8082
+      DB_CONN_STRING: postgresql://admin:admin@postgres_db
+      ETCD_ENDPOINTS: etcd:2379
+    volumes:
+      - .:/app
+    networks:
+      default:
+        aliases:
+          - campaigner_service
+    ports:
+      - "8082:8082"
+
+  rewarder-service:
+    build: 
+      context: ./rewarder
+      dockerfile: Dockerfile.prod
+    image: rewarder
+    # restart: unless-stopped
+    depends_on:
+      - ingestor-service
+      - cassandra
+      - etcd
+    environment:
+      - DB_CONN_STRING=cassandra_db
+      - DB_KEYSPACE=transactions
+      - DB_TABLE=rewards
+      - BROKER_HOST=angelowlmsk.aznt6t.c3.kafka.ap-southeast-1.amazonaws.com:9092
+      - TOPIC=transaction
+      - ETCD_ENDPOINTS=http://etcd:2379
+    volumes:
+      - .:/app
+    networks:
+      default:
+        aliases:
+          - rewarder_service
+
+  informer-service:
+    build: 
+      context: ./informer
+      dockerfile: Dockerfile.prod
+    image: informer
+    # restart: unless-stopped
+    depends_on:
+      - cassandra
+    environment:
+      - PORT=8083
+      - DB_CONN_STRING=cassandra_db
+      - DB_KEYSPACE=transactions
+      - DB_TABLE=rewards
+    volumes:
+      - .:/app
+    networks:
+      default:
+        aliases:
+          - informer_service
+    ports:
+      - "8083:8083"
