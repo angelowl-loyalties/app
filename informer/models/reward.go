@@ -1,8 +1,11 @@
 package models
 
 import (
-	"github.com/gocql/gocql"
 	"log"
+
+	"github.com/gocql/gocql"
+	"github.com/scylladb/gocqlx"
+	"github.com/scylladb/gocqlx/qb"
 )
 
 type Reward struct {
@@ -22,74 +25,24 @@ type Reward struct {
 }
 
 func RewardGetAll() (rewards []Reward, _ error) {
-	var id, cardId gocql.UUID
-	var merchant, currency, tranId, tranDate, cardPan, cardType, remarks string
-	var mcc int
-	var amount, sgdAmount, rewardAmount float64
+	stmt, _ := qb.Select("transactions.rewards").ToCql()
 
-	scanner := DB.Query("SELECT * FROM transactions.rewards").Iter().Scanner()
-
-	for scanner.Next() {
-		err := scanner.Scan(&id, &amount, &cardId, &cardPan, &cardType, &currency, &mcc,
-			&merchant, &remarks, &rewardAmount, &sgdAmount, &tranDate, &tranId)
-		if err != nil {
-			log.Fatalln(err)
-			return nil, err
-		}
-
-		rewards = append(rewards, Reward{
-			ID:              id,
-			CardID:          cardId,
-			Merchant:        merchant,
-			MCC:             mcc,
-			Currency:        currency,
-			Amount:          amount,
-			SGDAmount:       sgdAmount,
-			TransactionID:   tranId,
-			TransactionDate: tranDate,
-			CardPAN:         cardPan,
-			CardType:        cardType,
-			RewardAmount:    rewardAmount,
-			Remarks:         remarks,
-		})
+	err := gocqlx.Select(&rewards, DB.Query(stmt))
+	if err != nil {
+		log.Println(err)
+		return nil, err
 	}
 
 	return rewards, nil
 }
 
 func RewardGetByCardID(reqCardId string) (rewards []Reward, _ error) {
-	var id, cardId gocql.UUID
-	var merchant, currency, tranId, tranDate, cardPan, cardType, remarks string
-	var mcc int
-	var amount, sgdAmount, rewardAmount float64
+	stmt, _ := qb.Select("transactions.rewards").Where(qb.EqLit("card_id", reqCardId)).ToCql()
 
-	query := DB.Query("SELECT * FROM transactions.rewards WHERE card_id = " + reqCardId)
-	log.Println(query.String())
-	scanner := query.Iter().Scanner()
-
-	for scanner.Next() {
-		err := scanner.Scan(&id, &amount, &cardId, &cardPan, &cardType, &currency, &mcc,
-			&merchant, &remarks, &rewardAmount, &sgdAmount, &tranDate, &tranId)
-		if err != nil {
-			log.Fatalln(err)
-			return nil, err
-		}
-
-		rewards = append(rewards, Reward{
-			ID:              id,
-			CardID:          cardId,
-			Merchant:        merchant,
-			MCC:             mcc,
-			Currency:        currency,
-			Amount:          amount,
-			SGDAmount:       sgdAmount,
-			TransactionID:   tranId,
-			TransactionDate: tranDate,
-			CardPAN:         cardPan,
-			CardType:        cardType,
-			RewardAmount:    rewardAmount,
-			Remarks:         remarks,
-		})
+	err := gocqlx.Select(&rewards, DB.Query(stmt))
+	if err != nil {
+		log.Println(err)
+		return nil, err
 	}
 
 	return rewards, nil
