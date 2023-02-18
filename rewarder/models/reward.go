@@ -1,10 +1,11 @@
 package models
 
 import (
-	"context"
+	"github.com/scylladb/gocqlx"
 	"log"
 
 	"github.com/gocql/gocql"
+	"github.com/scylladb/gocqlx/qb"
 )
 
 type Reward struct {
@@ -24,17 +25,28 @@ type Reward struct {
 }
 
 func RewardCreate(reward Reward) error {
-	ctx := context.Background()
-	err := DB.Query(`INSERT INTO transactions.rewards 
-	(id, card_id, merchant, mcc, currency, amount, sgd_amount, transaction_id, transaction_date, card_pan, card_type, reward_amount, remarks) 
-	VALUES 
-	(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
-		reward.ID, reward.CardID, reward.Merchant, reward.MCC, reward.Currency, reward.Amount, reward.SGDAmount, reward.TransactionID,
-		reward.TransactionDate, reward.CardPAN, reward.CardType, reward.RewardAmount, reward.Remarks).WithContext(ctx).Exec()
+	stmt, names := qb.Insert("transactions.rewards").Columns(
+		"id",
+		"card_id",
+		"merchant",
+		"mcc",
+		"currency",
+		"amount",
+		"sgd_amount",
+		"transaction_id",
+		"transaction_date",
+		"card_pan",
+		"card_type",
+		"reward_amount",
+		"remarks").ToCql()
 
+	q := gocqlx.Query(DB.Query(stmt), names).BindStruct(&reward)
+
+	err := q.ExecRelease()
 	if err != nil {
 		log.Fatalln(err)
 		return err
 	}
+
 	return nil
 }
