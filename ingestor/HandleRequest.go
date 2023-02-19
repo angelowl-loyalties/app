@@ -19,6 +19,11 @@ import (
 	"github.com/segmentio/kafka-go"
 )
 
+const (
+	DDMMYY   = "02-01-06"
+	YYYYMMDD = "2006-01-02"
+)
+
 type Transaction struct {
 	ID              uuid.UUID `json:"id"`
 	CardID          uuid.UUID `json:"card_id"`
@@ -43,7 +48,7 @@ type S3Event struct {
 	} `json:"Records"`
 }
 
-func (transaction *Transaction) Parse(transactionCsv []string) {
+func (transaction *Transaction) Parse(transactionCsv []string) error {
 	transaction.ID = uuid.MustParse(transactionCsv[0])
 	transaction.CardID = uuid.MustParse(transactionCsv[1])
 	transaction.Merchant = transactionCsv[2]
@@ -52,9 +57,19 @@ func (transaction *Transaction) Parse(transactionCsv []string) {
 	transaction.Amount, _ = strconv.ParseFloat(transactionCsv[5], 64)
 	transaction.SGDAmount, _ = strconv.ParseFloat(transactionCsv[6], 64)
 	transaction.TransactionID = transactionCsv[7]
-	transaction.TransactionDate = transactionCsv[8]
+
+	// Parse time and catch errors from homework format
+	tempDate, err := time.Parse(DDMMYY, transactionCsv[8])
+	if err != nil {
+		return err
+	}
+
+	// Format time into ISO format
+	transaction.TransactionDate = tempDate.Format(YYYYMMDD)
 	transaction.CardPAN = transactionCsv[9]
 	transaction.CardType = transactionCsv[10]
+
+	return nil
 }
 
 func HandleRequest(ctx context.Context, event S3Event) (string, error) {
@@ -107,12 +122,10 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 		}
 
 		var m Transaction
-		m.Parse(record)
-
-		// m := map[string]string
-		// for i, h := range header {
-		// 	m[h] = record[i]
-		// }
+		err = m.Parse(record)
+		if err != nil {
+			fmt.Printf("Error parsing transaction: %v", err)
+		}
 
 		b, err := json.Marshal(m)
 		if err != nil {
