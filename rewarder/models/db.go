@@ -25,7 +25,7 @@ func InitDB(dbConnString string, keyspace string, table string) {
 
 	err = session.Query("CREATE TABLE IF NOT EXISTS " + keyspace + "." + table +
 		" (id uuid, card_id uuid, merchant text, mcc int, currency text, amount double, sgd_amount double, " +
-		"transaction_id text, transaction_date text, card_pan text, card_type text, reward_amount double, " +
+		"transaction_id text, transaction_date date, card_pan text, card_type text, reward_amount double, " +
 		"remarks text, PRIMARY KEY(id));").Exec()
 	if err != nil {
 		log.Fatalln(err)

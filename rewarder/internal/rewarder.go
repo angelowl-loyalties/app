@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	layout = "02-01-06"
+	layout = "2006-01-02"
 )
 
 func ProcessMessageJSON(messageJSON string) error {
