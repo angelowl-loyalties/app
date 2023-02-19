@@ -63,6 +63,20 @@ resource "aws_security_group" "angelowl_kubeservices" {
 }
 
 
+resource "aws_security_group" "angelowl_keyspaces" {
+    name        = "angelowl-keyspaces-access"
+    description = "Allows inbound Cassandra Keyspaces traffic"
+    vpc_id      = aws_vpc.angelowl.id
+    
+    ingress {
+        description = "Cassandra Keyspaces"
+        from_port   = 9142
+        to_port     = 9142
+        protocol    = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+}
+
 resource "aws_security_group" "angelowl_outbound" {
   name        = "angelowl-outbound-access"
   description = "Allows outbound traffic"
