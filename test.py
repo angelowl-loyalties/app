@@ -23,7 +23,7 @@ seed_campaigns = [
         "min_spend":      50.0,
         "start_date": "2023-01-01T00:00:00Z",
         "end_date": "2023-08-31T23:59:59Z",
-        "reward_program": "Points",
+        "reward_program": "scis_platinummiles",
         "reward_amount":  500,
         "mcc":           4495,
         "merchant":      "Best Buy",
@@ -33,21 +33,11 @@ seed_campaigns = [
         "min_spend":      100.0,
         "start_date": "2023-12-01T00:00:00Z",
         "end_date": "2024-02-28T23:59:59Z",
-        "reward_program": "Cashback",
+        "reward_program": "scis_freedom",
         "reward_amount":  25,
         "mcc":            8371,
         "merchant":       "Home Depot",
     },
-    # {
-    #     "name":          "Spring Fling",
-    #     "min_spend":     75.0,
-    #     "start_date":   datetime.datetime(2023, 3, 1, 0, 0, 0, 0, tzinfo=datetime.timezone.utc),
-    #     "end_date":    datetime.datetime(2023, 5, 31, 23, 59, 59, 0, tzinfo=datetime.timezone.utc),
-    #     "reward_program": "Discount",
-    #     "reward_amount": 10,
-    #     "mcc":           9311,
-    #     "merchant":      "Petco",
-    # },
 ]
 
 seed_exclusions = [
@@ -59,14 +49,6 @@ seed_exclusions = [
         "mcc":        7080,
         "valid_from": "2023-03-01T00:00:00Z",
     },
-    # {
-    #     "mcc":        4125,
-    #     "valid_from": datetime.datetime(2023, 3, 1, 0, 0, 0, 0, tzinfo=datetime.timezone.utc),
-    # },
-    # {
-    #     "mcc":        9311,
-    #     "valid_from": datetime.datetime(2023, 4, 1, 0, 0, 0, 0, tzinfo=datetime.timezone.utc), # test to see the most commonly seen MCC marked excluded from next month
-    # },
 ]
 
 def main():
@@ -86,13 +68,12 @@ def main():
         print(res_exclusion.json())
         print(res_campaign.json())
     
-
+    # This rquest blocks for 2 minutes
     res = requests.post("http://localhost:9000/2015-03-31/functions/function/invocations", data="{}")
     print(f"Lambda Status code: {res.status_code}")
 
 if __name__ == "__main__":
     main()
-    time.sleep(30)
     res_informer = requests.get("http://localhost:8083/reward")
-    print("informer all rewards rn:")
-    print(res_informer.json())
+    print("Number of records on informer rn:")
+    print(len(res_informer.json()))

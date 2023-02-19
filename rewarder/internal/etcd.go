@@ -149,7 +149,7 @@ func etcdAddInitial() (err error) {
 		MinSpend:      75.0,
 		Start:         time.Date(2023, 3, 1, 0, 0, 0, 0, time.UTC),
 		End:           time.Date(2023, 5, 31, 23, 59, 59, 0, time.UTC),
-		RewardProgram: "Discount",
+		RewardProgram: "scis_shopping",
 		RewardAmount:  10,
 		MCC:           9311,
 		Merchant:      "Petco",

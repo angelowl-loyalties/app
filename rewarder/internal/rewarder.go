@@ -2,6 +2,7 @@ package internal
 
 import (
 	"encoding/json"
+	"log"
 	"time"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
@@ -9,7 +10,7 @@ import (
 )
 
 const (
-	layout = "2006-01-02"
+	YYYYMMDD = "2006-01-02"
 )
 
 func ProcessMessageJSON(messageJSON string) error {
@@ -26,7 +27,7 @@ func ProcessMessageJSON(messageJSON string) error {
 
 func ProcessMessage(transaction models.Transaction) error {
 	//TODO: Proper error handling
-	transactionDate, err := time.Parse(layout, transaction.TransactionDate)
+	transactionDate, err := time.Parse(YYYYMMDD, transaction.TransactionDate)
 
 	// TODO: Proper Error handling
 	if err != nil {
@@ -56,42 +57,64 @@ func ProcessMessage(transaction models.Transaction) error {
 		err := models.RewardCreate(reward)
 		// TODO: Proper Error handling
 		if err != nil {
-			// log.Fatalln(err)
+			log.Fatalln(err)
 			return err
 		}
 
 	} else {
 		campaign := getMatchingCampaign(transaction.CardType, transaction.TransactionDate)
 
-		if campaign == nil {
-			return nil // TODO: Reconsider what to return here
-		}
+		if campaign != nil {
+			delta := calculateDeltaType(campaign.RewardAmount, transaction.Amount)
+			remarks := "" // TODO: Map campaigns to appropriate remarks
 
-		delta := calculateDeltaType(campaign.RewardAmount, transaction.Amount)
-		remarks := "" // TODO: Map campaigns to appropriate remarks
+			reward := models.Reward{
+				ID:              gocql.UUID(transaction.ID),
+				CardID:          gocql.UUID(transaction.CardID),
+				Merchant:        transaction.Merchant,
+				MCC:             transaction.MCC,
+				Currency:        transaction.Currency,
+				Amount:          transaction.Amount,
+				SGDAmount:       transaction.SGDAmount,
+				TransactionID:   transaction.TransactionID,
+				TransactionDate: transaction.TransactionDate,
+				CardPAN:         transaction.CardPAN,
+				CardType:        transaction.CardType,
+				RewardAmount:    delta,
+				Remarks:         remarks,
+			}
+			err := models.RewardCreate(reward)
+			// TODO: Proper Error handling
+			if err != nil {
+				log.Fatalln(err)
+				return err
+			}
+		} else {
+			delta := 69.0
+			remarks := "Base campaign applied"
 
-		reward := models.Reward{
-			ID:              gocql.UUID(transaction.ID),
-			CardID:          gocql.UUID(transaction.CardID),
-			Merchant:        transaction.Merchant,
-			MCC:             transaction.MCC,
-			Currency:        transaction.Currency,
-			Amount:          transaction.Amount,
-			SGDAmount:       transaction.SGDAmount,
-			TransactionID:   transaction.TransactionID,
-			TransactionDate: transaction.TransactionDate,
-			CardPAN:         transaction.CardPAN,
-			CardType:        transaction.CardType,
-			RewardAmount:    delta,
-			Remarks:         remarks,
+			reward := models.Reward{
+				ID:              gocql.UUID(transaction.ID),
+				CardID:          gocql.UUID(transaction.CardID),
+				Merchant:        transaction.Merchant,
+				MCC:             transaction.MCC,
+				Currency:        transaction.Currency,
+				Amount:          transaction.Amount,
+				SGDAmount:       transaction.SGDAmount,
+				TransactionID:   transaction.TransactionID,
+				TransactionDate: transaction.TransactionDate,
+				CardPAN:         transaction.CardPAN,
+				CardType:        transaction.CardType,
+				RewardAmount:    delta,
+				Remarks:         remarks,
+			}
+			err := models.RewardCreate(reward)
+			// TODO: Proper Error handling
+			if err != nil {
+				log.Fatalln(err)
+				return err
+			}
 		}
-		err := models.RewardCreate(reward)
-		// TODO: Proper Error handling
-		if err != nil {
-			// log.Fatalln(err)
-			return err
-		}
-
 	}
 	return nil
 }
@@ -109,7 +132,7 @@ func isExcluded(transactionDate time.Time, mcc int) bool {
 
 func getMatchingCampaign(cardType string, transactionDateStr string) (campaign *models.Campaign) {
 	// TODO: start using the transactions start date instead of time now
-	// transactionDate, _ := time.Parse(layout, transactionDateStr)
+	// transactionDate, _ := time.Parse(YYYYMMDD, transactionDateStr)
 	transactionDate := time.Now()
 	for _, campaign := range CampaignsEtcd {
 		if campaign.RewardProgram == cardType && campaign.Start.Before(transactionDate) && campaign.End.After(transactionDate) {

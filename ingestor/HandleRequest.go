@@ -48,26 +48,31 @@ type S3Event struct {
 	} `json:"Records"`
 }
 
+// Follows FTP ordering
 func (transaction *Transaction) Parse(transactionCsv []string) error {
 	transaction.ID = uuid.MustParse(transactionCsv[0])
-	transaction.CardID = uuid.MustParse(transactionCsv[1])
+	transaction.TransactionID = transactionCsv[1]
 	transaction.Merchant = transactionCsv[2]
 	transaction.MCC, _ = strconv.Atoi(transactionCsv[3])
 	transaction.Currency = transactionCsv[4]
 	transaction.Amount, _ = strconv.ParseFloat(transactionCsv[5], 64)
-	transaction.SGDAmount, _ = strconv.ParseFloat(transactionCsv[6], 64)
-	transaction.TransactionID = transactionCsv[7]
+
+	// transaction.SGDAmount, _ = strconv.ParseFloat(transactionCsv[6], 64)
+	transaction.SGDAmount = 0.0
 
 	// Parse time and catch errors from homework format
-	tempDate, err := time.Parse(DDMMYY, transactionCsv[8])
-	if err != nil {
-		return err
-	}
+	// tempDate, err := time.Parse(DDMMYY, transactionCsv[6])
+	// if err != nil {
+	// 	return err
+	// }
 
 	// Format time into ISO format
-	transaction.TransactionDate = tempDate.Format(YYYYMMDD)
-	transaction.CardPAN = transactionCsv[9]
-	transaction.CardType = transactionCsv[10]
+	// transaction.TransactionDate = tempDate.Format(YYYYMMDD)
+
+	transaction.TransactionDate = transactionCsv[6]
+	transaction.CardID = uuid.MustParse(transactionCsv[7])
+	transaction.CardPAN = transactionCsv[8]
+	transaction.CardType = transactionCsv[9]
 
 	return nil
 }
@@ -79,8 +84,7 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 
 	// Define the S3 bucket and file key
 	bucket := "angel-owl-spendfiles"
-	// fileKey := event.Records[0].S3.Object.Key
-	fileKey := "01d6779e-a727-41fa-81ca-9a198061ec45.csv"
+	fileKey := "spend.csv"
 
 	// Download the file from S3
 	result, err := s3Svc.GetObject(&s3.GetObjectInput{
