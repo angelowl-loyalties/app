@@ -9,10 +9,11 @@ import (
 )
 
 type Campaign struct {
-	ID            uuid.UUID `json:"id" gorm:"type:uuid;primaryKey;<-:create"`
-	Name          string    `json:"name" gorm:"type:varchar(255)" binding:"required,min=1"`
-	MinSpend      float64   `json:"min_spend" binding:"gte=0"`
-	Start         time.Time `json:"start_date" binding:"required,gte"`         // should be later than time.Now()
+	ID       uuid.UUID `json:"id" gorm:"type:uuid;primaryKey;<-:create"`
+	Name     string    `json:"name" gorm:"type:varchar(255)" binding:"required,min=1"`
+	MinSpend float64   `json:"min_spend" binding:"gte=0"`
+	// TODO: Add back the gte to add validation after time now
+	Start         time.Time `json:"start_date" binding:"required"`             // should be later than time.Now()
 	End           time.Time `json:"end_date" binding:"required,gtfield=Start"` // should be later than Start
 	RewardProgram string    `json:"reward_program" gorm:"type:varchar(255)" binding:"required,min=1"`
 	RewardAmount  int       `json:"reward_amount" binding:"required,gt=0"`

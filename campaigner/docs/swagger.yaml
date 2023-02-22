@@ -8,7 +8,7 @@ definitions:
         type: string
       mcc:
         maximum: 9999
-        minimum: 0
+        minimum: 1
         type: integer
       merchant:
         minLength: 1
@@ -68,8 +68,8 @@ paths:
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Created
           schema:
             $ref: '#/definitions/models.Campaign'
       summary: Create a campaign

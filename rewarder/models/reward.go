@@ -1,10 +1,10 @@
 package models
 
 import (
+	"github.com/scylladb/gocqlx"
 	"log"
 
 	"github.com/gocql/gocql"
-	"github.com/scylladb/gocqlx"
 	"github.com/scylladb/gocqlx/qb"
 )
 
@@ -24,26 +24,29 @@ type Reward struct {
 	Remarks         string     `json:"remarks"`          // cassandra text
 }
 
-func RewardGetAll() (rewards []Reward, _ error) {
-	stmt, _ := qb.Select("transactions.rewards").ToCql()
+func RewardCreate(reward Reward) error {
+	stmt, names := qb.Insert("transactions.rewards").Columns(
+		"id",
+		"card_id",
+		"merchant",
+		"mcc",
+		"currency",
+		"amount",
+		"sgd_amount",
+		"transaction_id",
+		"transaction_date",
+		"card_pan",
+		"card_type",
+		"reward_amount",
+		"remarks").ToCql()
 
-	err := gocqlx.Select(&rewards, DB.Query(stmt))
+	q := gocqlx.Query(DB.Query(stmt), names).BindStruct(&reward)
+
+	err := q.ExecRelease()
 	if err != nil {
-		log.Println(err)
-		return nil, err
+		log.Fatalln(err)
+		return err
 	}
 
-	return rewards, nil
-}
-
-func RewardGetByCardID(reqCardId string) (rewards []Reward, _ error) {
-	stmt, _ := qb.Select("transactions.rewards").Where(qb.EqLit("card_id", reqCardId)).ToCql()
-
-	err := gocqlx.Select(&rewards, DB.Query(stmt))
-	if err != nil {
-		log.Println(err)
-		return nil, err
-	}
-
-	return rewards, nil
+	return nil
 }

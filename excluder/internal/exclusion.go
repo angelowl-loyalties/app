@@ -69,8 +69,15 @@ func CreateExclusion(c *gin.Context) {
 	}
 
 	exclusion, err := models.ExclusionCreate(&newExclusion)
-
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	err = etcdPutExclusion(exclusion) // put into etcd
+	if err != nil {
+		// roll back persist to DB if put to etcd fails
+		_, _ = models.ExclusionDelete(exclusion)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -79,8 +86,8 @@ func CreateExclusion(c *gin.Context) {
 }
 
 // UpdateExclusion - PUT /exclusion/:id
-// @Summary Update a exclusion
-// @Description Update a exclusion
+// @Summary Update an exclusion
+// @Description Update an exclusion
 // @Tags exclusion
 // @Accept json
 // @Produce json
@@ -112,12 +119,21 @@ func UpdateExclusion(c *gin.Context) {
 		return
 	}
 
+	originalExclusion := exclusion
 	exclusion.MCC = updatedExclusion.MCC
 	exclusion.ValidFrom = updatedExclusion.ValidFrom
 
-	exclusion, err = models.ExclusionSave(exclusion)
-
+	// put into etcd, nothing to roll back if failure
+	err = etcdPutExclusion(exclusion)
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	exclusion, err = models.ExclusionSave(exclusion)
+	if err != nil {
+		// since persist to DB fails, we roll back update to etcd
+		_ = etcdPutExclusion(originalExclusion)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -126,8 +142,8 @@ func UpdateExclusion(c *gin.Context) {
 }
 
 // DeleteExclusion - DELETE /exclusion/:id
-// @Summary Delete a exclusion
-// @Description Delete a exclusion
+// @Summary Delete an exclusion
+// @Description Delete an exclusion
 // @Tags exclusion
 // @Produce json
 // @Success 204 {object} nil
@@ -150,9 +166,16 @@ func DeleteExclusion(c *gin.Context) {
 		return
 	}
 
-	_, err = models.ExclusionDelete(exclusion)
-
+	_, err = etcdDeleteExclusion(exclusion.ID.String()) // delete from etcd
 	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	_, err = models.ExclusionDelete(exclusion)
+	if err != nil {
+		// since deletion fails, we need to restore etcd copy of exclusion
+		_ = etcdPutExclusion(exclusion)
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

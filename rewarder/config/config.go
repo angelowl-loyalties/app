@@ -1,13 +1,15 @@
 package config
 
 import (
-	"fmt"
 	"github.com/spf13/viper"
 )
 
 type Config struct {
-	Port          string `mapstructure:"PORT"`
 	DBConnString  string `mapstructure:"DB_CONN_STRING"`
+	DBKeyspace    string `mapstructure:"DB_KEYSPACE"`
+	DBTable       string `mapstructure:"DB_TABLE"`
+	Broker        string `mapstructure:"BROKER_HOST"`
+	Topic         string `mapstructure:"TOPIC"`
 	EtcdEndpoints string `mapstructure:"ETCD_ENDPOINTS"`
 }
 
@@ -21,11 +23,13 @@ func LoadConfig() (config Config, err error) {
 	err = viper.ReadInConfig()
 
 	if err != nil {
-		fmt.Println(err)
-		// production use
-		_ = viper.BindEnv("PORT")
 		_ = viper.BindEnv("DB_CONN_STRING")
+		_ = viper.BindEnv("DB_KEYSPACE")
+		_ = viper.BindEnv("DB_TABLE")
+		_ = viper.BindEnv("BROKER_HOST")
+		_ = viper.BindEnv("TOPIC")
 		_ = viper.BindEnv("ETCD_ENDPOINTS")
+
 		err = viper.Unmarshal(&config)
 		return
 	}

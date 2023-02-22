@@ -5,10 +5,14 @@ definitions:
         type: string
       mcc:
         maximum: 9999
-        minimum: 0
+        minimum: 1
         type: integer
+      valid_from:
+        description: should be later than time.Now()
+        type: string
     required:
     - mcc
+    - valid_from
     type: object
 info:
   contact: {}
@@ -51,7 +55,7 @@ paths:
       - exclusion
   /exclusion/{exclusion_id}:
     delete:
-      description: Delete a exclusion
+      description: Delete an exclusion
       parameters:
       - description: Exclusion ID
         in: path
@@ -63,7 +67,7 @@ paths:
       responses:
         "204":
           description: No Content
-      summary: Delete a exclusion
+      summary: Delete an exclusion
       tags:
       - exclusion
     get:
@@ -87,7 +91,7 @@ paths:
     put:
       consumes:
       - application/json
-      description: Update a exclusion
+      description: Update an exclusion
       parameters:
       - description: New Exclusion
         in: body
@@ -107,7 +111,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.Exclusion'
-      summary: Update a exclusion
+      summary: Update an exclusion
       tags:
       - exclusion
   /health:
