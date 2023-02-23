@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaigner/internal"
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/internal"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -27,4 +27,13 @@ func InitialiseRoutes(router *gin.Engine) {
 		campaign.PUT("/:id", internal.UpdateCampaign)
 		campaign.DELETE("/:id", internal.DeleteCampaign)
 	}
+
+    exclusion := router.Group("/exclusion")
+    {
+        exclusion.GET("/", internal.GetExclusions)
+        exclusion.GET("/:id", internal.GetExclusionById)
+        exclusion.POST("/", internal.CreateExclusion)
+        exclusion.PUT("/:id", internal.UpdateExclusion)
+        exclusion.DELETE("/:id", internal.DeleteExclusion)
+    }
 }
