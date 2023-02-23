@@ -60,7 +60,7 @@ def main():
             print("Add seed exclusion failed")
             return
 
-        res_campaign = requests.post("http://localhost:8082/campaign", data=json.dumps(seed_campaigns[i]))
+        res_campaign = requests.post("http://localhost:8081/campaign", data=json.dumps(seed_campaigns[i]))
         if res_campaign.status_code != 201:
             print("Add seed campaign failed")
             return
@@ -74,6 +74,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-    res_informer = requests.get("http://localhost:8083/reward")
+    res_informer = requests.get("http://localhost:8082/reward")
     print("Number of records on informer rn:")
     print(len(res_informer.json()))
