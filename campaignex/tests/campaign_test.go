@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/excluder/routes"
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"net/http"

@@ -3,7 +3,7 @@ package internal
 import (
 	"net/http"
 
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/excluder/models"
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/models"
 	"github.com/gin-gonic/gin"
 )
 

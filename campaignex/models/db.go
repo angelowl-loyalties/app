@@ -16,10 +16,15 @@ func ConnectDB(dbConnString string) {
 		log.Fatalln(err)
 	}
 
-	if err = db.AutoMigrate(&Exclusion{}); err != nil {
+	if err = db.AutoMigrate(&Campaign{}); err != nil {
 		panic(err)
 	}
-	log.Println("Migrated Exclusion Table")
+	log.Println("Migrated Campaign Table")
+
+    if err = db.AutoMigrate(&Exclusion{}); err != nil {
+        panic(err)
+    }
+    log.Println("Migrated Exclusion Table")
 
 	DB = db
 }

@@ -1,7 +1,7 @@
 package tests
 
 import (
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaigner/routes"
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 	"net/http"
@@ -11,7 +11,7 @@ import (
 
 // refer here: https://circleci.com/blog/gin-gonic-testing/
 
-func TestHealth(t *testing.T) {
+func TestHealth2(t *testing.T) {
 	router := gin.Default()
 	routes.InitialiseRoutes(router)
 

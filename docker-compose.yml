@@ -20,11 +20,11 @@ services:
       dockerfile: Dockerfile
     image: ingestor
     ports:
-      - 9000:8080
+      - "9000:8080"
     environment:
       AWS_REGION: ap-southeast-1
-      AWS_ACCESS_KEY_ID: AKIAUAWJVJ7I7A4V3QI6
-      AWS_SECRET_ACCESS_KEY: 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
+      AWS_ACCESS_KEY_ID:
+      AWS_SECRET_ACCESS_KEY:
     networks:
       default:
         aliases:
@@ -72,15 +72,14 @@ services:
     ports:
       - "5431:80"
   
-  excluder-service:
+  campaignex-service:
     build: 
-      context: ./excluder
+      context: ./campaignex
       dockerfile: Dockerfile.prod
-    image: excluder
+    image: campaignex
     restart: unless-stopped
     depends_on:
       - postgres
-      - etcd
     environment:
       PORT: 8081
       DB_CONN_STRING: postgresql://admin:admin@postgres_db
@@ -90,30 +89,9 @@ services:
     networks:
       default:
         aliases:
-          - excluder_service
+          - campaignex_service
     ports:
       - "8081:8081"
-  
-  campaigner-service:
-    build: 
-      context: ./campaigner
-      dockerfile: Dockerfile.prod
-    image: campaigner
-    restart: unless-stopped
-    depends_on:
-      - postgres
-    environment:
-      PORT: 8082
-      DB_CONN_STRING: postgresql://admin:admin@postgres_db
-      ETCD_ENDPOINTS: etcd:2379
-    volumes:
-      - .:/app
-    networks:
-      default:
-        aliases:
-          - campaigner_service
-    ports:
-      - "8082:8082"
 
   rewarder-service:
     build: 
@@ -148,7 +126,7 @@ services:
     depends_on:
       - cassandra
     environment:
-      - PORT=8083
+      - PORT=8082
       - DB_CONN_STRING=cassandra_db
       - DB_KEYSPACE=transactions
       - DB_TABLE=rewards
@@ -159,4 +137,4 @@ services:
         aliases:
           - informer_service
     ports:
-      - "8083:8083"
+      - "8082:8082"

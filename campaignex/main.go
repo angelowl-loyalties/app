@@ -2,15 +2,15 @@ package main
 
 import (
 	"fmt"
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/excluder/internal"
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/internal"
 	"log"
 
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/excluder/config"
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/excluder/models"
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/excluder/routes"
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/config"
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/models"
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/routes"
 	"github.com/gin-gonic/gin"
 
-	_ "github.com/cs301-itsa/project-2022-23t2-g1-t7/excluder/docs"
+	_ "github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/docs"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
