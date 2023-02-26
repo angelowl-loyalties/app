@@ -1,0 +1,17 @@
+package models
+
+import "github.com/google/uuid"
+
+type Transaction struct {
+	ID              uuid.UUID `json:"id"`
+	CardID          uuid.UUID `json:"card_id"`
+	Merchant        string    `json:"merchant"`
+	MCC             int       `json:"mcc"`
+	Currency        string    `json:"currency"`
+	Amount          float64   `json:"amount"`
+	SGDAmount       float64   `json:"sgd_amount"`
+	TransactionID   string    `json:"transaction_id"`
+	TransactionDate string    `json:"transaction_date"`
+	CardPAN         string    `json:"card_pan"`
+	CardType        string    `json:"card_type"`
+}

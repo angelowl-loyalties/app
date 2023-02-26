@@ -1,0 +1,139 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/health": {
+            "get": {
+                "description": "health check",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "health",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/reward": {
+            "get": {
+                "description": "Get all rewards",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "reward"
+                ],
+                "summary": "Get all rewards",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Reward"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/reward/{cardId}": {
+            "get": {
+                "description": "Get all rewards for a particular card's UUID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "reward"
+                ],
+                "summary": "Get all rewards for a specified card",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Card ID",
+                        "name": "cardId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Reward"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Reward": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "description": "cassandra double",
+                    "type": "number"
+                },
+                "card_id": {
+                    "description": "cassandra uuid",
+                    "type": "string"
+                },
+                "card_pan": {
+                    "description": "cassandra text",
+                    "type": "string"
+                },
+                "card_type": {
+                    "description": "cassandra text",
+                    "type": "string"
+                },
+                "currency": {
+                    "description": "cassandra text",
+                    "type": "string"
+                },
+                "id": {
+                    "description": "cassandra uuid",
+                    "type": "string"
+                },
+                "mcc": {
+                    "description": "cassandra int",
+                    "type": "integer"
+                },
+                "merchant": {
+                    "description": "cassandra text",
+                    "type": "string"
+                },
+                "remarks": {
+                    "description": "cassandra text",
+                    "type": "string"
+                },
+                "reward_amount": {
+                    "description": "cassandra double",
+                    "type": "number"
+                },
+                "sgd_amount": {
+                    "description": "cassandra double",
+                    "type": "number"
+                },
+                "transaction_date": {
+                    "description": "cassandra text",
+                    "type": "string"
+                },
+                "transaction_id": {
+                    "description": "cassandra text",
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

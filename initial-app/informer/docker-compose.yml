@@ -1,0 +1,29 @@
+version: "3.1"
+services:
+  cassandra:
+    image: cassandra:4
+    networks:
+      default:
+        aliases:
+          - cassandra_db
+    ports:
+      - "9042:9042"
+
+  informer-service:
+    build: .
+    image: informer
+    depends_on:
+      - cassandra
+    environment:
+      - PORT=8080
+      - DB_CONN_STRING=cassandra_db
+      - DB_KEYSPACE=transactions
+      - DB_TABLE=rewards
+    volumes:
+      - .:/app
+    networks:
+      default:
+        aliases:
+          - informer_service
+    ports:
+      - "8080:8080"
