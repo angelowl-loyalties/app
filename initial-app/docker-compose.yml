@@ -1,11 +1,11 @@
 # Docker compose to run the following flow
 # - Start ingestor lambda to allow producing messages into Prod Kafka
 # - Start cassandra (for rewarder to write into)
-# - Start etcd: excluder and campaigner will write into these and rewarder listens for changes
-# - Start postgres for excluder and campaigner to write into
-# - Start excluder and campaigner. These will write into etcd
+# - Start etcd: campaignex will write into these and rewarder listens for changes
+# - Start postgres for campaignex to write into
+# - Start campaignex. These will write into etcd
 # - Start rewarder. This will begin consumption from the queue
-# - Start informer. /reward endpoint will show you the transactions that have successfully been processed
+# - Start informer. /reward endoint will show you the transactions that have successfully been processed
 
 version: "3.1"
 
@@ -23,8 +23,8 @@ services:
       - "9000:8080"
     environment:
       AWS_REGION: ap-southeast-1
-      AWS_ACCESS_KEY_ID:
-      AWS_SECRET_ACCESS_KEY:
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
     networks:
       default:
         aliases:

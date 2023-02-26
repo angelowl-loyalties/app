@@ -1,19 +1,18 @@
 """
-Before you run this wait for all 9 containers to be up, rewarder and informer will restart until cassandra is ready
+Before you run this wait for all containers to be up, rewarder and informer need to be restarted when cassandra is up.
+
+When cassandra is up, its container logs will show that a default superuser has been created. Restart rewarder and informer when this is seen.
 
 This script simulates the following
-- Add in 2 base exclusions and campaigns to etcd
-- Trigger the lambda to add transactions to queue
-- Sleep and print output of informer (should have some stuff)
+- Add in 2 base exclusions and campaigns to etcd via campaignex
+- Trigger the lambda to add transactions to production Kafka (needs to be accessed via a VPN)
 
 Endpoints:
 - ingestor: localhost:9000
-- excluder: localhost:8081
-- campaigner: localhost:8082
-- informer: localhost:8083
+- campaignex: localhost:8081
+- informer: localhost:8082
 """
 
-import time
 import requests
 import json
 
@@ -74,6 +73,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    res_informer = requests.get("http://localhost:8082/reward")
-    print("Number of records on informer rn:")
-    print(len(res_informer.json()))
