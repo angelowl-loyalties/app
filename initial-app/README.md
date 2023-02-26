@@ -17,3 +17,30 @@ The 4 main microservices are
     - This service exposes REST API endpoints to perform CRUD operations on User and Customer information. It allows a customer to obtain information on their user profile as well as the cards in their ownership.
 
 Ingestor is a lambda that ingests a CSV file from S3 and parses rows and acts as a producer to into Kafka.
+
+## Images
+
+### Kafka UI - Consumer Group `reward`
+
+This screenshot shows the number of messages the consumer in the rewarder service is yet to consume.
+
+![Kafka UI Consumer Screen](images/kafkaui_consumer.png)
+
+### Kafka UI - Topic `transaction`
+
+This screenshot shows the number of messages present in the topic of concern: `transaction`
+
+![Kafka UI Topic](images/kafkaui_topic.png)
+
+### Web App UI - Viewing rewards
+
+This screenshot shows the main page of UI where users can view their rewards by the cards that they have
+
+![UI Rewards](images/ui_1.png)
+
+### Web App UI - Viewing point history
+
+![UI Rewards](images/ui_1.png)
+
+
+
