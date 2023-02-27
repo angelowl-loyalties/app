@@ -5,6 +5,15 @@ on:
         description: 'Dockerfile'
         required: true
         type: string
+      workdir:
+        description: 'Working directory'
+        required: true
+        type: string
+
+defaults:
+  run:
+    working-directory: ${{ inputs.workdir }}
+    shell: bash
 
 jobs:
   workflow-container:

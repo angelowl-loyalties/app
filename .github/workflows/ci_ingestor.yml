@@ -6,18 +6,14 @@ on:
   pull_request:
     branches: [ master ]
 
-defaults:
-  run:
-    shell: bash
-    working-directory: informer
-
 permissions:
   id-token: write
   contents: read 
 
 jobs:
-  ci-informer:
-    name: CI for Informer
-    uses: ./.github/workflows/workflow_container.yml
+  ci:
+    name: Continuous Integration
+    uses: ./.github/workflows/workflow_lambda.yml
     with:
-      dockerfile: 'Dockerfile.prod'
+      dockerfile: 'Dockerfile'
+      workdir: 'ingestor'
