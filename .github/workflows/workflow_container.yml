@@ -1,16 +1,8 @@
 on:
   workflow_call:
     inputs:
-      working-directory:
-        description: 'Working directory'
-        required: true
-        type: string
       dockerfile:
         description: 'Dockerfile'
-        required: true
-        type: string
-      aws-region:
-        description: 'AWS Region'
         required: true
         type: string
 
@@ -39,6 +31,8 @@ jobs:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: informer
           IMAGE_TAG: ${{ github.sha }}
+        with:
+          DOCKERFILE: ${{ inputs.dockerfile }}
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG . -f $DOCKERFILE
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG

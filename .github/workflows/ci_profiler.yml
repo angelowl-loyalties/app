@@ -1,4 +1,4 @@
-name: Continuous Integration (Informer)
+name: Continuous Integration (Profiler)
 
 on:
   push:
