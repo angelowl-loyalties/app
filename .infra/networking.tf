@@ -22,25 +22,40 @@ resource "aws_subnet" "angelowl_private_a" {
   vpc_id            = aws_vpc.angelowl.id
   cidr_block        = "10.10.10.0/26"
   availability_zone = "ap-southeast-1a"
+
+  tags = {
+    "kubernetes.io/cluster/angelowl-eks-cluster" = "shared"
+    "kubernetes.io/role/internal-elb" = 1
+  }
 }
 
 resource "aws_subnet" "angelowl_private_b" {
   vpc_id            = aws_vpc.angelowl.id
   cidr_block        = "10.10.10.64/26"
   availability_zone = "ap-southeast-1b"
+
+  tags = {
+    "kubernetes.io/cluster/angelowl-eks-cluster" = "shared"
+    "kubernetes.io/role/internal-elb" = 1
+  }
 }
 
 resource "aws_subnet" "angelowl_private_c" {
   vpc_id            = aws_vpc.angelowl.id
   cidr_block        = "10.10.10.128/26"
   availability_zone = "ap-southeast-1c"
+
+  tags = {
+    "kubernetes.io/cluster/angelowl-eks-cluster" = "shared"
+    "kubernetes.io/role/internal-elb" = 1
+  }
 }
 
 resource "aws_route_table" "angelowl_private_default" {
   vpc_id = aws_vpc.angelowl.id
 
   route {
-    cidr_block = "0.0.0.0/0"
+    cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.angelowl_nat.id
   }
 

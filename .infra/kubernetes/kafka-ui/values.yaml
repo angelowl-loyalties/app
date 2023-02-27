@@ -1,0 +1,20 @@
+yamlApplicationConfig:
+  kafka:
+    clusters:
+      - name: angelowl-msk
+        bootstrapServers: angelowlmsk.aznt6t.c3.kafka.ap-southeast-1.amazonaws.com:9092
+  auth:
+    type: disabled
+  management:
+    health:
+      ldap:
+        enabled: false
+
+service:
+  type: NodePort
+  nodePort: 32001
+
+ingress:
+  enabled: true
+  ingressClassName: nginx
+  host: kafka.dashboard.itsag1t2.com

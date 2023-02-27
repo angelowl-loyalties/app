@@ -1,0 +1,15 @@
+controller:
+  service:
+    external:
+      enabled: false
+    internal:
+      enabled: true
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-internal: "true"
+
+  metrics:
+    enabled: true
+    service:
+      annotations:
+        prometheus.io/port: "10254"
+        prometheus.io/scrape: "true"
