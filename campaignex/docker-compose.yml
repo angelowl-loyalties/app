@@ -1,0 +1,47 @@
+version: "3.1"
+services:
+  postgres:
+    image: postgres:14.5
+    networks:
+      default:
+        aliases:
+          - postgres_db
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+      - "5432:5432"
+
+  pgadmin:
+    image: dpage/pgadmin4:6
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@itsa.com
+      PGADMIN_DEFAULT_PASSWORD: itsa_password
+    ports:
+      - "5431:80"
+
+  campaignex-service:
+    build: .
+    image: campaignex
+    depends_on:
+      - postgres
+    volumes:
+      - .:/app
+    networks:
+      default:
+        aliases:
+          - campaignex_service
+    ports:
+      - "8080:8080"
+
+  etcd:
+    image: docker.io/bitnami/etcd:3.5
+    environment:
+      - ALLOW_NONE_AUTHENTICATION=yes
+    volumes:
+      - etcd_data:/bitnami/etcd
+
+volumes:
+  etcd_data:
+    driver: local
