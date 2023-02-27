@@ -1,23 +1,21 @@
-name: Continuous Integration (Informer)
-
 on:
-  push:
-    branches: [ '**' ]
-  pull_request:
-    branches: [ master ]
-
-defaults:
-  run:
-    shell: bash
-    working-directory: informer
-
-permissions:
-  id-token: write
-  contents: read 
+  workflow_call:
+    inputs:
+      working-directory:
+        description: 'Working directory'
+        required: true
+        type: string
+      dockerfile:
+        description: 'Dockerfile'
+        required: true
+        type: string
+      aws-region:
+        description: 'AWS Region'
+        required: true
+        type: string
 
 jobs:
-  ci-informer:
-    name: CI for Informer
+  workflow-container:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -42,5 +40,5 @@ jobs:
           REPOSITORY: informer
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG . -f Dockerfile.prod
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG . -f $DOCKERFILE
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
