@@ -2,7 +2,7 @@ name: Continuous Integration for AngelOwl
 
 on:
   push:
-    branches: [ '*' ]
+    branches: [ '**' ]
   pull_request:
     branches: [ master ]
 
