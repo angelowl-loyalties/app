@@ -3,8 +3,16 @@ name: Continuous Integration (Rewarder)
 on:
   push:
     branches: [ '**' ]
+    paths:
+      - "rewarder/**"
+      - .github/workflows/ci_rewarder.yml
+      - .github/workflows/workflow_container.yml
   pull_request:
     branches: [ master ]
+    paths:
+      - "rewarder/**"
+      - .github/workflows/ci_rewarder.yml
+      - .github/workflows/workflow_container.yml
 
 permissions:
   id-token: write

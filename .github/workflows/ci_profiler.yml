@@ -3,8 +3,16 @@ name: Continuous Integration (Profiler)
 on:
   push:
     branches: [ '**' ]
+    paths:
+      - "profiler/**"
+      - .github/workflows/ci_profiler.yml
+      - .github/workflows/workflow_container.yml
   pull_request:
     branches: [ master ]
+    paths:
+      - "profiler/**"
+      - .github/workflows/ci_profiler.yml
+      - .github/workflows/workflow_container.yml
 
 permissions:
   id-token: write

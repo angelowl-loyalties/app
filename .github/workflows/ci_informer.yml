@@ -3,8 +3,16 @@ name: Continuous Integration (Informer)
 on:
   push:
     branches: [ '**' ]
+    paths:
+      - "informer/**"
+      - .github/workflows/ci_informer.yml
+      - .github/workflows/workflow_container.yml
   pull_request:
     branches: [ master ]
+    paths:
+      - "informer/**"
+      - .github/workflows/ci_informer.yml
+      - .github/workflows/workflow_container.yml
 
 permissions:
   id-token: write
