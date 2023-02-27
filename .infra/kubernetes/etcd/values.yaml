@@ -1,0 +1,10 @@
+service:
+  type: NodePort	
+  nodePorts:
+    client: 32379
+    peer: 32380
+
+global:
+  storageClass:
+
+replicaCount: 3

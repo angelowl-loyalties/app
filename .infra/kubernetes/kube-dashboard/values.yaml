@@ -1,0 +1,9 @@
+extraArgs:
+  - --enable-skip-login
+  - --disable-settings-authorizer
+
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - kube.dashboard.itsag1t2.com
