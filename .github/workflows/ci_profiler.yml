@@ -21,5 +21,3 @@ jobs:
     uses: ./.github/workflows/workflow_container.yml
     with:
       dockerfile: 'Dockerfile.prod'
-      working-directory: 'profiler'
-      aws-region: 'ap-southeast-1'
