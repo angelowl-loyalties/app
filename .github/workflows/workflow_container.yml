@@ -9,6 +9,10 @@ on:
         description: 'Working directory'
         required: true
         type: string
+      repository:
+        description: 'Repository'
+        required: true
+        type: string
 
 defaults:
   run:
@@ -37,7 +41,7 @@ jobs:
       - name: Build, tag, and push docker image to Amazon ECR
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          REPOSITORY: informer
+          REPOSITORY:  ${{ inputs.repository }}
           IMAGE_TAG: ${{ github.sha }}
           DOCKERFILE: ${{ inputs.dockerfile }}
           WORKDIR: ${{ inputs.workdir }}
