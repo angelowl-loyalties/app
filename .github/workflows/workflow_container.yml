@@ -12,7 +12,6 @@ on:
 
 defaults:
   run:
-    working-directory: ${{ inputs.workdir }}
     shell: bash
 
 jobs:
@@ -41,6 +40,7 @@ jobs:
           REPOSITORY: informer
           IMAGE_TAG: ${{ github.sha }}
           DOCKERFILE: ${{ inputs.dockerfile }}
+          WORKDIR: ${{ inputs.workdir }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG . -f $DOCKERFILE
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG $WORKDIR -f $DOCKERFILE
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
