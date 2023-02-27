@@ -42,5 +42,5 @@ jobs:
           DOCKERFILE: ${{ inputs.dockerfile }}
           WORKDIR: ${{ inputs.workdir }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG $WORKDIR -f $DOCKERFILE
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG $WORKDIR -f $WORKDIR/$DOCKERFILE
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
