@@ -1,0 +1,28 @@
+name: Continuous Integration (Authorizer)
+
+on:
+  push:
+    branches: [ '**' ]
+    paths:
+      - "authorizer/**"
+      - .github/workflows/ci_authorizer.yml
+      - .github/workflows/workflow_lambda.yml
+  pull_request:
+    branches: [ master ]
+    paths:
+      - "authorizer/**"
+      - .github/workflows/ci_authorizer.yml
+      - .github/workflows/workflow_lambda.yml
+
+permissions:
+  id-token: write
+  contents: read 
+
+jobs:
+  ci:
+    name: Continuous Integration
+    uses: ./.github/workflows/workflow_lambda.yml
+    with:
+      dockerfile: 'Dockerfile'
+      workdir: 'authorizer'
+      repository: 'authorizer'
