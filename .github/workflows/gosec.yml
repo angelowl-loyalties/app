@@ -9,7 +9,9 @@ on:
 jobs:
   gosec:
     runs-on: ubuntu-latest
-    working-directory: ${{ inputs.workdir }}
+    defaults:
+      run:
+        working-directory: ${{ inputs.workdir }}
     env:
       GO111MODULE: on
     steps:
