@@ -24,14 +24,20 @@ jobs:
     uses: ./.github/workflows/golangci-lint.yml
     with:
       workdir: 'campaignex'
-  sast:
+  gosec:
     needs: lint
-    name: SAST Security Scanning
-    uses: ./.github/workflows/sast.yml
+    name: gosec SAST
+    uses: ./.github/workflows/gosec.yml
+    with:
+      workdir: 'campaignex'
+  semgrep:
+    needs: lint
+    name: semgrep SAST
+    uses: ./.github/workflows/semgrep.yml
     with:
       workdir: 'campaignex'
   ci:
-    needs: sast
+    needs: [lint, gosec]
     name: Continuous Integration
     uses: ./.github/workflows/workflow_container.yml
     with:
