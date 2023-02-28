@@ -16,4 +16,4 @@ jobs:
         uses: actions/checkout@v3
       - run: semgrep ci --include=${{ inputs.workdir }}
         env:
-          SEMGREP_RULES: p/default,p/golang
+          SEMGREP_RULES: p/default p/golang
