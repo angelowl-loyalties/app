@@ -19,7 +19,13 @@ permissions:
   contents: read 
 
 jobs:
+  lint:
+    name: Golang Linting
+    uses: ./.github/workflows/golangci-lint.yml
+    with:
+      workdir: 'profiler'
   ci:
+    needs: lint
     name: Continuous Integration
     uses: ./.github/workflows/workflow_container.yml
     with:
