@@ -14,8 +14,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - run: semgrep ci
-        with:
-          working-directory: ${{ inputs.workdir }}
+      - run: semgrep ci --include=${{ inputs.workdir }}
         env:
           SEMGREP_RULES: p/default,p/golang
