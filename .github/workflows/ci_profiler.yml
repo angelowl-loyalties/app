@@ -29,13 +29,13 @@ jobs:
     name: gosec SAST
     uses: ./.github/workflows/gosec.yml
     with:
-      workdir: 'campaignex'
+      workdir: 'profiler'
   semgrep:
     needs: lint
     name: semgrep SAST
     uses: ./.github/workflows/semgrep.yml
     with:
-      workdir: 'campaignex'
+      workdir: 'profiler'
   ci:
     needs: [lint, gosec]
     name: Continuous Integration
