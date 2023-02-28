@@ -24,8 +24,20 @@ jobs:
     uses: ./.github/workflows/golangci-lint.yml
     with:
       workdir: 'informer'
-  ci:
+  gosec:
     needs: lint
+    name: gosec SAST
+    uses: ./.github/workflows/gosec.yml
+    with:
+      workdir: 'informer'
+  semgrep:
+    needs: lint
+    name: semgrep SAST
+    uses: ./.github/workflows/semgrep.yml
+    with:
+      workdir: 'informer'
+  ci:
+    needs: [lint, gosec]
     name: Continuous Integration
     uses: ./.github/workflows/workflow_container.yml
     with:

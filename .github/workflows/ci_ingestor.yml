@@ -24,8 +24,20 @@ jobs:
     uses: ./.github/workflows/golangci-lint.yml
     with:
       workdir: 'ingestor'
-  ci:
+  gosec:
     needs: lint
+    name: gosec SAST
+    uses: ./.github/workflows/gosec.yml
+    with:
+      workdir: 'ingestor'
+  semgrep:
+    needs: lint
+    name: semgrep SAST
+    uses: ./.github/workflows/semgrep.yml
+    with:
+      workdir: 'ingestor'
+  ci:
+    needs: [lint, gosec]
     name: Continuous Integration
     uses: ./.github/workflows/workflow_lambda.yml
     with:
