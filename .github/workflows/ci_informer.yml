@@ -25,6 +25,7 @@ jobs:
     with:
       workdir: 'informer'
   ci:
+    needs: lint
     name: Continuous Integration
     uses: ./.github/workflows/workflow_container.yml
     with:
