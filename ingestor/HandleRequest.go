@@ -136,13 +136,15 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 			fmt.Printf("Error marshaling JSON: %v", err)
 		}
 
-		go producer.WriteMessages(ctx, kafka.Message{
-			Key:   []byte("transaction6"),
-			Value: []byte(b),
-		})
-		if err != nil {
-			fmt.Printf("Error writing to Producer: %v", err)
-		}
+		go func() {
+			err := producer.WriteMessages(ctx, kafka.Message{
+				Key:   []byte("transaction6"),
+				Value: []byte(b),
+			})
+			if err != nil {
+				fmt.Printf("Error writing to Producer: %v", err)
+			}
+		}()
 	}
 
 	return "", err
