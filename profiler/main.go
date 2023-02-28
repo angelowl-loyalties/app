@@ -35,5 +35,5 @@ func main() {
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	routes.InitialiseRoutes(router)
 
-	router.Run(":" + port)
+	_ = router.Run(":" + port)
 }

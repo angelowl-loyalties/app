@@ -69,6 +69,10 @@ func CreateUser(c *gin.Context) {
 	}
 
 	temp, err := models.UserGetByEmail(newUser.Email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 	if newUser.Email == temp.Email {
 		// check if another user has the same email, if so, error
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User with that email already exists"})
@@ -128,6 +132,10 @@ func UpdateUser(c *gin.Context) {
 	}
 
 	temp, err := models.UserGetByEmail(updatedUser.Email)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 	if updatedUser.Email != user.Email && updatedUser.Email == temp.Email {
 		// if provided email is different from current email, user wants to change their email
 		// check if another user has the same email, if so, error
