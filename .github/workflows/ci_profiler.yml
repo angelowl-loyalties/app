@@ -37,7 +37,7 @@ jobs:
     with:
       workdir: 'profiler'
   ci:
-    needs: [lint, gosec]
+    needs: [lint, gosec, semgrep]
     name: Continuous Integration
     uses: ./.github/workflows/workflow_container.yml
     with:
