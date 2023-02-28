@@ -24,9 +24,11 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: returntocorp/semgrep
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v3
-        - run: semgrep ci
-          env:
-            SEMGREP_RULES: p/default,p/golang
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - run: semgrep ci
+        with:
+          working-directory: ${{ inputs.workdir }}
+        env:
+          SEMGREP_RULES: p/default,p/golang
