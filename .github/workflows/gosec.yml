@@ -9,6 +9,7 @@ on:
 jobs:
   gosec:
     runs-on: ubuntu-latest
+    working-directory: ${{ inputs.workdir }}
     env:
       GO111MODULE: on
     steps:
@@ -17,4 +18,4 @@ jobs:
       - name: gosec
         uses: securego/gosec@master
         with:
-          args: ./${{ inputs.workdir }}/...
+          args: ./...
