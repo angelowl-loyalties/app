@@ -21,7 +21,6 @@ permissions:
 jobs:
   lint:
     name: Golang Linting
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/golangci-lint.yml
   ci:
     name: Continuous Integration
