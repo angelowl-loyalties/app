@@ -24,6 +24,12 @@ jobs:
     uses: ./.github/workflows/golangci-lint.yml
     with:
       workdir: 'profiler'
+  sast:
+    needs: lint
+    name: SAST Security Scanning
+    uses: ./.github/workflows/sast.yml
+    with:
+      workdir: 'profiler'
   ci:
     needs: lint
     name: Continuous Integration
