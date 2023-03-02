@@ -25,22 +25,11 @@ jobs:
     with:
       workdir: 'profiler'
   sast:
+    needs: lint
     name: Golang SAST
-    uses: ./.github/workflows/gosec.yml
+    uses: ./.github/workflows/sast_golang.yml
     with:
       workdir: 'profiler'
-#  gosec:
-#    needs: lint
-#    name: gosec SAST
-#    uses: ./.github/workflows/gosec.yml
-#    with:
-#      workdir: 'profiler'
-#  semgrep:
-#    needs: lint
-#    name: semgrep SAST
-#    uses: ./.github/workflows/semgrep.yml
-#    with:
-#      workdir: 'profiler'
   ci:
     needs: [lint, sast]
     name: Continuous Integration
