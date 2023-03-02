@@ -39,5 +39,5 @@ func main() {
 	routes.InitialiseRoutes(router)
 
 	port := c.Port
-	router.Run(":" + port)
+	_ = router.Run(":" + port)
 }

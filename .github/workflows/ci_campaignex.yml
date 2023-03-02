@@ -19,7 +19,19 @@ permissions:
   contents: read 
 
 jobs:
+  lint:
+    name: Golang Linting
+    uses: ./.github/workflows/golangci-lint.yml
+    with:
+      workdir: 'campaignex'
+  sast:
+    needs: lint
+    name: Golang SAST
+    uses: ./.github/workflows/sast_golang.yml
+    with:
+      workdir: 'campaignex'
   ci:
+    needs: [lint, sast]
     name: Continuous Integration
     uses: ./.github/workflows/workflow_container.yml
     with:

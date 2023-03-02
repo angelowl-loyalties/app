@@ -1,0 +1,23 @@
+on:
+  workflow_call:
+    inputs:
+      workdir:
+        description: 'Working directory'
+        required: true
+        type: string
+
+jobs:
+  golangci-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup Golang
+        uses: actions/setup-go@v3
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: latest
+          working-directory: ${{ inputs.workdir }}

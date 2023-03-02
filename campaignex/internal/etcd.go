@@ -35,23 +35,23 @@ func InitClient(endpointsString string) {
 
 // Campaign etcd functions
 
-func etcdGetCampaign(id string) (err error) {
-	response, err := ETCD.Get(context.Background(), "campaign_"+id)
-	if err != nil {
-		log.Println(err)
-		return err
-	}
-
-	var campaign models.Campaign
-	for _, ev := range response.Kvs {
-		err := json.Unmarshal(ev.Value, &campaign)
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
+//func etcdGetCampaign(id string) (err error) {
+//	response, err := ETCD.Get(context.Background(), "campaign_"+id)
+//	if err != nil {
+//		log.Println(err)
+//		return err
+//	}
+//
+//	var campaign models.Campaign
+//	for _, ev := range response.Kvs {
+//		err := json.Unmarshal(ev.Value, &campaign)
+//		if err != nil {
+//			return err
+//		}
+//	}
+//
+//	return nil
+//}
 
 func etcdPutCampaign(campaign *models.Campaign) (err error) {
 	jsonCampaign, err := json.Marshal(campaign)
@@ -80,45 +80,45 @@ func etcdDeleteCampaign(id string) (deleted int, err error) {
 
 // Exclusion etcd functions
 
-func etcdGetExclusion(id string) (err error) {
-    response, err := ETCD.Get(context.Background(), "exclusion_"+id)
-    if err != nil {
-        log.Println(err)
-        return err
-    }
-
-    var exclusion models.Exclusion
-    for _, ev := range response.Kvs {
-        err := json.Unmarshal(ev.Value, &exclusion)
-        if err != nil {
-            return err
-        }
-    }
-
-    return nil
-}
+//func etcdGetExclusion(id string) (err error) {
+//    response, err := ETCD.Get(context.Background(), "exclusion_"+id)
+//    if err != nil {
+//        log.Println(err)
+//        return err
+//    }
+//
+//    var exclusion models.Exclusion
+//    for _, ev := range response.Kvs {
+//        err := json.Unmarshal(ev.Value, &exclusion)
+//        if err != nil {
+//            return err
+//        }
+//    }
+//
+//    return nil
+//}
 
 func etcdPutExclusion(exclusion *models.Exclusion) (err error) {
-    jsonExclusion, err := json.Marshal(exclusion)
-    if err != nil {
-        log.Println(err)
-        return err
-    }
+	jsonExclusion, err := json.Marshal(exclusion)
+	if err != nil {
+		log.Println(err)
+		return err
+	}
 
-    _, err = ETCD.Put(context.Background(), "exclusion_"+exclusion.ID.String(), string(jsonExclusion))
-    if err != nil {
-        log.Println(err)
-        return err
-    }
+	_, err = ETCD.Put(context.Background(), "exclusion_"+exclusion.ID.String(), string(jsonExclusion))
+	if err != nil {
+		log.Println(err)
+		return err
+	}
 
-    return nil
+	return nil
 }
 
 func etcdDeleteExclusion(id string) (deleted int, err error) {
-    response, err := ETCD.Delete(context.Background(), "exclusion_"+id)
-    if err != nil {
-        return 0, err
-    }
+	response, err := ETCD.Delete(context.Background(), "exclusion_"+id)
+	if err != nil {
+		return 0, err
+	}
 
-    return int(response.Deleted), nil
+	return int(response.Deleted), nil
 }
