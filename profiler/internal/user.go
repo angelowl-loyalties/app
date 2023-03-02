@@ -200,7 +200,7 @@ func DeleteUser(c *gin.Context) {
 // @Produce json
 // @Success 200 {object} models.User
 // @Param credentials body models.SignIn true "Credentials"
-// @Router /user/login [post]
+// @Router /auth/login [post]
 func LoginUser(c *gin.Context) {
 	var credentials models.SignIn
 
@@ -214,7 +214,7 @@ func LoginUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	if user != nil {
+	if user == nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid Email or Password"})
 		return
 	}
