@@ -6,8 +6,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
 	"github.com/gocql/gocql"
+
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
 )
 
 const (
@@ -147,7 +148,13 @@ func getMatchingCampaigns(transaction models.Transaction) (campaign []*models.Ca
 	// TODO: start using the transactions start date instead of time now
 	// transactionDate, _ := time.Parse(YYYYMMDD, transactionDateStr)
 	var matchingCampaigns []*models.Campaign
-	for _, campaign := range CampaignsEtcd {
+	for _, campaign := range BaseCampaignsEtcd {
+		if isCampaignMatch(&campaign, &transaction) {
+			matchingCampaigns = append(matchingCampaigns, &campaign)
+		}
+	}
+
+	for _, campaign := range PromoCampaignsEtcd {
 		if isCampaignMatch(&campaign, &transaction) {
 			matchingCampaigns = append(matchingCampaigns, &campaign)
 		}
@@ -164,10 +171,10 @@ func isCampaignMatch(campaign *models.Campaign, transaction *models.Transaction)
 	if !campaign.Start.Before(time.Now()) || !campaign.End.After(time.Now()) || campaign.MinSpend > transaction.Amount {
 		return false
 	}
-	if campaign.IsForeign && transaction.Currency == "SGD" {
+	if campaign.ForForeignCurrency && transaction.Currency == "SGD" {
 		return false
 	}
-	if campaign.ValidName != "" && strings.Contains(transaction.Merchant, campaign.ValidName) {
+	if campaign.Merchant != "" && strings.Contains(transaction.Merchant, campaign.Merchant) {
 		return false
 	}
 	return true
