@@ -3,6 +3,7 @@ package internal
 import (
 	"encoding/json"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
@@ -62,11 +63,18 @@ func ProcessMessage(transaction models.Transaction) error {
 		}
 
 	} else {
-		campaign := getMatchingCampaign(transaction.CardType, transaction.TransactionDate)
+		campaigns := getMatchingCampaigns(transaction)
 
-		if campaign != nil {
-			delta := calculateDeltaType(campaign.RewardAmount, transaction.Amount)
-			remarks := "" // TODO: Map campaigns to appropriate remarks
+		if campaigns != nil {
+			delta := 0.0
+			remarks := ""
+			for _, campaign := range campaigns {
+				tempDelta := calculateDeltaType(campaign.RewardAmount, transaction.Amount)
+				if tempDelta > delta {
+					delta = tempDelta
+					remarks = campaign.Name + " applied" //TODO: Format this string to appropriate description
+				}
+			}
 
 			reward := models.Reward{
 				ID:              gocql.UUID(transaction.ID),
@@ -90,31 +98,36 @@ func ProcessMessage(transaction models.Transaction) error {
 				return err
 			}
 		} else {
-			delta := 69.0
-			remarks := "Base campaign applied"
-
-			reward := models.Reward{
-				ID:              gocql.UUID(transaction.ID),
-				CardID:          gocql.UUID(transaction.CardID),
-				Merchant:        transaction.Merchant,
-				MCC:             transaction.MCC,
-				Currency:        transaction.Currency,
-				Amount:          transaction.Amount,
-				SGDAmount:       transaction.SGDAmount,
-				TransactionID:   transaction.TransactionID,
-				TransactionDate: transaction.TransactionDate,
-				CardPAN:         transaction.CardPAN,
-				CardType:        transaction.CardType,
-				RewardAmount:    delta,
-				Remarks:         remarks,
-			}
-			err := models.RewardCreate(reward)
-			// TODO: Proper Error handling
-			if err != nil {
-				log.Fatalln(err)
-				return err
-			}
+			//Should never reach here
+			log.Fatalln("No matching campaigns found")
 		}
+
+		// } else {
+		// 	delta := 69.0
+		// 	remarks := "Base campaign applied"
+
+		// 	reward := models.Reward{
+		// 		ID:              gocql.UUID(transaction.ID),
+		// 		CardID:          gocql.UUID(transaction.CardID),
+		// 		Merchant:        transaction.Merchant,
+		// 		MCC:             transaction.MCC,
+		// 		Currency:        transaction.Currency,
+		// 		Amount:          transaction.Amount,
+		// 		SGDAmount:       transaction.SGDAmount,
+		// 		TransactionID:   transaction.TransactionID,
+		// 		TransactionDate: transaction.TransactionDate,
+		// 		CardPAN:         transaction.CardPAN,
+		// 		CardType:        transaction.CardType,
+		// 		RewardAmount:    delta,
+		// 		Remarks:         remarks,
+		// 	}
+		// 	err := models.RewardCreate(reward)
+		// 	// TODO: Proper Error handling
+		// 	if err != nil {
+		// 		log.Fatalln(err)
+		// 		return err
+		// 	}
+		// }
 	}
 	return nil
 }
@@ -130,20 +143,44 @@ func isExcluded(transactionDate time.Time, mcc int) bool {
 	return false
 }
 
-func getMatchingCampaign(cardType string, transactionDateStr string) (campaign *models.Campaign) {
+func getMatchingCampaigns(transaction models.Transaction) (campaign []*models.Campaign) {
 	// TODO: start using the transactions start date instead of time now
 	// transactionDate, _ := time.Parse(YYYYMMDD, transactionDateStr)
-	transactionDate := time.Now()
+	var matchingCampaigns []*models.Campaign
 	for _, campaign := range CampaignsEtcd {
-		if campaign.RewardProgram == cardType && campaign.Start.Before(transactionDate) && campaign.End.After(transactionDate) {
-			return &campaign
+		if isCampaignMatch(&campaign, &transaction) {
+			matchingCampaigns = append(matchingCampaigns, &campaign)
 		}
 	}
-	return nil
+	return matchingCampaigns
+}
+
+func isCampaignMatch(campaign *models.Campaign, transaction *models.Transaction) bool {
+	if campaign.RewardProgram != transaction.CardType {
+		return false
+	}
+
+	//TODO: Change to proper transaction date
+	if !campaign.Start.Before(time.Now()) || !campaign.End.After(time.Now()) || campaign.MinSpend > transaction.Amount {
+		return false
+	}
+	if campaign.IsForeign && transaction.Currency == "SGD" {
+		return false
+	}
+	if campaign.ValidName != "" && strings.Contains(transaction.Merchant, campaign.ValidName) {
+		return false
+	}
+	return true
 }
 
 func calculateDeltaType(rewardAmount int, spentAmount float64) float64 {
 	// TODO: include other logic here
 	// Min spend
 	return float64(rewardAmount) * spentAmount
+}
+
+func convertToSGD(spendAmount float64) float64 {
+
+	// TODO: Change to proper USD handling
+	return spendAmount * 1.34
 }

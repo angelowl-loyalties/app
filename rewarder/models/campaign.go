@@ -16,4 +16,6 @@ type Campaign struct {
 	RewardAmount  int       `json:"reward_amount"`
 	MCC           int       `json:"mcc"`
 	Merchant      string    `json:"merchant"`
+	IsForeign     bool      `json:"isForeign"`
+	ValidName     string    `json:"validName"`
 }
