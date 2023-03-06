@@ -27,7 +27,7 @@ func ProcessMessageJSON(messageJSON string) error {
 	return ProcessMessage(transaction)
 }
 
-func ProcessMessage(transaction models.Transaction) error {
+func P rocessMessage(transaction models.Transaction) error {
 	//TODO: Proper error handling
 	transactionDate, err := time.Parse(YYYYMMDD, transaction.TransactionDate)
 
@@ -162,7 +162,7 @@ func isCampaignMatch(campaign models.Campaign, transaction models.Transaction) b
 		return false
 	}
 	//TODO: Change to proper transaction date
-	if !campaign.Start.Before(time.Now()) || !campaign.End.After(time.Now()) || campaign.MinSpend > transaction.Amount {
+	if !campaign.Start.Before(time.Now()) || !campaign.End.After(time.Now()) {
 		return false
 	}
 	if campaign.ForForeignCurrency && transaction.Currency == "SGD" {
