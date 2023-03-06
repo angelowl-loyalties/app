@@ -141,13 +141,13 @@ func getMatchingCampaigns(transaction models.Transaction) (campaign [][]models.C
 	resultMatchingCampaigns := [][]models.Campaign{}
 	for _, campaign := range BaseCampaignsEtcd {
 
-		if isCampaignMatch(&campaign, &transaction) {
+		if isCampaignMatch(campaign, transaction) {
 			baseMatchingCampaigns = append(baseMatchingCampaigns, campaign)
 		}
 	}
 
 	for _, campaign := range PromoCampaignsEtcd {
-		if isCampaignMatch(&campaign, &transaction) {
+		if isCampaignMatch(campaign, transaction) {
 			promoMatchingCampaigns = append(promoMatchingCampaigns, campaign)
 		}
 	}
@@ -157,7 +157,7 @@ func getMatchingCampaigns(transaction models.Transaction) (campaign [][]models.C
 	return resultMatchingCampaigns
 }
 
-func isCampaignMatch(campaign *models.Campaign, transaction *models.Transaction) bool {
+func isCampaignMatch(campaign models.Campaign, transaction models.Transaction) bool {
 	if campaign.RewardProgram != transaction.CardType {
 		return false
 	}
