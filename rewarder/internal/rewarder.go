@@ -27,7 +27,7 @@ func ProcessMessageJSON(messageJSON string) error {
 	return ProcessMessage(transaction)
 }
 
-func P rocessMessage(transaction models.Transaction) error {
+func ProcessMessage(transaction models.Transaction) error {
 	//TODO: Proper error handling
 	transactionDate, err := time.Parse(YYYYMMDD, transaction.TransactionDate)
 
