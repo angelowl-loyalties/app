@@ -13,12 +13,14 @@ type Campaign struct {
 	Name     string    `json:"name" gorm:"type:varchar(255)" binding:"required,min=1"`
 	MinSpend float64   `json:"min_spend" binding:"gte=0"`
 	// TODO: Add back the gte to add validation after time now
-	Start         time.Time `json:"start_date" binding:"required"`             // should be later than time.Now()
-	End           time.Time `json:"end_date" binding:"required,gtfield=Start"` // should be later than Start
-	RewardProgram string    `json:"reward_program" gorm:"type:varchar(255)" binding:"required,min=1"`
-	RewardAmount  int       `json:"reward_amount" binding:"required,gt=0"`
-	MCC           int       `json:"mcc" binding:"required,gte=1,lte=9999"`
-	Merchant      string    `json:"merchant" gorm:"type:varchar(255)" binding:"required,min=1"`
+	Start              time.Time `json:"start_date" binding:"required"`             // should be later than time.Now()
+	End                time.Time `json:"end_date" binding:"required,gtfield=Start"` // should be later than Start
+	RewardProgram      string    `json:"reward_program" gorm:"type:varchar(255)" binding:"required,min=1"`
+	RewardAmount       int       `json:"reward_amount" binding:"required,gt=0"`
+	MCC                int       `json:"mcc" binding:"required,gte=1,lte=9999"`
+	Merchant           string    `json:"merchant" gorm:"type:varchar(255)" binding:"required,min=1"`
+	IsBaseReward       bool      `json:"base_reward"`
+	ForForeignCurrency bool      `json:"foreign_currency"`
 }
 
 func (campaign *Campaign) BeforeCreate(tx *gorm.DB) (err error) {

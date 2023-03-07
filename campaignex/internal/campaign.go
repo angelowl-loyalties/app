@@ -129,6 +129,8 @@ func UpdateCampaign(c *gin.Context) {
 	campaign.RewardAmount = updatedCampaign.RewardAmount
 	campaign.MCC = updatedCampaign.MCC
 	campaign.Merchant = updatedCampaign.Merchant
+	campaign.IsBaseReward = updatedCampaign.IsBaseReward
+	campaign.ForForeignCurrency = updatedCampaign.ForForeignCurrency
 
 	// put into etcd, nothing to roll back if failure
 	err = etcdPutCampaign(campaign)
@@ -173,7 +175,7 @@ func DeleteCampaign(c *gin.Context) {
 		return
 	}
 
-	_, err = etcdDeleteCampaign(campaign.ID.String()) // delete from etcd
+	_, err = etcdDeleteCampaign(campaign.IsBaseReward, campaign.ID.String()) // delete from etcd
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

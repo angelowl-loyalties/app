@@ -19,7 +19,8 @@ const (
 )
 
 var ETCD *clientv3.Client
-var CampaignsEtcd = make(map[string]models.Campaign)
+var BaseCampaignsEtcd = make(map[string]models.Campaign)
+var PromoCampaignsEtcd = make(map[string]models.Campaign)
 var ExclusionsEtcd = make(map[string]models.Exclusion)
 
 // we should consider whether these two global variables should have a mutex to prevent race conditions/dirty reads
@@ -53,11 +54,13 @@ func WatchEtcd() {
 		log.Fatalln(err)
 	}
 
+	baseCampaignsWatchCh := ETCD.Watch(ctx, "base_campaign", clientv3.WithPrefix())
+	promoCampaignsWatchCh := ETCD.Watch(ctx, "promo_campaign", clientv3.WithPrefix())
 	exclusionsWatchCh := ETCD.Watch(ctx, "exclusion", clientv3.WithPrefix())
-	campaignsWatchCh := ETCD.Watch(ctx, "campaign", clientv3.WithPrefix())
 
+	go handleWatchEvents(baseCampaignsWatchCh, "base_campaign")
+	go handleWatchEvents(promoCampaignsWatchCh, "promo_campaign")
 	go handleWatchEvents(exclusionsWatchCh, "exclusion")
-	go handleWatchEvents(campaignsWatchCh, "campaign")
 
 	err = etcdAddInitial()
 	if err != nil {
@@ -73,13 +76,20 @@ func handleWatchEvents(watchCh clientv3.WatchChan, key string) {
 			switch event.Type {
 			case clientv3.EventTypePut:
 				// testPrint()
-				if key == "campaign" {
+				if key == "base_campaign" {
 					var campaign models.Campaign
 					err := json.Unmarshal(event.Kv.Value, &campaign)
 					if err != nil {
 						log.Println(err)
 					}
-					CampaignsEtcd[string(event.Kv.Key)] = campaign
+					BaseCampaignsEtcd[string(event.Kv.Key)] = campaign
+				} else if key == "promo_campaign" {
+					var campaign models.Campaign
+					err := json.Unmarshal(event.Kv.Value, &campaign)
+					if err != nil {
+						log.Println(err)
+					}
+					PromoCampaignsEtcd[string(event.Kv.Key)] = campaign
 				} else if key == "exclusion" {
 					var exclusion models.Exclusion
 					err := json.Unmarshal(event.Kv.Value, &exclusion)
@@ -88,11 +98,13 @@ func handleWatchEvents(watchCh clientv3.WatchChan, key string) {
 					}
 					ExclusionsEtcd[string(event.Kv.Key)] = exclusion
 				}
-				testPrint()
+				// testPrint()
 			case clientv3.EventTypeDelete:
 				//testPrint()
-				if key == "campaign" {
-					delete(CampaignsEtcd, string(event.Kv.Key))
+				if key == "base_campaign" {
+					delete(BaseCampaignsEtcd, string(event.Kv.Key))
+				} else if key == "promo_campaign" {
+					delete(PromoCampaignsEtcd, string(event.Kv.Key))
 				} else if key == "exclusion" {
 					delete(ExclusionsEtcd, string(event.Kv.Key))
 				}
@@ -103,7 +115,7 @@ func handleWatchEvents(watchCh clientv3.WatchChan, key string) {
 }
 
 func etcdGetCampaigns() (err error) {
-	response, err := ETCD.Get(context.Background(), "campaign", clientv3.WithPrefix())
+	response, err := ETCD.Get(context.Background(), "base_campaign", clientv3.WithPrefix())
 	if err != nil {
 		log.Println(err)
 		return err
@@ -116,7 +128,23 @@ func etcdGetCampaigns() (err error) {
 			return err
 		}
 
-		CampaignsEtcd[string(ev.Key)] = campaign
+		BaseCampaignsEtcd[string(ev.Key)] = campaign
+	}
+
+	response, err = ETCD.Get(context.Background(), "promo_campaign", clientv3.WithPrefix())
+	if err != nil {
+		log.Println(err)
+		return err
+	}
+
+	for _, ev := range response.Kvs {
+		var campaign models.Campaign
+		err := json.Unmarshal(ev.Value, &campaign)
+		if err != nil {
+			return err
+		}
+
+		PromoCampaignsEtcd[string(ev.Key)] = campaign
 	}
 
 	return nil
@@ -144,15 +172,17 @@ func etcdGetExclusions() (err error) {
 
 func etcdAddInitial() (err error) {
 	var campaign = models.Campaign{
-		ID:            uuid.MustParse("ddb0a58f-6dca-41f3-a3a9-d40961670b5b"),
-		Name:          "Spring Fling",
-		MinSpend:      75.0,
-		Start:         time.Date(2023, 3, 1, 0, 0, 0, 0, time.UTC),
-		End:           time.Date(2023, 5, 31, 23, 59, 59, 0, time.UTC),
-		RewardProgram: "scis_shopping",
-		RewardAmount:  10,
-		MCC:           9311,
-		Merchant:      "Petco",
+		ID:                 uuid.MustParse("ddb0a58f-6dca-41f3-a3a9-d40961670b5b"),
+		Name:               "Spring Fling",
+		MinSpend:           75.0,
+		Start:              time.Date(2023, 3, 1, 0, 0, 0, 0, time.UTC),
+		End:                time.Date(2023, 5, 31, 23, 59, 59, 0, time.UTC),
+		RewardProgram:      "scis_shopping",
+		RewardAmount:       10,
+		MCC:                9311,
+		Merchant:           "Petco",
+		IsBaseReward:       false,
+		ForForeignCurrency: true,
 	}
 
 	seed_campaign, err := json.Marshal(campaign)
@@ -160,7 +190,7 @@ func etcdAddInitial() (err error) {
 		return err
 	}
 
-	_, err = ETCD.Put(context.Background(), "campaign_ddb0a58f-6dca-41f3-a3a9-d40961670b5b", string(seed_campaign))
+	_, err = ETCD.Put(context.Background(), "promo_campaign_ddb0a58f-6dca-41f3-a3a9-d40961670b5b", string(seed_campaign))
 	if err != nil {
 		return err
 	}
@@ -184,8 +214,14 @@ func etcdAddInitial() (err error) {
 }
 
 func testPrint() {
-	fmt.Println("campaigns:")
-	for _, campaign := range CampaignsEtcd {
+	fmt.Println("base campaigns:")
+	for _, campaign := range BaseCampaignsEtcd {
+		res, _ := json.Marshal(campaign)
+		fmt.Println(string(res))
+	}
+
+	fmt.Println("promo campaigns:")
+	for _, campaign := range PromoCampaignsEtcd {
 		res, _ := json.Marshal(campaign)
 		fmt.Println(string(res))
 	}

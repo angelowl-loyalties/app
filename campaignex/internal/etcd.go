@@ -60,7 +60,11 @@ func etcdPutCampaign(campaign *models.Campaign) (err error) {
 		return err
 	}
 
-	_, err = ETCD.Put(context.Background(), "campaign_"+campaign.ID.String(), string(jsonCampaign))
+	if campaign.IsBaseReward {
+		_, err = ETCD.Put(context.Background(), "base_campaign_"+campaign.ID.String(), string(jsonCampaign))
+	} else {
+		_, err = ETCD.Put(context.Background(), "promo_campaign_"+campaign.ID.String(), string(jsonCampaign))
+	}
 	if err != nil {
 		log.Println(err)
 		return err
@@ -69,8 +73,13 @@ func etcdPutCampaign(campaign *models.Campaign) (err error) {
 	return nil
 }
 
-func etcdDeleteCampaign(id string) (deleted int, err error) {
-	response, err := ETCD.Delete(context.Background(), "campaign_"+id)
+func etcdDeleteCampaign(isBase bool, id string) (deleted int, err error) {
+	var response *clientv3.DeleteResponse
+	if isBase {
+		response, err = ETCD.Delete(context.Background(), "base_campaign_"+id)
+	} else {
+		response, err = ETCD.Delete(context.Background(), "promo_campaign_"+id)
+	}
 	if err != nil {
 		return 0, err
 	}
