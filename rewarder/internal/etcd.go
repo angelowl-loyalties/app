@@ -67,7 +67,7 @@ func WatchEtcd() {
 		log.Fatalln(err)
 	}
 
-	// testPrint()
+	testPrint()
 }
 
 func handleWatchEvents(watchCh clientv3.WatchChan, key string) {
