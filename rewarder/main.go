@@ -25,7 +25,9 @@ func main() {
 
 	// setup etcd connection
 	etcdEndpoints := c.EtcdEndpoints
-	internal.InitEtcdClient(etcdEndpoints)
+	etcdUsername := c.EtcdUsername
+	etcdPassword := c.EtcdPassword
+	internal.InitEtcdClient(etcdEndpoints, etcdUsername, etcdPassword)
 	internal.WatchEtcd()
 
 	// while loop to test etcd without consuming from kafka

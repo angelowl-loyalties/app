@@ -11,6 +11,8 @@ type Config struct {
 	Broker        string `mapstructure:"BROKER_HOST"`
 	Topic         string `mapstructure:"TOPIC"`
 	EtcdEndpoints string `mapstructure:"ETCD_ENDPOINTS"`
+	EtcdUsername  string `mapstructure:"ETCD_USERNAME"`
+	EtcdPassword  string `mapstructure:"ETCD_PASSWORD"`
 }
 
 func LoadConfig() (config Config, err error) {
@@ -29,6 +31,8 @@ func LoadConfig() (config Config, err error) {
 		_ = viper.BindEnv("BROKER_HOST")
 		_ = viper.BindEnv("TOPIC")
 		_ = viper.BindEnv("ETCD_ENDPOINTS")
+		_ = viper.BindEnv("ETCD_USERNAME")
+		_ = viper.BindEnv("ETCD_PASSWORD")
 
 		err = viper.Unmarshal(&config)
 		return
