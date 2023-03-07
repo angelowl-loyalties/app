@@ -14,13 +14,15 @@ import (
 	"github.com/matelang/jwt-go-aws-kms/v2/jwtkms"
 )
 
-var keyID string
+var authnJWTKeyID string
 
-var kmsConfig *jwtkms.Config
+var authnKMSClient *kms.Client
+
+var authnKMSConfig *jwtkms.Config
 
 func init() {
-	keyID = os.Getenv("JWT_KMS_KEY_ID")
-	if keyID == "" {
+	authnJWTKeyID = os.Getenv("JWT_KMS_KEY_ID")
+	if authnJWTKeyID == "" {
 		log.Fatalln("JWT_KMS_KEY_ID environment variable is empty")
 	}
 
@@ -29,8 +31,8 @@ func init() {
 		log.Fatalln("config error: " + err.Error())
 	}
 
-	kmsConfig = jwtkms.NewKMSConfig(kms.NewFromConfig(awsCfg), keyID, false)
-	// TODO: setup JWE
+	authnKMSClient = kms.NewFromConfig(awsCfg)
+	authnKMSConfig = jwtkms.NewKMSConfig(authnKMSClient, authnJWTKeyID, false)
 }
 
 // this lambda takes result from step function that starts with /auth/user in profiler
@@ -38,7 +40,7 @@ func init() {
 func handleRequest(ctx context.Context, request models.User) (*models.AuthNResponse, error) {
 	jwtToken := utils.CreateJWT(request)
 
-	signedJWT, err := jwtToken.SignedString(kmsConfig.WithContext(context.Background()))
+	signedJWT, err := jwtToken.SignedString(authnKMSConfig.WithContext(context.Background()))
 	if err != nil {
 		log.Fatalln("failed to sign JWT: ", err)
 		return nil, err
