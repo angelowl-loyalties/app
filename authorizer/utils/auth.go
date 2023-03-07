@@ -9,17 +9,17 @@ import (
 	"github.com/matelang/jwt-go-aws-kms/v2/jwtkms"
 )
 
-type JWTClaims struct {
+type CustomJWTClaims struct {
 	Role string `json:"role"`
 	jwt.RegisteredClaims
 }
 
 func CreateJWT(user models.User) *jwt.Token {
-	claims := JWTClaims{
+	claims := CustomJWTClaims{
 		Role: user.Role,
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:   "angelowl.com",
-			Subject:  user.Email,
+			Subject:  user.ID.String(),
 			Audience: []string{"api.angelowl.com"},
 			//ExpiresAt: jwt.NewNumericDate(time.Now().Add(20 * time.Minute)),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
