@@ -25,17 +25,21 @@ seed_campaigns = [
         "reward_program": "scis_platinummiles",
         "reward_amount":  500,
         "mcc":           4495,
-        "merchant":      "Best Buy",
+        "merchant":      "Best Buyc",
+        "base_reward": False,
+		"foreign_currency": False,
     },
     {
         "name":           "Winter Warmup",
         "min_spend":      100.0,
-        "start_date": "2023-12-01T00:00:00Z",
+        "start_date": "2023-02-01T00:00:00Z",
         "end_date": "2024-02-28T23:59:59Z",
         "reward_program": "scis_freedom",
-        "reward_amount":  25,
+        "reward_amount":  10,
         "mcc":            8371,
         "merchant":       "Home Depot",
+        "base_reward": True,
+		"foreign_currency": False,
     },
 ]
 
@@ -52,6 +56,7 @@ seed_exclusions = [
 
 def main():
     # Add in 2 Campaigns and 2 Exclusions
+    
     print("Adding 2 Exclusions and Campaigns")
     for i in range(2):
         res_exclusion = requests.post("http://localhost:8081/exclusion", data=json.dumps(seed_exclusions[i]))

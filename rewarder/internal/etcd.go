@@ -67,7 +67,7 @@ func WatchEtcd() {
 		log.Fatalln(err)
 	}
 
-	testPrint()
+	// testPrint()
 }
 
 func handleWatchEvents(watchCh clientv3.WatchChan, key string) {
@@ -98,7 +98,7 @@ func handleWatchEvents(watchCh clientv3.WatchChan, key string) {
 					}
 					ExclusionsEtcd[string(event.Kv.Key)] = exclusion
 				}
-				testPrint()
+				// testPrint()
 			case clientv3.EventTypeDelete:
 				//testPrint()
 				if key == "base_campaign" {
@@ -182,7 +182,7 @@ func etcdAddInitial() (err error) {
 		MCC:                9311,
 		Merchant:           "Petco",
 		IsBaseReward:       false,
-		ForForeignCurrency: false,
+		ForForeignCurrency: true,
 	}
 
 	seed_campaign, err := json.Marshal(campaign)
@@ -190,7 +190,7 @@ func etcdAddInitial() (err error) {
 		return err
 	}
 
-	_, err = ETCD.Put(context.Background(), "campaign_ddb0a58f-6dca-41f3-a3a9-d40961670b5b", string(seed_campaign))
+	_, err = ETCD.Put(context.Background(), "promo_campaign_ddb0a58f-6dca-41f3-a3a9-d40961670b5b", string(seed_campaign))
 	if err != nil {
 		return err
 	}

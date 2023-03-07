@@ -183,7 +183,6 @@ func calculateDeltaType(rewardAmount int, spentAmount float64) float64 {
 }
 
 func convertToSGD(spendAmount float64) float64 {
-
 	// TODO: Change to proper USD handling
 	return spendAmount * 1.34
 }

@@ -19,8 +19,8 @@ type Campaign struct {
 	RewardAmount       int       `json:"reward_amount" binding:"required,gt=0"`
 	MCC                int       `json:"mcc" binding:"required,gte=1,lte=9999"`
 	Merchant           string    `json:"merchant" gorm:"type:varchar(255)" binding:"required,min=1"`
-	IsBaseReward       bool      `json:"base_reward" binding:"required"`
-	ForForeignCurrency bool      `json:"foreign_currency" binding:"required"`
+	IsBaseReward       bool      `json:"base_reward"`
+	ForForeignCurrency bool      `json:"foreign_currency"`
 }
 
 func (campaign *Campaign) BeforeCreate(tx *gorm.DB) (err error) {
