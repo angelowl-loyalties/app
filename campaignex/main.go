@@ -2,8 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/internal"
 	"log"
+
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/internal"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/config"
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/models"
@@ -31,7 +32,9 @@ func main() {
 
 	// setup etcd connection
 	etcdEndpoints := c.EtcdEndpoints
-	internal.InitClient(etcdEndpoints)
+	etcdUsername := c.EtcdUsername
+	etcdPassword := c.EtcdPassword
+	internal.InitClient(etcdEndpoints, etcdUsername, etcdPassword)
 
 	// setup routes
 	router = gin.Default()
