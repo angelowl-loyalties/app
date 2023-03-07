@@ -3,28 +3,29 @@ package main
 import (
 	"context"
 	"errors"
-	"github.com/aws/aws-lambda-go/events"
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/authorizer/utils"
-	"github.com/golang-jwt/jwt/v4"
 	"log"
 	"os"
 	"strings"
 
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/authorizer/utils"
+
+	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/kms"
+	"github.com/golang-jwt/jwt/v4"
 	"github.com/matelang/jwt-go-aws-kms/v2/jwtkms"
 )
 
-var authzJWSKeyID string
+var authzJWTKeyID string
 
 var authzKMSClient *kms.Client
 
 var authzKMSConfig *jwtkms.Config
 
 func init() {
-	authzJWSKeyID = os.Getenv("JWS_KMS_KEY_ID")
-	if authzJWSKeyID == "" {
+	authzJWTKeyID = os.Getenv("JWT_KMS_KEY_ID")
+	if authzJWTKeyID == "" {
 		log.Fatalln("JWS_KMS_KEY_ID environment variable is empty")
 	}
 
@@ -34,8 +35,7 @@ func init() {
 	}
 
 	authzKMSClient = kms.NewFromConfig(awsCfg)
-	authzKMSConfig = jwtkms.NewKMSConfig(authzKMSClient, authzJWSKeyID, false)
-
+	authzKMSConfig = jwtkms.NewKMSConfig(authzKMSClient, authzJWTKeyID, false)
 }
 
 // this lambda takes the JWT authorization token that was forwarded from API gateway
@@ -79,16 +79,12 @@ func handleAuthzRequest(ctx context.Context, event events.APIGatewayCustomAuthor
 			//"arn:aws:execute-api:ap-southeast-1:account-id:api-id/authorizers/authorizer-id",
 			"*",
 		}
-	}
-
-	if role == "admin" {
+	} else if role == "admin" {
 		resources = []string{
 			//"arn:aws:execute-api:ap-southeast-1:account-id:api-id/authorizers/authorizer-id",
 			"*",
 		}
-	}
-
-	if role == "bank" {
+	} else if role == "bank" {
 		resources = []string{
 			//"arn:aws:execute-api:ap-southeast-1:account-id:api-id/authorizers/authorizer-id",
 			"*",
