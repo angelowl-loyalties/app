@@ -34,7 +34,7 @@ func main() {
 	etcdEndpoints := c.EtcdEndpoints
 	etcdUsername := c.EtcdUsername
 	etcdPassword := c.EtcdPassword
-	internal.InitClient(etcdEndpoints, etcdUsername, etcdPassword)
+	internal.InitEtcdClient(etcdEndpoints, etcdUsername, etcdPassword)
 
 	// setup routes
 	router = gin.Default()
