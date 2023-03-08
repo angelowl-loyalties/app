@@ -54,6 +54,6 @@ func handleRequest(ctx context.Context, request models.User) (*models.AuthNRespo
 	return response, nil
 }
 
-func main() {
+func main() { //nolint:all
 	lambda.Start(handleRequest)
 }

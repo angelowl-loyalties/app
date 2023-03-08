@@ -116,6 +116,6 @@ func generatePolicy(principalID string, effect string, resources []string, conte
 	return authResponse
 }
 
-func main() {
+func main() { //nolint:all
 	lambda.Start(handleAuthzRequest)
 }

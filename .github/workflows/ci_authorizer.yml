@@ -6,13 +6,13 @@ on:
     paths:
       - "authorizer/**"
       - .github/workflows/ci_authorizer.yml
-      - .github/workflows/workflow_lambda.yml
+      - .github/workflows/workflow_auth_lambda.yml
   pull_request:
     branches: [ master ]
     paths:
       - "authorizer/**"
       - .github/workflows/ci_authorizer.yml
-      - .github/workflows/workflow_lambda.yml
+      - .github/workflows/workflow_auth_lambda.yml
 
 permissions:
   id-token: write
@@ -33,8 +33,7 @@ jobs:
   ci:
     needs: [lint, sast]
     name: Continuous Integration
-    uses: ./.github/workflows/workflow_lambda.yml
+    uses: ./.github/workflows/workflow_auth_lambda.yml
     with:
       dockerfile: 'Dockerfile'
       workdir: 'authorizer'
-      repository: 'authorizer'
