@@ -20,7 +20,7 @@ func InitDB(dbHost, dbPort, keyspace, table, username, password string, useSSL b
 	if useSSL {
 		cluster.SslOpts = &gocql.SslOptions{
 			EnableHostVerification: true,
-			CaPath:                 "/app/config/sf-class2-root.crt",
+			CaPath:                 "/root-ca.crt",
 		}
 	}
 
