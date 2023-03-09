@@ -1,0 +1,15 @@
+deployment:
+  imageTag: 15c4d9d58ea81c90cbfcef5d464d315dec84afd0
+
+app:
+  name: profiler
+  port: 8080
+  replicas: 2
+  env:
+    - name: PORT
+      value: "8080"
+    - name: DB_CONN_STRING
+      valueFrom:
+        secretKeyRef:
+          name: profiler
+          key: database

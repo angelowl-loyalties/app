@@ -1,17 +1,17 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: campaignex-ingress
+  name: {{.Values.app.name}}-ingress
 spec:
   ingressClassName: nginx
   rules:
-  - host: campaignex.itsag1t2.com
+  - host: {{.Values.app.name}}.itsag1t2.com
     http:
       paths:
       - path: /
         pathType: Prefix
         backend:
           service:
-            name: campaignex-svc
+            name: {{.Values.app.name}}-svc
             port:
               number: 80
