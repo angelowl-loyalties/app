@@ -62,20 +62,31 @@ func InitDB(dbHost, dbPort, keyspace, table, username, password string, useSSL, 
 	}
 }
 
-func ConnectDB(dbConnString string, keyspace string) {
-	cluster := gocql.NewCluster(dbConnString)
+func ConnectDB(dbHost, dbPort, username, password, keyspace string, useSSL bool) {
+	cluster := gocql.NewCluster(dbHost)
 	cluster.Keyspace = keyspace
-	// cluster.Authenticator = gocql.PasswordAuthenticator{
-	// 	Username: user,
-	// 	Password: pass,
-	// }
+	
+	dbPortInt, err := strconv.Atoi(dbPort)
+	if err == nil {
+		cluster.Port = dbPortInt
+	}
+
+	cluster.Authenticator = gocql.PasswordAuthenticator{
+		Username: username,
+		Password: password,
+	}
+
+	if useSSL {
+		cluster.SslOpts = &gocql.SslOptions{
+			CaPath: "/root-ca.crt",
+		}
+	}
 
 	session, err := cluster.CreateSession()
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	log.Println("Connected to Rewards DB")
-
 	DB = session
 }
+

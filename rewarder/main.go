@@ -24,7 +24,7 @@ func main() {
 	dbUseSSL := c.DBUseSSL
 	dbCreateIndex := c.DBCreateIndex
 	models.InitDB(dbHost, dbPort, dbKeyspace, dbTable, dbUser, dbPass, dbUseSSL, dbCreateIndex)
-	models.ConnectDB(dbHost, dbKeyspace)
+	models.ConnectDB(dbHost, dbPort, dbUser, dbPass, dbKeyspace, dbUseSSL)
 
 	// setup etcd connection
 	etcdEndpoints := c.EtcdEndpoints
