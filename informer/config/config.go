@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+
 	"github.com/spf13/viper"
 )
 
@@ -10,8 +11,8 @@ type Config struct {
 	DBConnString string `mapstructure:"DB_CONN_STRING"`
 	DBKeyspace   string `mapstructure:"DB_KEYSPACE"`
 	DBTable      string `mapstructure:"DB_TABLE"`
-	// DBUser       string `mapstructure:"DB_USER"`
-	// DBPass       string `mapstructure:"DB_PASS"`
+	DBUser       string `mapstructure:"DB_USER"`
+	DBPass       string `mapstructure:"DB_PASS"`
 }
 
 func LoadConfig() (config Config, err error) {
@@ -30,8 +31,8 @@ func LoadConfig() (config Config, err error) {
 		_ = viper.BindEnv("DB_CONN_STRING")
 		_ = viper.BindEnv("DB_KEYSPACE")
 		_ = viper.BindEnv("DB_TABLE")
-		// _ = viper.BindEnv("DB_USER")
-		// _ = viper.BindEnv("DB_PASS")
+		_ = viper.BindEnv("DB_USER")
+		_ = viper.BindEnv("DB_PASS")
 		err = viper.Unmarshal(&config)
 		return
 	}

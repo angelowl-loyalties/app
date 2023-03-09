@@ -27,9 +27,9 @@ func main() {
 	dbConnString := c.DBConnString
 	dbKeyspace := c.DBKeyspace
 	dbTable := c.DBTable
-	// dbUser := c.DBUser
-	// dbPass := c.DBPass
-	models.InitDB(dbConnString, dbKeyspace, dbTable)
+	dbUser := c.DBUser
+	dbPass := c.DBPass
+	models.InitDB(dbConnString, dbKeyspace, dbTable, dbUser, dbPass)
 	models.ConnectDB(dbConnString, dbKeyspace)
 
 	router = gin.Default()

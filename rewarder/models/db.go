@@ -8,8 +8,16 @@ import (
 
 var DB *gocql.Session
 
-func InitDB(dbConnString string, keyspace string, table string) {
+func InitDB(dbConnString, keyspace, table, username, password string) {
 	cluster := gocql.NewCluster(dbConnString)
+	
+	if username != "" && password != "" {
+		cluster.Authenticator = gocql.PasswordAuthenticator{
+			Username: username,
+			Password: password,
+		}	
+	}
+
 	session, err := cluster.CreateSession()
 	if err != nil {
 		log.Fatalln(err)

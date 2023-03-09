@@ -8,6 +8,8 @@ type Config struct {
 	DBConnString  string `mapstructure:"DB_CONN_STRING"`
 	DBKeyspace    string `mapstructure:"DB_KEYSPACE"`
 	DBTable       string `mapstructure:"DB_TABLE"`
+	DBUser        string `mapstructure:"DB_USER"`
+	DBPass        string `mapstructure:"DB_PASS"`
 	Broker        string `mapstructure:"BROKER_HOST"`
 	Topic         string `mapstructure:"TOPIC"`
 	EtcdEndpoints string `mapstructure:"ETCD_ENDPOINTS"`
@@ -28,6 +30,8 @@ func LoadConfig() (config Config, err error) {
 		_ = viper.BindEnv("DB_CONN_STRING")
 		_ = viper.BindEnv("DB_KEYSPACE")
 		_ = viper.BindEnv("DB_TABLE")
+		_ = viper.BindEnv("DB_USER")
+		_ = viper.BindEnv("DB_PASS")
 		_ = viper.BindEnv("BROKER_HOST")
 		_ = viper.BindEnv("TOPIC")
 		_ = viper.BindEnv("ETCD_ENDPOINTS")
