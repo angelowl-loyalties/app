@@ -12,6 +12,7 @@ type Config struct {
 	DBUser        string `mapstructure:"DB_USER"`
 	DBPass        string `mapstructure:"DB_PASS"`
 	DBUseSSL      bool   `mapstructure:"DB_SSL"`
+	DBCreateIndex bool   `mapstructure:"DB_CREATE_INDEX"`
 	Broker        string `mapstructure:"BROKER_HOST"`
 	Topic         string `mapstructure:"TOPIC"`
 	EtcdEndpoints string `mapstructure:"ETCD_ENDPOINTS"`
@@ -36,6 +37,7 @@ func LoadConfig() (config Config, err error) {
 		_ = viper.BindEnv("DB_USER")
 		_ = viper.BindEnv("DB_PASS")
 		_ = viper.BindEnv("DB_SSL")
+		_ = viper.BindEnv("DB_CREATE_INDEX")
 		_ = viper.BindEnv("BROKER_HOST")
 		_ = viper.BindEnv("TOPIC")
 		_ = viper.BindEnv("ETCD_ENDPOINTS")

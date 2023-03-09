@@ -9,7 +9,7 @@ import (
 
 var DB *gocql.Session
 
-func InitDB(dbHost, dbPort, keyspace, table, username, password string, useSSL bool) {
+func InitDB(dbHost, dbPort, keyspace, table, username, password string, useSSL, createIndex bool) {
 	cluster := gocql.NewCluster(dbHost)
 
 	dbPortInt, err := strconv.Atoi(dbPort)
@@ -19,7 +19,7 @@ func InitDB(dbHost, dbPort, keyspace, table, username, password string, useSSL b
 
 	if useSSL {
 		cluster.SslOpts = &gocql.SslOptions{
-			CaPath:                 "/root-ca.crt",
+			CaPath: "/root-ca.crt",
 		}
 	}
 
@@ -52,12 +52,14 @@ func InitDB(dbHost, dbPort, keyspace, table, username, password string, useSSL b
 	}
 	log.Println("Created table: ", table)
 
-	err = session.Query("CREATE INDEX IF NOT EXISTS rewards_idx ON " +
-		keyspace + "." + table + " ( card_id );").Exec()
-	if err != nil {
-		log.Fatalln(err)
+	if createIndex {
+		err = session.Query("CREATE INDEX IF NOT EXISTS rewards_idx ON " +
+			keyspace + "." + table + " ( card_id );").Exec()
+		if err != nil {
+			log.Fatalln(err)
+		}
+		log.Println("Created index on: card_id")
 	}
-	log.Println("Created index on: card_id")
 }
 
 func ConnectDB(dbConnString string, keyspace string) {

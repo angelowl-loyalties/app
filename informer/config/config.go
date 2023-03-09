@@ -7,14 +7,15 @@ import (
 )
 
 type Config struct {
-	Port         string `mapstructure:"PORT"`
-	DBConnString string `mapstructure:"DB_CONN_STRING"`
-	DBPort       string `mapstructure:"DB_PORT"`
-	DBKeyspace   string `mapstructure:"DB_KEYSPACE"`
-	DBTable      string `mapstructure:"DB_TABLE"`
-	DBUser       string `mapstructure:"DB_USER"`
-	DBPass       string `mapstructure:"DB_PASS"`
-	DBUseSSL     bool   `mapstructure:"DB_SSL"`
+	Port          string `mapstructure:"PORT"`
+	DBConnString  string `mapstructure:"DB_CONN_STRING"`
+	DBPort        string `mapstructure:"DB_PORT"`
+	DBKeyspace    string `mapstructure:"DB_KEYSPACE"`
+	DBTable       string `mapstructure:"DB_TABLE"`
+	DBUser        string `mapstructure:"DB_USER"`
+	DBPass        string `mapstructure:"DB_PASS"`
+	DBUseSSL      bool   `mapstructure:"DB_SSL"`
+	DBCreateIndex bool   `mapstructure:"DB_CREATE_INDEX"`
 }
 
 func LoadConfig() (config Config, err error) {
@@ -37,6 +38,7 @@ func LoadConfig() (config Config, err error) {
 		_ = viper.BindEnv("DB_USER")
 		_ = viper.BindEnv("DB_PASS")
 		_ = viper.BindEnv("DB_SSL")
+		_ = viper.BindEnv("DB_CREATE_INDEX")
 		err = viper.Unmarshal(&config)
 		return
 	}
