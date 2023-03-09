@@ -2,15 +2,21 @@ package models
 
 import (
 	"log"
+	"strconv"
 
 	"github.com/gocql/gocql"
 )
 
 var DB *gocql.Session
 
-func InitDB(dbConnString, keyspace, table, username, password string) {
-	cluster := gocql.NewCluster(dbConnString)
+func InitDB(dbHost, dbPort, keyspace, table, username, password string) {
+	cluster := gocql.NewCluster(dbHost)
 	
+	dbPortInt, err := strconv.Atoi(dbPort)
+	if err == nil {
+		cluster.Port = dbPortInt
+	}
+
 	if username != "" && password != "" {
 		cluster.Authenticator = gocql.PasswordAuthenticator{
 			Username: username,

@@ -24,13 +24,14 @@ func main() {
 		log.Fatalln("Failed at config", err)
 	}
 
-	dbConnString := c.DBConnString
+	dbHost := c.DBConnString
+	dbPort := c.DBPort
 	dbKeyspace := c.DBKeyspace
 	dbTable := c.DBTable
 	dbUser := c.DBUser
 	dbPass := c.DBPass
-	models.InitDB(dbConnString, dbKeyspace, dbTable, dbUser, dbPass)
-	models.ConnectDB(dbConnString, dbKeyspace)
+	models.InitDB(dbHost, dbPort, dbKeyspace, dbTable, dbUser, dbPass)
+	models.ConnectDB(dbHost, dbKeyspace)
 
 	router = gin.Default()
 
