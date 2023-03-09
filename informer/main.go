@@ -30,7 +30,8 @@ func main() {
 	dbTable := c.DBTable
 	dbUser := c.DBUser
 	dbPass := c.DBPass
-	models.InitDB(dbHost, dbPort, dbKeyspace, dbTable, dbUser, dbPass)
+	dbUseSSL := c.DBUseSSL
+	models.InitDB(dbHost, dbPort, dbKeyspace, dbTable, dbUser, dbPass, dbUseSSL)
 	models.ConnectDB(dbHost, dbKeyspace)
 
 	router = gin.Default()

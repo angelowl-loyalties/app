@@ -9,19 +9,26 @@ import (
 
 var DB *gocql.Session
 
-func InitDB(dbHost, dbPort, keyspace, table, username, password string) {
+func InitDB(dbHost, dbPort, keyspace, table, username, password string, useSSL bool) {
 	cluster := gocql.NewCluster(dbHost)
-	
+
 	dbPortInt, err := strconv.Atoi(dbPort)
 	if err == nil {
 		cluster.Port = dbPortInt
 	}
-	
+
+	if useSSL {
+		cluster.SslOpts = &gocql.SslOptions{
+			EnableHostVerification: true,
+			CaPath:                 "/app/config/sf-class2-root.crt",
+		}
+	}
+
 	if username != "" && password != "" {
 		cluster.Authenticator = gocql.PasswordAuthenticator{
 			Username: username,
 			Password: password,
-		}	
+		}
 	}
 
 	session, err := cluster.CreateSession()
