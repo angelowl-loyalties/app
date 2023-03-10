@@ -47,8 +47,8 @@ jobs:
           DOCKERFILE: ${{ inputs.dockerfile }}
           WORKDIR: ${{ inputs.workdir }}
         run: |
-          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG $WORKDIR -f $WORKDIR/$DOCKERFILE
-          docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+          docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG -t $REGISTRY/$REPOSITORY:latest $WORKDIR -f $WORKDIR/$DOCKERFILE
+          docker push --all-tags $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
       - name: Deploy to EKS with Helm
         uses: bitovi/github-actions-deploy-eks-helm@v1.2.2
@@ -63,3 +63,5 @@ jobs:
           namespace: angelowl
           values: deployment.imageTag=${{env.IMAGE_TAG}}
           name: angelowl-${{env.SERVICE}}
+          atomic: true
+          
