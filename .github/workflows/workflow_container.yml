@@ -65,3 +65,4 @@ jobs:
           values: deployment.imageTag=${{env.IMAGE_TAG}}
           name: angelowl-${{env.SERVICE}}
           atomic: true
+          timeout: 5m0s --debug
