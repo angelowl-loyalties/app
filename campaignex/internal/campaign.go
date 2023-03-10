@@ -1,7 +1,10 @@
 package internal
 
 import (
+	"golang.org/x/exp/slices"
 	"net/http"
+	"strconv"
+	"strings"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/models"
 	"github.com/gin-gonic/gin"
@@ -67,6 +70,25 @@ func CreateCampaign(c *gin.Context) {
 	if err := c.ShouldBindJSON(&newCampaign); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
+	}
+
+	var temp []int
+	mccs := strings.Split(newCampaign.MCC, ",")
+	for _, mcc := range mccs {
+		// convert from string to int
+		intMCC, err := strconv.Atoi(mcc)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		// catch invalid MCC and duplicate MCC
+		if intMCC < 1 || intMCC > 9999 || slices.Contains(temp, intMCC) {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid MCC"})
+			return
+		}
+
+		temp = append(temp, intMCC)
 	}
 
 	campaign, err := models.CampaignCreate(&newCampaign)
