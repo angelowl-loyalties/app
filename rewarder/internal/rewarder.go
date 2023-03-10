@@ -168,7 +168,7 @@ func isCampaignMatch(campaign models.Campaign, transaction models.Transaction) b
 	if campaign.ForForeignCurrency && transaction.Currency == "SGD" {
 		return false
 	}
-	if campaign.Merchant != "" && strings.Contains(transaction.Merchant, campaign.Merchant) {
+	if campaign.Merchant != "" && !strings.Contains(transaction.Merchant, campaign.Merchant) {
 		return false
 	}
 	if campaign.MinSpend > transaction.Amount {
