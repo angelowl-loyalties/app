@@ -1,15 +1,18 @@
 definitions:
   models.Campaign:
     properties:
+      base_reward:
+        type: boolean
       end_date:
         description: should be later than Start
         type: string
+      foreign_currency:
+        type: boolean
       id:
         type: string
       mcc:
-        maximum: 9999
-        minimum: 1
-        type: integer
+        minLength: 1
+        type: string
       merchant:
         minLength: 1
         type: string

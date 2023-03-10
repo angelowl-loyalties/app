@@ -17,10 +17,10 @@ type Campaign struct {
 	End                time.Time `json:"end_date" binding:"required,gtfield=Start"` // should be later than Start
 	RewardProgram      string    `json:"reward_program" gorm:"type:varchar(255)" binding:"required,min=1"`
 	RewardAmount       int       `json:"reward_amount" binding:"required,gt=0"`
-	MCC                int       `json:"mcc" binding:"required,gte=1,lte=9999"`
+	MCC                string    `json:"mcc" binding:"required,min=1"`
 	Merchant           string    `json:"merchant" gorm:"type:varchar(255)" binding:"required,min=1"`
-	IsBaseReward       bool      `json:"base_reward"`
-	ForForeignCurrency bool      `json:"foreign_currency"`
+	IsBaseReward       bool      `json:"base_reward" binding:"boolean"`
+	ForForeignCurrency bool      `json:"foreign_currency" binding:"boolean"`
 }
 
 func (campaign *Campaign) BeforeCreate(tx *gorm.DB) (err error) {
