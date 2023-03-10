@@ -2,14 +2,34 @@ package models
 
 import (
 	"log"
+	"strconv"
 
 	"github.com/gocql/gocql"
 )
 
 var DB *gocql.Session
 
-func InitDB(dbConnString string, keyspace string, table string) {
-	cluster := gocql.NewCluster(dbConnString)
+func InitDB(dbHost, dbPort, keyspace, table, username, password string, useSSL, createIndex bool) {
+	cluster := gocql.NewCluster(dbHost)
+
+	dbPortInt, err := strconv.Atoi(dbPort)
+	if err == nil {
+		cluster.Port = dbPortInt
+	}
+
+	if useSSL {
+		cluster.SslOpts = &gocql.SslOptions{
+			CaPath: "/root-ca.crt",
+		}
+	}
+
+	if username != "" && password != "" {
+		cluster.Authenticator = gocql.PasswordAuthenticator{
+			Username: username,
+			Password: password,
+		}
+	}
+
 	session, err := cluster.CreateSession()
 	if err != nil {
 		log.Fatalln(err)
@@ -32,28 +52,42 @@ func InitDB(dbConnString string, keyspace string, table string) {
 	}
 	log.Println("Created table: ", table)
 
-	err = session.Query("CREATE INDEX IF NOT EXISTS rewards_idx ON " +
-		keyspace + "." + table + " ( card_id );").Exec()
-	if err != nil {
-		log.Fatalln(err)
+	if createIndex {
+		err = session.Query("CREATE INDEX IF NOT EXISTS rewards_idx ON " +
+			keyspace + "." + table + " ( card_id );").Exec()
+		if err != nil {
+			log.Fatalln(err)
+		}
+		log.Println("Created index on: card_id")
 	}
-	log.Println("Created index on: card_id")
 }
 
-func ConnectDB(dbConnString string, keyspace string) {
-	cluster := gocql.NewCluster(dbConnString)
+func ConnectDB(dbHost, dbPort, username, password, keyspace string, useSSL bool) {
+	cluster := gocql.NewCluster(dbHost)
 	cluster.Keyspace = keyspace
-	// cluster.Authenticator = gocql.PasswordAuthenticator{
-	// 	Username: user,
-	// 	Password: pass,
-	// }
+	cluster.Consistency = gocql.LocalQuorum
+
+	dbPortInt, err := strconv.Atoi(dbPort)
+	if err == nil {
+		cluster.Port = dbPortInt
+	}
+
+	cluster.Authenticator = gocql.PasswordAuthenticator{
+		Username: username,
+		Password: password,
+	}
+
+	if useSSL {
+		cluster.SslOpts = &gocql.SslOptions{
+			CaPath: "/root-ca.crt",
+		}
+	}
 
 	session, err := cluster.CreateSession()
 	if err != nil {
 		log.Fatalln(err)
 	}
-
 	log.Println("Connected to Rewards DB")
-
 	DB = session
 }
+
