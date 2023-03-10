@@ -1,6 +1,3 @@
-deployment:
-  imageTag: 3903614dccd92e9ef83bdfc31e9453b0a1c216f7
-
 app:
   name: rewarder
   port: 8080
