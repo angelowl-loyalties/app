@@ -4,6 +4,7 @@ import (
 	"reflect"
 	"testing"
 	"time"
+	"sort"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
 	"github.com/google/uuid"
@@ -38,6 +39,16 @@ func Test_isExcluded(t *testing.T) {
 }
 
 func Test_getMatchingCampaigns(t *testing.T) {
+	etcdAddSeedData()
+	
+	baseMatchingCampaigns := []models.Campaign{}
+	baseMatchingCampaigns = append(baseMatchingCampaigns, BaseCampaignsEtcd["001"])
+	baseMatchingCampaigns = append(baseMatchingCampaigns, BaseCampaignsEtcd["005"])
+	promoMatchingCampaigns := []models.Campaign{}
+	wantCampaign_base_2_promo_0 := [][]models.Campaign{}
+	wantCampaign_base_2_promo_0 = append(wantCampaign_base_2_promo_0, baseMatchingCampaigns)
+	wantCampaign_base_2_promo_0 = append(wantCampaign_base_2_promo_0, promoMatchingCampaigns)
+	
 	type args struct {
 		transaction models.Transaction
 	}
@@ -46,11 +57,19 @@ func Test_getMatchingCampaigns(t *testing.T) {
 		args         args
 		wantCampaign [][]models.Campaign
 	}{
-		// TODO: Add test cases.
+		{"base_2_promo_0", args{SeedTransactions["001"]}, wantCampaign_base_2_promo_0},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if gotCampaign := getMatchingCampaigns(tt.args.transaction); !reflect.DeepEqual(gotCampaign, tt.wantCampaign) {
+			gotCampaign := getMatchingCampaigns(tt.args.transaction)
+			gotBaseCampaign := gotCampaign[0]
+			gotPromoCampaign := gotCampaign[1]
+			
+			// Sort the gotten Base and Promo Campaigns, to ensure order is consistent over different test runs
+			sort.Slice(gotBaseCampaign, func(i, j int) bool {return gotBaseCampaign[i].ID.String() < gotBaseCampaign[j].ID.String()})
+			sort.Slice(gotPromoCampaign, func(i, j int) bool {return gotPromoCampaign[i].ID.String() < gotPromoCampaign[j].Name})
+			
+			if !reflect.DeepEqual(gotCampaign, tt.wantCampaign) {
 				t.Errorf("getMatchingCampaigns() = %v, want %v", gotCampaign, tt.wantCampaign)
 			}
 		})
@@ -103,7 +122,7 @@ func etcdAddSeedData() {
 	// Add Base Campaigns
 	// Valid campaign
 	BaseCampaignsEtcd["001"] = models.Campaign{
-		ID:                 uuid.MustParse("7b1f04eb-f54c-4f9d-8baf-a4c00dddf3b3"),
+		ID:                 uuid.MustParse("7b1f04eb-f54c-4f9d-8baf-a4c00dddf111"),
 		Name:               "Summer Sale",
 		MinSpend:           50.0,
 		Start:              time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
@@ -116,7 +135,7 @@ func etcdAddSeedData() {
 	}
 	
 	BaseCampaignsEtcd["002"] = models.Campaign{
-		ID:                 uuid.MustParse("1c7f6942-85f9-4a9a-b1ab-6dab27c94f83"),
+		ID:                 uuid.MustParse("1c7f6942-85f9-4a9a-b1ab-6dab27c94222"),
 		Name:               "Winter Warmup",
 		MinSpend:           100.0,
 		Start:              time.Date(2023, 12, 1, 0, 0, 0, 0, time.UTC),
@@ -128,7 +147,7 @@ func etcdAddSeedData() {
 	}
 
 	BaseCampaignsEtcd["003"] = models.Campaign{
-		ID:                 uuid.MustParse("1c7f6942-85f9-4a9a-b1ab-6dab27c94f83"),
+		ID:                 uuid.MustParse("1c7f6942-85f9-4a9a-b1ab-6dab27c94333"),
 		Name:               "Winter Warmup",
 		MinSpend:           100.0,
 		Start:              time.Date(2022, 12, 1, 0, 0, 0, 0, time.UTC),
@@ -140,13 +159,26 @@ func etcdAddSeedData() {
 	}
 
 	BaseCampaignsEtcd["004"] = models.Campaign{
-		ID:                 uuid.MustParse("ddb0a58f-6dca-41f3-a3a9-d40961670b5b"),
+		ID:                 uuid.MustParse("ddb0a58f-6dca-41f3-a3a9-d40961670444"),
 		Name:               "Spring Fling",
 		MinSpend:           0.0,
 		Start:              time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC),
 		End:                time.Date(2024, 5, 31, 23, 59, 59, 0, time.UTC),
 		RewardProgram:      "Visa",
 		RewardAmount:       300,
+		MCC:                5963,
+		ForForeignCurrency: true,
+		Merchant:           "",
+	}
+
+	BaseCampaignsEtcd["005"] = models.Campaign{
+		ID:                 uuid.MustParse("ddb0a58f-6dca-41f3-a3a9-d40961670555"),
+		Name:               "Summer x2",
+		MinSpend:           0.0,
+		Start:              time.Date(2022, 1, 1, 0, 0, 0, 0, time.UTC),
+		End:                time.Date(2024, 5, 31, 23, 59, 59, 0, time.UTC),
+		RewardProgram:      "Points",
+		RewardAmount:       600,
 		MCC:                5963,
 		ForForeignCurrency: true,
 		Merchant:           "",
