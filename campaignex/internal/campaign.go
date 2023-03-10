@@ -1,14 +1,14 @@
 package internal
 
 import (
-	"golang.org/x/exp/slices"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/models"
 	"github.com/gin-gonic/gin"
-	// "io/ioutil"
+	"golang.org/x/exp/slices"
 )
 
 // GetCampaigns - GET /campaign
@@ -72,23 +72,13 @@ func CreateCampaign(c *gin.Context) {
 		return
 	}
 
-	var temp []int
-	mccs := strings.Split(newCampaign.MCC, ",")
-	for _, mcc := range mccs {
-		// convert from string to int
-		intMCC, err := strconv.Atoi(mcc)
-		if err != nil {
+	// check if campaign applies to all MCCs
+	if newCampaign.MCC != "0" {
+		// validate csv of MCCs
+		if err := validateMCC(newCampaign.MCC); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 			return
 		}
-
-		// catch invalid MCC and duplicate MCC
-		if intMCC < 1 || intMCC > 9999 || slices.Contains(temp, intMCC) {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "invalid MCC"})
-			return
-		}
-
-		temp = append(temp, intMCC)
 	}
 
 	campaign, err := models.CampaignCreate(&newCampaign)
@@ -106,6 +96,27 @@ func CreateCampaign(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"data": campaign})
+}
+
+func validateMCC(mccString string) error {
+	var temp []int
+	mccs := strings.Split(mccString, ",")
+	for _, mcc := range mccs {
+		// convert from string to int
+		intMCC, err := strconv.Atoi(mcc)
+		if err != nil {
+			return err
+		}
+
+		// catch invalid MCC and duplicate MCC
+		if intMCC < 1 || intMCC > 9999 || slices.Contains(temp, intMCC) {
+			return fmt.Errorf("invalid MCC")
+		}
+
+		temp = append(temp, intMCC)
+	}
+
+	return nil
 }
 
 // UpdateCampaign - PUT /campaign/:id
