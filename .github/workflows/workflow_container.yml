@@ -48,3 +48,16 @@ jobs:
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG $WORKDIR -f $WORKDIR/$DOCKERFILE
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: Deploy to EKS with Helm
+        uses: bitovi/github-actions-deploy-eks-helm@v1.2.2
+        env:
+          SERVICE: ${{ inputs.workdir }}
+        with:
+          aws-region: ap-southeast-1
+          cluster-name: angelowl-eks-cluster
+          config-files: .chart/values.$SERVICE.yaml,.chart/values.yaml
+          chart-path: .chart/
+          namespace: angelowl
+          values: deployment.imageTag=${{ github.sha }}
+          name: angelowl-$SERVICE
