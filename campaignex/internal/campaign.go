@@ -153,6 +153,15 @@ func UpdateCampaign(c *gin.Context) {
 		return
 	}
 
+	// check if campaign applies to all MCCs
+	if updatedCampaign.MCC != "0" {
+		// validate csv of MCCs
+		if err := validateMCC(updatedCampaign.MCC); err != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+	}
+
 	originalCampaign := campaign
 	campaign.Name = updatedCampaign.Name
 	campaign.MinSpend = updatedCampaign.MinSpend
