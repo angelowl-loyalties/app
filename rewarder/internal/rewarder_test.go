@@ -121,6 +121,8 @@ func Test_ProcessMessageJSON(t *testing.T) {
 		"card_type":        "Points"
 	}`
 
+	models.InitDB()
+
 	tests := []struct {
         name        string
         messageJSON string
@@ -145,14 +147,14 @@ func Test_ProcessMessageJSON(t *testing.T) {
 func etcdAddSeedData() {
 	// Add Exclusions
 	ExclusionsEtcd["001"] = models.Exclusion{
-		uuid.MustParse("e38adb10-a96a-4b55-aebd-7cdc9b973e7b"),
-		4125,
-		time.Now(),
+		ID: uuid.MustParse("e38adb10-a96a-4b55-aebd-7cdc9b973e7b"),
+		MCC: 4125,
+		ValidFrom: time.Now(),
 	}
 	ExclusionsEtcd["002"] = models.Exclusion{
-		uuid.MustParse("e38adb10-a96a-4b55-aebd-7cdc9b973e7b"),
-		5001,
-		time.Now().AddDate(0, 0, 1),
+		ID: uuid.MustParse("e38adb10-a96a-4b55-aebd-7cdc9b973e7b"),
+		MCC: 5001,
+		ValidFrom: time.Now().AddDate(0, 0, 1),
 	}
 
 	// Add Base Campaigns
