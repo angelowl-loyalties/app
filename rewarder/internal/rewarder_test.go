@@ -108,26 +108,26 @@ func Test_isCampaignMatch(t *testing.T) {
 
 func Test_ProcessMessageJSON(t *testing.T) { 
 	messageJSON1 := `{
-		"ID":              "4aab2f7c-4dd3-4a77-beb8-8582048c9bdb",
-		"CardID":          "3c0b3d7f-c011-4a7d-b47e-1f7c03a8ca53",
-		"Merchant":        "Best Buy",
-		"MCC":             5912,
-		"Currency":        "USD",
-		"Amount":          500.00,
-		"SGDAmount":       712.00,
-		"TransactionID":   "1234abcd",
-		"TransactionDate": "2023-10-23",
-		"CardPAN":         "1234567890123456",
-		"CardType":        "Points",
-	  }`
+		"id":              "4aab2f7c-4dd3-4a77-beb8-8582048c9bdb",
+		"card_id":          "3c0b3d7f-c011-4a7d-b47e-1f7c03a8ca53",
+		"merchant":        "Best Buy",
+		"mcc":             5912,
+		"currency":        "USD",
+		"amount":          500.00,
+		"sgd_amount":       712.00,
+		"transaction_id":   "1234abcd",
+		"transaction_date": "2023-01-23",
+		"card_pan":         "1234567890123456",
+		"card_type":        "Points"
+	}`
 
 	tests := []struct {
         name        string
         messageJSON string
-        gotErr     bool //true only when there is an error creating reward; otherwise, always false (return nil)
+        gotErr     bool 
     }{
-        {"valid_message", messageJSON1, false}, //valid JSON format and no error when creating reward in ProcessMessage
-        {"invalid_message", "invalid_json", false}, //if JSON format invalid, return nil
+		{"invalid_message", "invalid_json", true}, 
+        {"valid_message", messageJSON1, false}, 
     }
 	for _, tt := range tests {
         t.Run(tt.name, func(t *testing.T) {

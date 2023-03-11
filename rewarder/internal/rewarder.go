@@ -21,7 +21,7 @@ func ProcessMessageJSON(messageJSON string) error {
 	err := json.Unmarshal([]byte(messageJSON), &transaction) // Convert JSON message to transaction object
 	if err != nil {
 		// log.Fatalln(err)
-		return nil
+		return err
 	}
 
 	return ProcessMessage(transaction)
