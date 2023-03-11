@@ -12,7 +12,6 @@ import (
 
 // global variable for seed transactions for testing
 var SeedTransactions = make(map[string]models.Transaction)
-var transaction1 models.Transaction
 
 func Test_isExcluded(t *testing.T) {
 	etcdAddSeedData()
