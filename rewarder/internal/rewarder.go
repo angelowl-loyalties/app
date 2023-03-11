@@ -37,7 +37,7 @@ func ProcessMessage(transaction models.Transaction) error {
 		return nil //TODO: Fix this to do something when date couldnt be parsed
 	}
 
-	if isExcluded(transactionDate, transaction.MCC) {
+	if IsExcluded(transactionDate, transaction.MCC) {
 		// Delta and remarks for the exclusion case
 		var delta float64 = 0
 		var remarks = "Campaigns don't apply"
@@ -65,7 +65,7 @@ func ProcessMessage(transaction models.Transaction) error {
 		}
 
 	} else {
-		campaigns := getMatchingCampaigns(transaction)
+		campaigns := GetMatchingCampaigns(transaction)
 
 		baseDelta := 0.0
 		promoDelta := 0.0
@@ -75,11 +75,11 @@ func ProcessMessage(transaction models.Transaction) error {
 
 		//TODO: Support multiple currencies other than USD
 		if transaction.Currency != "SGD" {
-			transaction.Amount = convertToSGD(transaction.Amount)
+			transaction.Amount = ConvertToSGD(transaction.Amount)
 		}
 		for _, campaign := range baseMatchedCampaigns {
 
-			tempDelta := calculateDeltaType(campaign.RewardAmount, transaction.Amount)
+			tempDelta := CalculateDeltaType(campaign.RewardAmount, transaction.Amount)
 			if tempDelta > baseDelta {
 				baseDelta = tempDelta
 				remarks = campaign.Name + " applied" //TODO: Format this string to appropriate description
@@ -88,7 +88,7 @@ func ProcessMessage(transaction models.Transaction) error {
 
 		for _, campaign := range promoMatchedCampaigns {
 
-			tempDelta := calculateDeltaType(campaign.RewardAmount, transaction.Amount)
+			tempDelta := CalculateDeltaType(campaign.RewardAmount, transaction.Amount)
 			if tempDelta > promoDelta {
 				promoDelta = tempDelta
 				remarks = campaign.Name + " applied" //TODO: Format this string to appropriate description
@@ -120,7 +120,7 @@ func ProcessMessage(transaction models.Transaction) error {
 	return nil
 }
 
-func isExcluded(transactionDate time.Time, mcc int) bool {
+func IsExcluded(transactionDate time.Time, mcc int) bool {
 	// TODO: Replace with transactionDate
 	today := time.Now()
 	for _, ex := range ExclusionsEtcd {
@@ -131,7 +131,7 @@ func isExcluded(transactionDate time.Time, mcc int) bool {
 	return false
 }
 
-func getMatchingCampaigns(transaction models.Transaction) (campaign [][]models.Campaign) {
+func GetMatchingCampaigns(transaction models.Transaction) (campaign [][]models.Campaign) {
 	//Returns a 2D array of campaigns, [ [BaseMatchedCampaigns], [PromoMatchedCampaigns] ]
 
 	// TODO: start using the transactions start date instead of time now
@@ -141,13 +141,13 @@ func getMatchingCampaigns(transaction models.Transaction) (campaign [][]models.C
 	resultMatchingCampaigns := [][]models.Campaign{}
 	for _, campaign := range BaseCampaignsEtcd {
 
-		if isCampaignMatch(campaign, transaction) {
+		if IsCampaignMatch(campaign, transaction) {
 			baseMatchingCampaigns = append(baseMatchingCampaigns, campaign)
 		}
 	}
 
 	for _, campaign := range PromoCampaignsEtcd {
-		if isCampaignMatch(campaign, transaction) {
+		if IsCampaignMatch(campaign, transaction) {
 			promoMatchingCampaigns = append(promoMatchingCampaigns, campaign)
 		}
 	}
@@ -157,7 +157,7 @@ func getMatchingCampaigns(transaction models.Transaction) (campaign [][]models.C
 	return resultMatchingCampaigns
 }
 
-func isCampaignMatch(campaign models.Campaign, transaction models.Transaction) bool {
+func IsCampaignMatch(campaign models.Campaign, transaction models.Transaction) bool {
 	if campaign.RewardProgram != transaction.CardType {
 		return false
 	}
@@ -177,12 +177,12 @@ func isCampaignMatch(campaign models.Campaign, transaction models.Transaction) b
 	return true
 }
 
-func calculateDeltaType(rewardAmount int, spentAmount float64) float64 {
+func CalculateDeltaType(rewardAmount int, spentAmount float64) float64 {
 
 	return float64(rewardAmount) * spentAmount
 }
 
-func convertToSGD(spendAmount float64) float64 {
+func ConvertToSGD(spendAmount float64) float64 {
 	// TODO: Change to proper USD handling
 	return spendAmount * 1.34
 }

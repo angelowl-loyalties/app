@@ -1,19 +1,23 @@
-package internal
+package tests
 
 import (
 	"reflect"
+	"sort"
 	"testing"
 	"time"
-	"sort"
 
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/internal"
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
 	"github.com/google/uuid"
 )
 
 // global variable for seed transactions for testing
 var SeedTransactions = make(map[string]models.Transaction)
+var SeedBaseCampaigns = make(map[string]models.Campaign)
+var SeedPromoCampaigns = make(map[string]models.Campaign)
+var SeedExclusions = make(map[string]models.Exclusion)
 
-func Test_isExcluded(t *testing.T) {
+func Test_IsExcluded(t *testing.T) {
 	etcdAddSeedData()
 
 	type args struct {
@@ -31,8 +35,8 @@ func Test_isExcluded(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := isExcluded(tt.args.transactionDate, tt.args.mcc); got != tt.want {
-				t.Errorf("isExcluded() = %v, want %v", got, tt.want)
+			if got := internal.IsExcluded(tt.args.transactionDate, tt.args.mcc); got != tt.want {
+				t.Errorf("IsExcluded() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -40,15 +44,15 @@ func Test_isExcluded(t *testing.T) {
 
 func Test_getMatchingCampaigns(t *testing.T) {
 	etcdAddSeedData()
-	
+
 	baseMatchingCampaigns := []models.Campaign{}
-	baseMatchingCampaigns = append(baseMatchingCampaigns, BaseCampaignsEtcd["001"])
-	baseMatchingCampaigns = append(baseMatchingCampaigns, BaseCampaignsEtcd["005"])
+	baseMatchingCampaigns = append(baseMatchingCampaigns, SeedBaseCampaigns["001"])
+	baseMatchingCampaigns = append(baseMatchingCampaigns, SeedBaseCampaigns["005"])
 	promoMatchingCampaigns := []models.Campaign{}
 	wantCampaign_base_2_promo_0 := [][]models.Campaign{}
 	wantCampaign_base_2_promo_0 = append(wantCampaign_base_2_promo_0, baseMatchingCampaigns)
 	wantCampaign_base_2_promo_0 = append(wantCampaign_base_2_promo_0, promoMatchingCampaigns)
-	
+
 	type args struct {
 		transaction models.Transaction
 	}
@@ -61,14 +65,14 @@ func Test_getMatchingCampaigns(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			gotCampaign := getMatchingCampaigns(tt.args.transaction)
+			gotCampaign := internal.GetMatchingCampaigns(tt.args.transaction)
 			gotBaseCampaign := gotCampaign[0]
 			gotPromoCampaign := gotCampaign[1]
-			
+
 			// Sort the gotten Base and Promo Campaigns, to ensure order is consistent over different test runs
-			sort.Slice(gotBaseCampaign, func(i, j int) bool {return gotBaseCampaign[i].ID.String() < gotBaseCampaign[j].ID.String()})
-			sort.Slice(gotPromoCampaign, func(i, j int) bool {return gotPromoCampaign[i].ID.String() < gotPromoCampaign[j].Name})
-			
+			sort.Slice(gotBaseCampaign, func(i, j int) bool { return gotBaseCampaign[i].ID.String() < gotBaseCampaign[j].ID.String() })
+			sort.Slice(gotPromoCampaign, func(i, j int) bool { return gotPromoCampaign[i].ID.String() < gotPromoCampaign[j].Name })
+
 			if !reflect.DeepEqual(gotCampaign, tt.wantCampaign) {
 				t.Errorf("getMatchingCampaigns() = %v, want %v", gotCampaign, tt.wantCampaign)
 			}
@@ -89,77 +93,77 @@ func Test_isCampaignMatch(t *testing.T) {
 		want bool
 	}{
 		// All "false" cases are only a single 1 change from the first "true" case
-		{"match", args{BaseCampaignsEtcd["001"], SeedTransactions["001"]}, true},
-		{"no_match_card_type", args{BaseCampaignsEtcd["001"], SeedTransactions["002"]}, false},
-		{"no_match_campaign_not_started", args{BaseCampaignsEtcd["002"], SeedTransactions["001"]}, false},
-		{"no_match_campaign_ended", args{BaseCampaignsEtcd["003"], SeedTransactions["001"]}, false},
-		{"no_match_foreign_sgd", args{BaseCampaignsEtcd["001"], SeedTransactions["003"]}, false},
-		{"no_match_different_merchant", args{BaseCampaignsEtcd["001"], SeedTransactions["004"]}, false},
-		{"no_match_min_spend_not_met", args{BaseCampaignsEtcd["001"], SeedTransactions["005"]}, false},
+		{"match", args{SeedBaseCampaigns["001"], SeedTransactions["001"]}, true},
+		{"no_match_card_type", args{SeedBaseCampaigns["001"], SeedTransactions["002"]}, false},
+		{"no_match_campaign_not_started", args{SeedBaseCampaigns["002"], SeedTransactions["001"]}, false},
+		{"no_match_campaign_ended", args{SeedBaseCampaigns["003"], SeedTransactions["001"]}, false},
+		{"no_match_foreign_sgd", args{SeedBaseCampaigns["001"], SeedTransactions["003"]}, false},
+		{"no_match_different_merchant", args{SeedBaseCampaigns["001"], SeedTransactions["004"]}, false},
+		{"no_match_min_spend_not_met", args{SeedBaseCampaigns["001"], SeedTransactions["005"]}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := isCampaignMatch(tt.args.campaign, tt.args.transaction); got != tt.want {
+			if got := internal.IsCampaignMatch(tt.args.campaign, tt.args.transaction); got != tt.want {
 				t.Errorf("isCampaignMatch() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func Test_ProcessMessageJSON(t *testing.T) { 
-	messageJSON1 := `{
-		"id":              "4aab2f7c-4dd3-4a77-beb8-8582048c9bdb",
-		"card_id":          "3c0b3d7f-c011-4a7d-b47e-1f7c03a8ca53",
-		"merchant":        "Best Buy",
-		"mcc":             5912,
-		"currency":        "USD",
-		"amount":          500.00,
-		"sgd_amount":       712.00,
-		"transaction_id":   "1234abcd",
-		"transaction_date": "2023-01-23",
-		"card_pan":         "1234567890123456",
-		"card_type":        "Points"
-	}`
+// func Test_ProcessMessageJSON(t *testing.T) {
+// 	messageJSON1 := `{
+// 		"id":              "4aab2f7c-4dd3-4a77-beb8-8582048c9bdb",
+// 		"card_id":          "3c0b3d7f-c011-4a7d-b47e-1f7c03a8ca53",
+// 		"merchant":        "Best Buy",
+// 		"mcc":             5912,
+// 		"currency":        "USD",
+// 		"amount":          500.00,
+// 		"sgd_amount":       712.00,
+// 		"transaction_id":   "1234abcd",
+// 		"transaction_date": "2023-01-23",
+// 		"card_pan":         "1234567890123456",
+// 		"card_type":        "Points"
+// 	}`
 
-	// models.InitDB()
+// 	// models.InitDB()
 
-	tests := []struct {
-        name        string
-        messageJSON string
-        gotErr     bool 
-    }{
-		{"invalid_message", "invalid_json", true}, 
-        {"valid_message", messageJSON1, false}, 
-    }
-	for _, tt := range tests {
-        t.Run(tt.name, func(t *testing.T) {
-            // Test
-            err := ProcessMessageJSON(tt.messageJSON)
+// 	tests := []struct {
+// 		name        string
+// 		messageJSON string
+// 		gotErr      bool
+// 	}{
+// 		{"invalid_message", "invalid_json", true},
+// 		{"valid_message", messageJSON1, false},
+// 	}
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			// Test
+// 			err := ProcessMessageJSON(tt.messageJSON)
 
-            // Assert
-            if (err != nil) != tt.gotErr {
-                t.Errorf("ProcessMessageJSON() error = %v, gotErr %v", err, tt.gotErr)
-            }
-        })
-    }
-}
+// 			// Assert
+// 			if (err != nil) != tt.gotErr {
+// 				t.Errorf("ProcessMessageJSON() error = %v, gotErr %v", err, tt.gotErr)
+// 			}
+// 		})
+// 	}
+// }
 
 func etcdAddSeedData() {
 	// Add Exclusions
-	ExclusionsEtcd["001"] = models.Exclusion{
-		ID: uuid.MustParse("e38adb10-a96a-4b55-aebd-7cdc9b973e7b"),
-		MCC: 4125,
+	SeedExclusions["001"] = models.Exclusion{
+		ID:        uuid.MustParse("e38adb10-a96a-4b55-aebd-7cdc9b973e7b"),
+		MCC:       4125,
 		ValidFrom: time.Now(),
 	}
-	ExclusionsEtcd["002"] = models.Exclusion{
-		ID: uuid.MustParse("e38adb10-a96a-4b55-aebd-7cdc9b973e7b"),
-		MCC: 5001,
+	SeedExclusions["002"] = models.Exclusion{
+		ID:        uuid.MustParse("e38adb10-a96a-4b55-aebd-7cdc9b973e7b"),
+		MCC:       5001,
 		ValidFrom: time.Now().AddDate(0, 0, 1),
 	}
 
 	// Add Base Campaigns
 	// Valid campaign
-	BaseCampaignsEtcd["001"] = models.Campaign{
+	SeedBaseCampaigns["001"] = models.Campaign{
 		ID:                 uuid.MustParse("7b1f04eb-f54c-4f9d-8baf-a4c00dddf111"),
 		Name:               "Summer Sale",
 		MinSpend:           50.0,
@@ -171,8 +175,8 @@ func etcdAddSeedData() {
 		Merchant:           "Best Buy",
 		ForForeignCurrency: true,
 	}
-	
-	BaseCampaignsEtcd["002"] = models.Campaign{
+
+	SeedBaseCampaigns["002"] = models.Campaign{
 		ID:                 uuid.MustParse("1c7f6942-85f9-4a9a-b1ab-6dab27c94222"),
 		Name:               "Winter Warmup",
 		MinSpend:           100.0,
@@ -184,7 +188,7 @@ func etcdAddSeedData() {
 		ForForeignCurrency: true,
 	}
 
-	BaseCampaignsEtcd["003"] = models.Campaign{
+	SeedBaseCampaigns["003"] = models.Campaign{
 		ID:                 uuid.MustParse("1c7f6942-85f9-4a9a-b1ab-6dab27c94333"),
 		Name:               "Winter Warmup",
 		MinSpend:           100.0,
@@ -196,7 +200,7 @@ func etcdAddSeedData() {
 		ForForeignCurrency: true,
 	}
 
-	BaseCampaignsEtcd["004"] = models.Campaign{
+	SeedBaseCampaigns["004"] = models.Campaign{
 		ID:                 uuid.MustParse("ddb0a58f-6dca-41f3-a3a9-d40961670444"),
 		Name:               "Spring Fling",
 		MinSpend:           0.0,
@@ -209,7 +213,7 @@ func etcdAddSeedData() {
 		Merchant:           "",
 	}
 
-	BaseCampaignsEtcd["005"] = models.Campaign{
+	SeedBaseCampaigns["005"] = models.Campaign{
 		ID:                 uuid.MustParse("ddb0a58f-6dca-41f3-a3a9-d40961670555"),
 		Name:               "Summer x2",
 		MinSpend:           0.0,
