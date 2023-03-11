@@ -1,6 +1,3 @@
-deployment:
-  imageTag: 15c4d9d58ea81c90cbfcef5d464d315dec84afd0
-
 app:
   name: profiler
   port: 8080
