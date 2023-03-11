@@ -1,0 +1,35 @@
+app:
+  name: informer
+  port: 8080
+  replicas: 2
+  env:
+    - name: PORT
+      value: "8080"
+    - name: DB_PORT
+      valueFrom:
+        secretKeyRef:
+          name: informer
+          key: database_port
+    - name: DB_KEYSPACE
+      value: transactions
+    - name: DB_TABLE
+      value: rewards
+    - name: DB_SSL
+      value: "true"
+    - name: DB_CREATE_INDEX
+      value: "false"
+    - name: DB_CONN_STRING
+      valueFrom:
+        secretKeyRef:
+          name: informer
+          key: database
+    - name: DB_USER
+      valueFrom:
+        secretKeyRef:
+          name: informer
+          key: database_user
+    - name: DB_PASS
+      valueFrom:
+        secretKeyRef:
+          name: informer
+          key: database_password

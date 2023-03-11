@@ -1,0 +1,55 @@
+app:
+  name: rewarder
+  port: 8080
+  replicas: 6
+  env:
+    - name: PORT
+      value: "8080"
+    - name: DB_PORT
+      valueFrom:
+        secretKeyRef:
+          name: rewarder
+          key: database_port
+    - name: DB_KEYSPACE
+      value: transactions
+    - name: DB_TABLE
+      value: rewards
+    - name: DB_SSL
+      value: "true"
+    - name: DB_CREATE_INDEX
+      value: "false"
+    - name: DB_CONN_STRING
+      valueFrom:
+        secretKeyRef:
+          name: rewarder
+          key: database
+    - name: DB_USER
+      valueFrom:
+        secretKeyRef:
+          name: rewarder
+          key: database_user
+    - name: DB_PASS
+      valueFrom:
+        secretKeyRef:
+          name: rewarder
+          key: database_password
+    - name: BROKER_HOST
+      valueFrom:
+        secretKeyRef:
+          name: rewarder
+          key: broker_host
+    - name: TOPIC
+      value: transaction
+    - name: ETCD_ENDPOINTS
+      value: etcd.angelowl-etcd:2379
+    - name: ETCD_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: etcd
+          key: username
+    - name: ETCD_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: etcd
+          key: password
+

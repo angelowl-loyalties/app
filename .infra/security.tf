@@ -12,6 +12,20 @@ resource "aws_security_group" "angelowl_ssh" {
   }
 }
 
+resource "aws_security_group" "angelowl_postgres" {
+  name        = "angelowl-postgres-access"
+  description = "Allows inbound Postgres traffic"
+  vpc_id      = aws_vpc.angelowl.id
+
+  ingress {
+    description = "PostgreSQL"
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_security_group" "angelowl_kafka" {
   name        = "angelowl-kafka-access"
   description = "Allows inbound Kafka traffic"

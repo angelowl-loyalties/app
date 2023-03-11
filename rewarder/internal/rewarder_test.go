@@ -121,7 +121,7 @@ func Test_ProcessMessageJSON(t *testing.T) {
 		"card_type":        "Points"
 	}`
 
-	models.InitDB()
+	// models.InitDB()
 
 	tests := []struct {
         name        string
