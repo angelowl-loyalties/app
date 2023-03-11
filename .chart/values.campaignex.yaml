@@ -1,0 +1,24 @@
+app:
+  name: campaignex
+  port: 8080
+  replicas: 2
+  env:
+    - name: PORT
+      value: "8080"
+    - name: ETCD_ENDPOINTS
+      value: etcd.angelowl-etcd:2379
+    - name: ETCD_USERNAME
+      valueFrom:
+        secretKeyRef:
+          name: etcd
+          key: username
+    - name: ETCD_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: etcd
+          key: password
+    - name: DB_CONN_STRING
+      valueFrom:
+        secretKeyRef:
+          name: campaignex
+          key: database

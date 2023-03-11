@@ -1,0 +1,12 @@
+app:
+  name: profiler
+  port: 8080
+  replicas: 2
+  env:
+    - name: PORT
+      value: "8080"
+    - name: DB_CONN_STRING
+      valueFrom:
+        secretKeyRef:
+          name: profiler
+          key: database

@@ -25,19 +25,21 @@ var ExclusionsEtcd = make(map[string]models.Exclusion)
 
 // we should consider whether these two global variables should have a mutex to prevent race conditions/dirty reads
 
-func InitEtcdClient(endpointsString string) {
-	endpoints := strings.Split(endpointsString, ",")
+func InitEtcdClient(endpointsCsv string, username string, password string) {
+	endpoints := strings.Split(endpointsCsv, ",")
 
 	var err error
 	ETCD, err = clientv3.New(clientv3.Config{
 		Endpoints:   endpoints,
 		DialTimeout: dialTimeout,
+		Username: username,
+		Password: password,
 	})
 
 	if err != nil {
 		log.Fatalln(err)
 	} else {
-		log.Println("Connected to: " + endpointsString)
+		log.Println("Connected to: " + endpointsCsv)
 	}
 }
 

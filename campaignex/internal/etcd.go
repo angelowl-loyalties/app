@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/models"
-	"go.etcd.io/etcd/client/v3"
+	clientv3 "go.etcd.io/etcd/client/v3"
 )
 
 const (
@@ -17,19 +17,21 @@ const (
 
 var ETCD *clientv3.Client
 
-func InitClient(endpointsString string) {
-	endpoints := strings.Split(endpointsString, ",")
+func InitEtcdClient(endpointsCsv string, username string, password string) {
+	endpoints := strings.Split(endpointsCsv, ",")
 
 	var err error
 	ETCD, err = clientv3.New(clientv3.Config{
 		Endpoints:   endpoints,
 		DialTimeout: dialTimeout,
+		Username:    username,
+		Password:    password,
 	})
 
 	if err != nil {
 		log.Fatalln(err)
 	} else {
-		log.Println("Connected to: " + endpointsString)
+		log.Println("Connected to: " + endpointsCsv)
 	}
 }
 

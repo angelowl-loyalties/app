@@ -10,4 +10,6 @@ FROM alpine:3.17
 
 COPY --from=builder /service_executable /service_executable
 
+COPY ./config/sf-class2-root.crt /root-ca.crt
+
 ENTRYPOINT ["/service_executable"]
