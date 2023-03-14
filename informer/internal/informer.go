@@ -46,3 +46,29 @@ func GetRewardsByCardID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"data": rewards})
 }
+
+// GetTotalRewardsByCardID - GET /reward/total/:cardId
+// @Summary Get total rewards for a specified card
+// @Description Get total rewards given a particular card's UUID
+// @Tags reward
+// @Produce json
+// @Success 200 {array} number
+// @Param cardId path string true "Card ID"
+// @Router /reward/total/{cardId} [get]
+func GetTotalRewardsByCardID(c *gin.Context) {
+	var rewards []models.Reward
+	cardID := c.Param("cardId")
+
+	rewards, err := models.RewardGetByCardID(cardID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	totalRewards := 0.0
+	for _, reward := range rewards {
+		totalRewards += reward.RewardAmount
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": totalRewards})
+}
