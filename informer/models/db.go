@@ -65,13 +65,13 @@ func InitDB(dbHost, dbPort, keyspace, table, username, password string, useSSL, 
 func ConnectDB(dbHost, dbPort, username, password, keyspace string, useSSL bool) {
 	cluster := gocql.NewCluster(dbHost)
 	cluster.Keyspace = keyspace
-	cluster.Consistency = gocql.LocalQuorum
-	
+	cluster.Consistency = gocql.One
+
 	dbPortInt, err := strconv.Atoi(dbPort)
 	if err == nil {
 		cluster.Port = dbPortInt
 	}
-	
+
 	cluster.Authenticator = gocql.PasswordAuthenticator{
 		Username: username,
 		Password: password,
