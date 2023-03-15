@@ -5,7 +5,6 @@ import (
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/profiler/utils"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strings"
 )
 
 // GetUsers - GET /user
@@ -73,7 +72,7 @@ func CreateUser(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	if newUser.Email == temp.Email {
+	if temp != nil && newUser.Email == temp.Email {
 		// check if another user has the same email, if so, error
 		c.JSON(http.StatusBadRequest, gin.H{"error": "User with that email already exists"})
 		return
@@ -190,39 +189,4 @@ func DeleteUser(c *gin.Context) {
 	}
 
 	c.Status(http.StatusNoContent)
-}
-
-// LoginUser - POST /user/login
-// @Summary User login
-// @Description Returns user when provided credentials are valid
-// @Tags user
-// @Accept json
-// @Produce json
-// @Success 200 {object} models.User
-// @Param credentials body models.SignIn true "Credentials"
-// @Router /auth/login [post]
-func LoginUser(c *gin.Context) {
-	var credentials models.SignIn
-
-	if err := c.ShouldBindJSON(&credentials); err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
-		return
-	}
-
-	user, err := models.UserGetByEmail(strings.ToLower(credentials.Email))
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-	if user == nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid Email or Password"})
-		return
-	}
-
-	if err := utils.VerifyPassword(user.Password, credentials.Password); err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Invalid Email or Password"})
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{"data": user})
 }
