@@ -33,7 +33,7 @@ jobs:
   ci:
     needs: [lint, sast]
     name: Continuous Integration
-    uses: ./.github/workflows/workflow_auth_lambda.yml
+    uses: ./.github/workflows/workflow_lambda.yml
     with:
       dockerfile: 'Dockerfile'
       workdir: 'authorizer'
