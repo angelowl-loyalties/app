@@ -13,9 +13,9 @@ import (
 
 // global variable for seed transactions for testing
 var SeedTransactions = make(map[string]models.Transaction)
-var SeedBaseCampaigns = make(map[string]models.Campaign)
-var SeedPromoCampaigns = make(map[string]models.Campaign)
-var SeedExclusions = make(map[string]models.Exclusion)
+// var SeedBaseCampaigns = make(map[string]models.Campaign)
+// var SeedPromoCampaigns = make(map[string]models.Campaign)
+// var SeedExclusions = make(map[string]models.Exclusion)
 
 func Test_IsExcluded(t *testing.T) {
 	etcdAddSeedData()
@@ -46,8 +46,8 @@ func Test_getMatchingCampaigns(t *testing.T) {
 	etcdAddSeedData()
 
 	baseMatchingCampaigns := []models.Campaign{}
-	baseMatchingCampaigns = append(baseMatchingCampaigns, SeedBaseCampaigns["001"])
-	baseMatchingCampaigns = append(baseMatchingCampaigns, SeedBaseCampaigns["005"])
+	baseMatchingCampaigns = append(baseMatchingCampaigns, internal.BaseCampaignsEtcd["001"])
+	baseMatchingCampaigns = append(baseMatchingCampaigns, internal.BaseCampaignsEtcd["005"])
 	promoMatchingCampaigns := []models.Campaign{}
 	wantCampaign_base_2_promo_0 := [][]models.Campaign{}
 	wantCampaign_base_2_promo_0 = append(wantCampaign_base_2_promo_0, baseMatchingCampaigns)
@@ -93,13 +93,13 @@ func Test_isCampaignMatch(t *testing.T) {
 		want bool
 	}{
 		// All "false" cases are only a single 1 change from the first "true" case
-		{"match", args{SeedBaseCampaigns["001"], SeedTransactions["001"]}, true},
-		{"no_match_card_type", args{SeedBaseCampaigns["001"], SeedTransactions["002"]}, false},
-		{"no_match_campaign_not_started", args{SeedBaseCampaigns["002"], SeedTransactions["001"]}, false},
-		{"no_match_campaign_ended", args{SeedBaseCampaigns["003"], SeedTransactions["001"]}, false},
-		{"no_match_foreign_sgd", args{SeedBaseCampaigns["001"], SeedTransactions["003"]}, false},
-		{"no_match_different_merchant", args{SeedBaseCampaigns["001"], SeedTransactions["004"]}, false},
-		{"no_match_min_spend_not_met", args{SeedBaseCampaigns["001"], SeedTransactions["005"]}, false},
+		{"match", args{internal.BaseCampaignsEtcd["001"], SeedTransactions["001"]}, true},
+		{"no_match_card_type", args{internal.BaseCampaignsEtcd["001"], SeedTransactions["002"]}, false},
+		{"no_match_campaign_not_started", args{internal.BaseCampaignsEtcd["002"], SeedTransactions["001"]}, false},
+		{"no_match_campaign_ended", args{internal.BaseCampaignsEtcd["003"], SeedTransactions["001"]}, false},
+		{"no_match_foreign_sgd", args{internal.BaseCampaignsEtcd["001"], SeedTransactions["003"]}, false},
+		{"no_match_different_merchant", args{internal.BaseCampaignsEtcd["001"], SeedTransactions["004"]}, false},
+		{"no_match_min_spend_not_met", args{internal.BaseCampaignsEtcd["001"], SeedTransactions["005"]}, false},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -150,12 +150,12 @@ func Test_isCampaignMatch(t *testing.T) {
 
 func etcdAddSeedData() {
 	// Add Exclusions
-	SeedExclusions["001"] = models.Exclusion{
+	internal.ExclusionsEtcd["001"] = models.Exclusion{
 		ID:        uuid.MustParse("e38adb10-a96a-4b55-aebd-7cdc9b973e7b"),
 		MCC:       4125,
 		ValidFrom: time.Now(),
 	}
-	SeedExclusions["002"] = models.Exclusion{
+	internal.ExclusionsEtcd["002"] = models.Exclusion{
 		ID:        uuid.MustParse("e38adb10-a96a-4b55-aebd-7cdc9b973e7b"),
 		MCC:       5001,
 		ValidFrom: time.Now().AddDate(0, 0, 1),
@@ -163,7 +163,7 @@ func etcdAddSeedData() {
 
 	// Add Base Campaigns
 	// Valid campaign
-	SeedBaseCampaigns["001"] = models.Campaign{
+	internal.BaseCampaignsEtcd["001"] = models.Campaign{
 		ID:                 uuid.MustParse("7b1f04eb-f54c-4f9d-8baf-a4c00dddf111"),
 		Name:               "Summer Sale",
 		MinSpend:           50.0,
@@ -176,7 +176,7 @@ func etcdAddSeedData() {
 		ForForeignCurrency: true,
 	}
 
-	SeedBaseCampaigns["002"] = models.Campaign{
+	internal.BaseCampaignsEtcd["002"] = models.Campaign{
 		ID:                 uuid.MustParse("1c7f6942-85f9-4a9a-b1ab-6dab27c94222"),
 		Name:               "Winter Warmup",
 		MinSpend:           100.0,
@@ -188,7 +188,7 @@ func etcdAddSeedData() {
 		ForForeignCurrency: true,
 	}
 
-	SeedBaseCampaigns["003"] = models.Campaign{
+	internal.BaseCampaignsEtcd["003"] = models.Campaign{
 		ID:                 uuid.MustParse("1c7f6942-85f9-4a9a-b1ab-6dab27c94333"),
 		Name:               "Winter Warmup",
 		MinSpend:           100.0,
@@ -200,7 +200,7 @@ func etcdAddSeedData() {
 		ForForeignCurrency: true,
 	}
 
-	SeedBaseCampaigns["004"] = models.Campaign{
+	internal.BaseCampaignsEtcd["004"] = models.Campaign{
 		ID:                 uuid.MustParse("ddb0a58f-6dca-41f3-a3a9-d40961670444"),
 		Name:               "Spring Fling",
 		MinSpend:           0.0,
@@ -213,7 +213,7 @@ func etcdAddSeedData() {
 		Merchant:           "",
 	}
 
-	SeedBaseCampaigns["005"] = models.Campaign{
+	internal.BaseCampaignsEtcd["005"] = models.Campaign{
 		ID:                 uuid.MustParse("ddb0a58f-6dca-41f3-a3a9-d40961670555"),
 		Name:               "Summer x2",
 		MinSpend:           0.0,
