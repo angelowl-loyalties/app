@@ -79,6 +79,14 @@ paths:
         name: cardId
         required: true
         type: string
+      - description: Page Size
+        in: query
+        name: page_size
+        type: string
+      - description: Page Number
+        in: query
+        name: page_no
+        type: string
       produces:
       - application/json
       responses:

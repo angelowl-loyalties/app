@@ -104,6 +104,18 @@ const docTemplate = `{
                         "name": "cardId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Page Size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Page Number",
+                        "name": "page_no",
+                        "in": "query"
                     }
                 ],
                 "responses": {
