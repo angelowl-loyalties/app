@@ -7,8 +7,6 @@ import (
 	"os"
 	"strings"
 
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/authorizer/utils"
-
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go-v2/config"
@@ -17,15 +15,20 @@ import (
 	"github.com/matelang/jwt-go-aws-kms/v2/jwtkms"
 )
 
-var authzJWTKeyID string
+var JWTKeyID string
 
-var authzKMSClient *kms.Client
+var KMSClient *kms.Client
 
-var authzKMSConfig *jwtkms.Config
+var KMSConfig *jwtkms.Config
+
+type CustomJWTClaims struct {
+	Role string `json:"role"`
+	jwt.RegisteredClaims
+}
 
 func init() {
-	authzJWTKeyID = os.Getenv("JWT_KMS_KEY_ID")
-	if authzJWTKeyID == "" {
+	JWTKeyID = os.Getenv("JWT_KMS_KEY_ID")
+	if JWTKeyID == "" {
 		log.Fatalln("JWS_KMS_KEY_ID environment variable is empty")
 	}
 
@@ -34,13 +37,13 @@ func init() {
 		log.Fatalln("config error: " + err.Error())
 	}
 
-	authzKMSClient = kms.NewFromConfig(awsCfg)
-	authzKMSConfig = jwtkms.NewKMSConfig(authzKMSClient, authzJWTKeyID, false)
+	KMSClient = kms.NewFromConfig(awsCfg)
+	KMSConfig = jwtkms.NewKMSConfig(KMSClient, JWTKeyID, false)
 }
 
 // this lambda takes the JWT authorization token that was forwarded from API gateway
 // it parses the credentials and appends them to the response context to be consumed by the internal REST API
-func handleAuthzRequest(ctx context.Context, event events.APIGatewayCustomAuthorizerRequest) (events.APIGatewayCustomAuthorizerResponse, error) {
+func handleRequest(ctx context.Context, event events.APIGatewayCustomAuthorizerRequest) (events.APIGatewayCustomAuthorizerResponse, error) {
 	token := event.AuthorizationToken
 	log.Println(token)
 
@@ -53,9 +56,9 @@ func handleAuthzRequest(ctx context.Context, event events.APIGatewayCustomAuthor
 		return events.APIGatewayCustomAuthorizerResponse{}, errors.New("unauthorized")
 	}
 
-	claims := utils.CustomJWTClaims{}
+	claims := CustomJWTClaims{}
 	_, err := jwt.ParseWithClaims(bearerToken, &claims, func(token *jwt.Token) (interface{}, error) {
-		return authzKMSConfig, nil
+		return KMSConfig, nil
 	})
 	if err != nil {
 		log.Printf("cannot parse/verify token %s", err)
@@ -69,7 +72,7 @@ func handleAuthzRequest(ctx context.Context, event events.APIGatewayCustomAuthor
 		"role": role,
 	}
 
-	// TODO: determine the method ARNs that should be allowed
+	// TODO: determine the method ARNs that should be allowed, make use of map for users to resources
 	// arn:partition:execute-api:region:account-id:api-id/authorizers/authorizer-id
 	// requestARN := event.MethodArn
 	var resources []string
@@ -112,10 +115,11 @@ func generatePolicy(principalID string, effect string, resources []string, conte
 			},
 		}
 	}
+
 	authResponse.Context = context
 	return authResponse
 }
 
-func main() { //nolint:all
-	lambda.Start(handleAuthzRequest)
+func main() {
+	lambda.Start(handleRequest)
 }

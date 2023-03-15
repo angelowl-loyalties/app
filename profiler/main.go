@@ -9,7 +9,7 @@ import (
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/profiler/models"
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/profiler/routes"
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/profiler/utils"
-	
+
 	"github.com/gin-gonic/gin"
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
