@@ -6,13 +6,13 @@ on:
     paths:
       - "authorizer/**"
       - .github/workflows/ci_authorizer.yml
-      - .github/workflows/workflow_auth_lambda.yml
+      - .github/workflows/workflow_lambda.yml
   pull_request:
     branches: [ master ]
     paths:
       - "authorizer/**"
       - .github/workflows/ci_authorizer.yml
-      - .github/workflows/workflow_auth_lambda.yml
+      - .github/workflows/workflow_lambda.yml
 
 permissions:
   id-token: write
