@@ -1,4 +1,11 @@
 definitions:
+  internal.AuthResponse:
+    properties:
+      token:
+        type: string
+      user_id:
+        type: string
+    type: object
   models.Card:
     properties:
       card_pan:
@@ -93,6 +100,28 @@ definitions:
 info:
   contact: {}
 paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Returns user when provided credentials are valid
+      parameters:
+      - description: Credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/models.SignIn'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/internal.AuthResponse'
+      summary: User login
+      tags:
+      - user
   /card:
     get:
       description: Get all cards
@@ -368,28 +397,6 @@ paths:
           schema:
             $ref: '#/definitions/models.User'
       summary: Update a user
-      tags:
-      - user
-  /user/login:
-    post:
-      consumes:
-      - application/json
-      description: Returns user when provided credentials are valid
-      parameters:
-      - description: Credentials
-        in: body
-        name: credentials
-        required: true
-        schema:
-          $ref: '#/definitions/models.SignIn'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.User'
-      summary: User login
       tags:
       - user
 swagger: "2.0"

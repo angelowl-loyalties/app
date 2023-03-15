@@ -35,6 +35,11 @@ type SignIn struct {
 	Password string `json:"password" binding:"required"`
 }
 
+type AuthResponse struct {
+	JWT    string `json:"token"`
+	UserID string `json:"user_id"`
+}
+
 func (user *User) BeforeCreate(tx *gorm.DB) (err error) {
 	user.ID = uuid.New()
 	return
