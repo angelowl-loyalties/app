@@ -43,7 +43,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.User"
+                            "$ref": "#/definitions/internal.AuthResponse"
                         }
                     }
                 }
@@ -472,6 +472,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "internal.AuthResponse": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
         "models.Card": {
             "type": "object",
             "required": [

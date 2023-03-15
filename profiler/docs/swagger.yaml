@@ -1,4 +1,11 @@
 definitions:
+  internal.AuthResponse:
+    properties:
+      token:
+        type: string
+      user_id:
+        type: string
+    type: object
   models.Card:
     properties:
       card_pan:
@@ -111,7 +118,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.User'
+            $ref: '#/definitions/internal.AuthResponse'
       summary: User login
       tags:
       - user
