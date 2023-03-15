@@ -7,7 +7,6 @@ require (
 	github.com/aws/aws-sdk-go-v2/config v1.18.15
 	github.com/aws/aws-sdk-go-v2/service/kms v1.18.9
 	github.com/golang-jwt/jwt/v4 v4.4.3
-	github.com/google/uuid v1.3.0
 	github.com/matelang/jwt-go-aws-kms/v2 v2.0.0-20221003061547-97367f031324
 )
 
