@@ -32,8 +32,8 @@ func InitEtcdClient(endpointsCsv string, username string, password string) {
 	ETCD, err = clientv3.New(clientv3.Config{
 		Endpoints:   endpoints,
 		DialTimeout: dialTimeout,
-		Username: username,
-		Password: password,
+		Username:    username,
+		Password:    password,
 	})
 
 	if err != nil {
@@ -181,7 +181,7 @@ func etcdAddInitial() (err error) {
 		End:                time.Date(2023, 5, 31, 23, 59, 59, 0, time.UTC),
 		RewardProgram:      "scis_shopping",
 		RewardAmount:       10,
-		MCC:                9311,
+		MCC:                "9311",
 		Merchant:           "Petco",
 		IsBaseReward:       false,
 		ForForeignCurrency: true,

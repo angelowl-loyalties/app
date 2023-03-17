@@ -2,13 +2,12 @@ package internal
 
 import (
 	"encoding/json"
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
+	"github.com/gocql/gocql"
 	"log"
+	"strconv"
 	"strings"
 	"time"
-
-	"github.com/gocql/gocql"
-
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
 )
 
 const (
@@ -66,7 +65,6 @@ func ProcessMessage(transaction models.Transaction) error {
 
 	} else {
 		campaigns := getMatchingCampaigns(transaction)
-
 		baseDelta := 0.0
 		promoDelta := 0.0
 		remarks := ""
@@ -168,13 +166,24 @@ func isCampaignMatch(campaign models.Campaign, transaction models.Transaction) b
 	if campaign.ForForeignCurrency && transaction.Currency == "SGD" {
 		return false
 	}
-	if campaign.Merchant != "" && strings.Contains(transaction.Merchant, campaign.Merchant) {
+	if campaign.Merchant != "" && !strings.Contains(transaction.Merchant, campaign.Merchant) {
 		return false
 	}
 	if campaign.MinSpend > transaction.Amount {
 		return false
 	}
-	return true
+	campaignMcc := strings.Split(campaign.MCC, ",")
+	for _, mcc := range campaignMcc {
+		intMCC, err := strconv.Atoi(mcc)
+		if err != nil {
+			// log.Fatalln(err)
+			return false
+		}
+		if intMCC == 0 || intMCC == transaction.MCC {
+			return true
+		}
+	}
+	return false
 }
 
 func calculateDeltaType(rewardAmount int, spentAmount float64) float64 {
