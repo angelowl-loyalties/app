@@ -55,6 +55,38 @@ const docTemplate = `{
                 }
             }
         },
+        "/reward/total/{cardId}": {
+            "get": {
+                "description": "Get total rewards given a particular card's UUID",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "reward"
+                ],
+                "summary": "Get total rewards for a specified card",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Card ID",
+                        "name": "cardId",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "number"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/reward/{cardId}": {
             "get": {
                 "description": "Get all rewards for a particular card's UUID",
@@ -72,6 +104,18 @@ const docTemplate = `{
                         "name": "cardId",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Page Size",
+                        "name": "page_size",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "Page Number",
+                        "name": "page_no",
+                        "in": "query"
                     }
                 ],
                 "responses": {

@@ -79,6 +79,14 @@ paths:
         name: cardId
         required: true
         type: string
+      - description: Page Size
+        in: query
+        name: page_size
+        type: string
+      - description: Page Number
+        in: query
+        name: page_no
+        type: string
       produces:
       - application/json
       responses:
@@ -89,6 +97,27 @@ paths:
               $ref: '#/definitions/models.Reward'
             type: array
       summary: Get all rewards for a specified card
+      tags:
+      - reward
+  /reward/total/{cardId}:
+    get:
+      description: Get total rewards given a particular card's UUID
+      parameters:
+      - description: Card ID
+        in: path
+        name: cardId
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              type: number
+            type: array
+      summary: Get total rewards for a specified card
       tags:
       - reward
 swagger: "2.0"

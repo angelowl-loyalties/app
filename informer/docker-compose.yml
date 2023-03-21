@@ -14,11 +14,9 @@ services:
     image: informer
     depends_on:
       - cassandra
-    environment:
-      - PORT=8080
-      - DB_CONN_STRING=cassandra_db
-      - DB_KEYSPACE=transactions
-      - DB_TABLE=rewards
+    env_file:
+#      - ./.env
+      - ./config/.dev.env
     volumes:
       - .:/app
     networks:

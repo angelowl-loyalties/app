@@ -25,7 +25,7 @@ type Reward struct {
 }
 
 func RewardGetAll() (rewards []Reward, _ error) {
-	stmt, _ := qb.Select("transactions.rewards").ToCql()
+	stmt, _ := qb.Select("angelowl.rewards").ToCql()
 
 	err := gocqlx.Select(&rewards, DB.Query(stmt))
 	if err != nil {
@@ -37,8 +37,7 @@ func RewardGetAll() (rewards []Reward, _ error) {
 }
 
 func RewardGetByCardID(reqCardId string) (rewards []Reward, _ error) {
-	stmt, _ := qb.Select("transactions.rewards").Where(qb.EqLit("card_id", reqCardId)).ToCql()
-
+	stmt, _ := qb.Select("angelowl.rewards").Where(qb.EqLit("card_id", reqCardId)).AllowFiltering().ToCql()
 	err := gocqlx.Select(&rewards, DB.Query(stmt))
 	if err != nil {
 		log.Println(err)
