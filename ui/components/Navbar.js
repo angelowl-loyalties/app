@@ -1,25 +1,10 @@
-import { HamburgerIcon } from '@chakra-ui/icons';
-import {
-    Box,
-    Divider,
-    Flex,
-    Heading,
-    HStack,
-    IconButton,
-    Menu,
-    MenuButton,
-    MenuItem,
-    MenuList,
-    Stack,
-    Text,
-    VStack,
-} from '@chakra-ui/react';
+import { Alert, AlertIcon, Box, Divider, Heading, HStack, Stack, Text, VStack } from '@chakra-ui/react';
 import { signOut } from 'next-auth/react';
 import Head from 'next/head';
 import Image from 'next/image';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { RiLogoutCircleRLine } from 'react-icons/ri';
 import { BellIcon } from "@chakra-ui/icons"
 
@@ -50,6 +35,11 @@ function Navbar(props) {
             'tab': 'View campaigns',
             'header': 'Campaigns'
         },
+        {
+            'path': '/banks',
+            'tab': ' ',
+            'header': 'SCIS Bank'
+        },
     ]
 
     return (
@@ -57,6 +47,10 @@ function Navbar(props) {
             <Head>
                 <title>{routes.find((route) => route.path == router.pathname).header + " | Ascenda"}</title>
             </Head>
+            <Alert status='info' h={7} display={props.bank ? "inline-flex": "none"} py={0} >
+                <AlertIcon w={4} />
+                <Text fontSize="xs">Notice: You are currently logged in as a Organisational User from SCIS Bank</Text>
+            </Alert>
             <Stack minH='100vh' direction={{ base: 'column', md: 'column', lg: "row" }} >
                 <VStack alignItems="start" backgroundColor="#f5f7f9" w="26%" display={{ base: "none", md: "none", lg: "block" }}>
                     <Box p={8}>
@@ -81,7 +75,7 @@ function Navbar(props) {
                         <Divider />
                         <HStack cursor="pointer" onClick={() => signOut()}>
                             <RiLogoutCircleRLine color='red' />
-                            <Text fontSize="sm" fontWeight={600} color={'gra6.600'} lineHeight="7" textColor="red" >
+                            <Text fontSize="sm" fontWeight={600} color={'gra6.600'} lineHeight="7" textColor="red" onClick={() => router.push("/login")}>
                                 Log out
                             </Text>
                         </HStack>

@@ -18,10 +18,12 @@ import {
 import { getCsrfToken, signIn, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { useEffect } from 'react';
+import { useRouter } from 'next/router';
 import { useRef, useState } from 'react';
 import { FaUserAlt, FaLock } from "react-icons/fa";
 
 export default function Login() {
+    const router = useRouter()
     const [loading, setLoading] = useState(false);
     const email = useRef();
     const password = useRef();
@@ -123,7 +125,7 @@ export default function Login() {
                                 variant="solid"
                                 colorScheme="purple"
                                 width="full"
-                                onClick={handleLogin}
+                                onClick={() => router.push("/")}
                             >
                                 Login
                             </Button>
