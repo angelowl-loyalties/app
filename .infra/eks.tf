@@ -12,7 +12,7 @@ resource "aws_eks_cluster" "angelowl_eks_cluster" {
 
   vpc_config {
     endpoint_private_access = true
-    endpoint_public_access  = false
+    endpoint_public_access  = true
 
     subnet_ids = [
       aws_subnet.angelowl_private_a.id,

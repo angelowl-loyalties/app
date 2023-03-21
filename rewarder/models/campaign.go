@@ -14,7 +14,7 @@ type Campaign struct {
 	End                time.Time `json:"end_date"`
 	RewardProgram      string    `json:"reward_program"`
 	RewardAmount       int       `json:"reward_amount"`
-	MCC                int       `json:"mcc"`
+	MCC                string       `json:"mcc"`
 	Merchant           string    `json:"merchant"`
 	IsBaseReward       bool      `json:"base_reward"`
 	ForForeignCurrency bool      `json:"foreign_currency"`

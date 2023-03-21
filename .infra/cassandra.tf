@@ -39,6 +39,11 @@ resource "aws_keyspaces_table" "rewards" {
     }
 
     clustering_key {
+      name = "id"
+      order_by = "ASC"
+    }
+
+    clustering_key {
       name     = "transaction_date"
       order_by = "DESC"
     }

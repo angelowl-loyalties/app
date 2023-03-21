@@ -19,7 +19,11 @@ func Health(c *gin.Context) {
 
 func InitialiseRoutes(router *gin.Engine) {
 	router.GET("/health", Health)
-	router.POST("/auth/login", internal.LoginUser)
+
+	auth := router.Group("/auth")
+	{
+		auth.POST("/login", internal.LoginUser)
+	}
 
 	user := router.Group("/user")
 	{
