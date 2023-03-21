@@ -19,7 +19,7 @@ function CustomMarquee() {
                         {array.map((num) => {
                             return (
                                 <Box mx={4} my={3} key={num}>
-                                    <Image priority key={num} id={`/merchant${num}.webp`} priority={true} src={`/merchant${num}.webp`} width="0" height="0" sizes="100vw" style={{ width: '35px', height: 'auto' }} alt={`merchant ${num}`} />
+                                    <Image priority key={num} id={`/merchant${num}.webp`} src={`/merchant${num}.webp`} width="0" height="0" sizes="100vw" style={{ width: '35px', height: 'auto' }} alt={`merchant ${num}`} />
                                 </Box>
                             )
                         })}

@@ -45,7 +45,7 @@ export default function Transactions() {
                 'merchant': 'Brown  Robel and Rowe',
                 'mcc': '1847',
                 'currency': 'USD',
-                'amount': 1.79,
+                'amount': 317.79,
                 'sgd_amount': 0,
                 'transaction_id': 'c6f8587f4e976e2a315340df48ab04b189d6bf4c46146b23cdfe0ba0c56c2730',
                 'transaction_date': '25-08-21',
@@ -157,7 +157,7 @@ export default function Transactions() {
     return (
         <Navbar>
             <VStack alignItems='start' w="full">
-                <HStack  mb={{base: 4, lg: 6}}>
+                <HStack mb={{ base: 4, lg: 6 }}>
                     <VStack alignItems='start'>
                         <Text textStyle="title">Transactions and points history</Text>
                         <Text textStyle="subtitle">
@@ -188,7 +188,7 @@ export default function Transactions() {
                                 }
                             })}
                         </Select>
-                        <Box p={2} bgColor="gray.100" borderRadius="xl" display={{base: "none", lg: "inline-block"}}>
+                        <Box p={2} bgColor="gray.100" borderRadius="xl" display={{ base: "none", lg: "inline-block" }}>
                             <TabList>
                                 <Tab fontSize='sm' borderRadius='lg'><Text mx={1}>All</Text></Tab>
                                 {cards.map((card) => {
@@ -222,29 +222,54 @@ export default function Transactions() {
                                 return el.card_pan === card;
                             })
                             return (
-                                <TabPanel p={{base: 0, lg: 4}} mt={{base: 4, lg: 0}} initial={{ opacity: 0 }}
+                                <TabPanel p={{ base: 0, lg: 4 }} mt={{ base: 4, lg: 0 }} initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     exit={{ opacity: 0 }} key={card}>
                                     <Accordion allowMultiple w="full">
                                         {data.map((transaction) => {
                                             return (
                                                 <AccordionItem key={transaction}>
-                                                    <AccordionButton p={{base: 1, lg: 2}}>
+                                                    <AccordionButton p={{ base: 1, lg: 2 }}>
                                                         <Box as="span" flex='1' textAlign='left'>
-                                                            <HStack pr={{base: 0, lg: 8}}>
-                                                                <Text display={{base: "none", md: "block"}}>{(transaction.mcc == '5499' | transaction.mcc == '5411') ? <CiShoppingBasket size={20} color='gray' /> : (transaction.mcc == '5541' | transaction.mcc == '5542') ? <CiDeliveryTruck size={20} color='gray' /> : (transaction.mcc == '5499') ? <CiForkAndKnife size={20} color='gray' /> : (transaction.mcc == '4121' | transaction.mcc == '5734' | transaction.mcc == '6540' | transaction.mcc == '4111') ? <CiRoute size={20} color='gray' /> : (transaction.mcc == '5999' | transaction.mcc == '5964' | transaction.mcc == '5691' | transaction.mcc == '5311' | transaction.mcc == '5411' | transaction.mcc == '5399' | transaction.mcc == '5311') ? <CiShoppingBasket size={20} color='gray' /> : <CiWallet size={20} color='gray' />}</Text>
-                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' w={{base: 14, lg: 20}}>{transaction.transaction_date}</Text>
-                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' noOfLines={1} oOfLines={1} overflow="hidden" w={{base: 100, lg: 200}}>{transaction.merchant}</Text>
-                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' noOfLines={1} oOfLines={1} overflow="hidden" w={{base: 110, lg: 200}}>Shopee 11.11 Sale</Text>
-                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' w={{base: 100, lg: 100}}>{"- " + transaction.currency + " " + transaction.amount}</Text>
+                                                            <HStack pr={{ base: 0, lg: 8 }}>
+                                                                <Text display={{ base: "none", md: "block" }}>{(transaction.mcc == '5499' | transaction.mcc == '5411') ? <CiShoppingBasket size={20} color='gray' /> : (transaction.mcc == '5541' | transaction.mcc == '5542') ? <CiDeliveryTruck size={20} color='gray' /> : (transaction.mcc == '5499') ? <CiForkAndKnife size={20} color='gray' /> : (transaction.mcc == '4121' | transaction.mcc == '5734' | transaction.mcc == '6540' | transaction.mcc == '4111') ? <CiRoute size={20} color='gray' /> : (transaction.mcc == '5999' | transaction.mcc == '5964' | transaction.mcc == '5691' | transaction.mcc == '5311' | transaction.mcc == '5411' | transaction.mcc == '5399' | transaction.mcc == '5311') ? <CiShoppingBasket size={20} color='gray' /> : <CiWallet size={20} color='gray' />}</Text>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' w={{ base: 14, lg: 20 }}>{transaction.transaction_date}</Text>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' noOfLines={1} oOfLines={1} overflow="hidden" w={{ base: 100, lg: 200 }}>{transaction.merchant}</Text>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' noOfLines={1} oOfLines={1} overflow="hidden" w={{ base: 110, lg: 200 }}>Shopee 11.11 Sale</Text>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' w={{ base: 100, lg: 100 }}>{"- " + transaction.currency + " " + transaction.amount}</Text>
                                                                 <Spacer />
-                                                                <Badge fontSize='xs' colorScheme="green" py={1} px={2} >+200 Miles</Badge>
+                                                                <Badge fontSize='xs' colorScheme="green" py={1} px={2} >+100 Miles</Badge>
                                                             </HStack>
                                                         </Box>
-                                                        <AccordionIcon display={{base: "none", md: "block"}}/>
+                                                        <AccordionIcon display={{ base: "none", md: "block" }} />
                                                     </AccordionButton>
                                                     <AccordionPanel pb={4}>
+                                                        <VStack alignItems="left">
+                                                            <HStack>
+                                                                <Text fontSize='xs' fontWeight={600} color={'green.400'} w={{ base: 'fit-content', lg: "fit-content" }}>Confirmed: Travel miles is added to your account.</Text>
+                                                            </HStack>
+                                                            <HStack>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>Transaction ID: </Text>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>1234-5678-9012-3456</Text>
+                                                            </HStack>
+                                                            <HStack>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>Transaction date: </Text>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>26-08-21</Text>
+                                                            </HStack>
+                                                            <HStack>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>Amount spent: </Text>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>USD 317.79</Text>
+                                                            </HStack>
+                                                            <HStack>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>Remarks: </Text>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>30% Cashback For Every S$1 Spent</Text>
+                                                            </HStack>
+                                                            <HStack>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>Card: </Text>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>7063</Text>
+                                                            </HStack>
 
+                                                        </VStack>
                                                     </AccordionPanel>
                                                 </AccordionItem>
                                             )
