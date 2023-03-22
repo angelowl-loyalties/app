@@ -53,7 +53,7 @@ func handleRequest(ctx context.Context, event events.APIGatewayCustomAuthorizerR
 		bearerToken = tokenSlice[len(tokenSlice)-1]
 	}
 	if bearerToken == "" || strings.ToUpper(tokenSlice[0]) != "BEARER" {
-		return events.APIGatewayCustomAuthorizerResponse{}, errors.New("unauthorized")
+		return events.APIGatewayCustomAuthorizerResponse{}, errors.New("not a bearer token")
 	}
 
 	claims := CustomJWTClaims{}
