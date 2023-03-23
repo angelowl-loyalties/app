@@ -1,5 +1,5 @@
 definitions:
-  internal.AuthResponse:
+  models.AuthResponse:
     properties:
       token:
         type: string
@@ -118,7 +118,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal.AuthResponse'
+            $ref: '#/definitions/models.AuthResponse'
       summary: User login
       tags:
       - user

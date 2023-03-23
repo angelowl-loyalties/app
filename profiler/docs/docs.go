@@ -43,7 +43,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal.AuthResponse"
+                            "$ref": "#/definitions/models.AuthResponse"
                         }
                     }
                 }
@@ -472,7 +472,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "internal.AuthResponse": {
+        "models.AuthResponse": {
             "type": "object",
             "properties": {
                 "token": {
