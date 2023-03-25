@@ -9,20 +9,21 @@ import (
 	"io"
 	"os"
 	"strconv"
-	"time"
 
+	"github.com/Shopify/sarama"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/s3"
 	"github.com/google/uuid"
-	"github.com/segmentio/kafka-go"
 )
 
 const (
 	DDMMYY   = "02-01-06"
 	YYYYMMDD = "2006-01-02"
 )
+
+var brokers = []string{"angelowlmsk.aznt6t.c3.kafka.ap-southeast-1.amazonaws.com:9092"}
 
 type Transaction struct {
 	ID              uuid.UUID `json:"id"`
@@ -56,25 +57,33 @@ func (transaction *Transaction) Parse(transactionCsv []string) error {
 	transaction.MCC, _ = strconv.Atoi(transactionCsv[3])
 	transaction.Currency = transactionCsv[4]
 	transaction.Amount, _ = strconv.ParseFloat(transactionCsv[5], 64)
-
-	// transaction.SGDAmount, _ = strconv.ParseFloat(transactionCsv[6], 64)
 	transaction.SGDAmount = 0.0
-
-	// Parse time and catch errors from homework format
-	// tempDate, err := time.Parse(DDMMYY, transactionCsv[6])
-	// if err != nil {
-	// 	return err
-	// }
-
-	// Format time into ISO format
-	// transaction.TransactionDate = tempDate.Format(YYYYMMDD)
-
 	transaction.TransactionDate = transactionCsv[6]
 	transaction.CardID = uuid.MustParse(transactionCsv[7])
 	transaction.CardPAN = transactionCsv[8]
 	transaction.CardType = transactionCsv[9]
 
 	return nil
+}
+
+func newProducer() (sarama.SyncProducer, error) {
+	config := sarama.NewConfig()
+	config.Producer.Partitioner = sarama.NewRoundRobinPartitioner
+	config.Producer.RequiredAcks = sarama.WaitForAll
+	config.Producer.Return.Successes = true
+	config.Producer.Transaction.Retry.Backoff = 10
+	producer, err := sarama.NewSyncProducer(brokers, config)
+
+	return producer, err
+}
+
+func prepareMessage(message []byte) *sarama.ProducerMessage {
+	msg := &sarama.ProducerMessage{
+		Topic: "transaction",
+		Value: sarama.ByteEncoder(message),
+	}
+
+	return msg
 }
 
 func HandleRequest(ctx context.Context, event S3Event) (string, error) {
@@ -84,7 +93,7 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 
 	// Define the S3 bucket and file key
 	bucket := "angel-owl-spendfiles"
-	fileKey := "bigspend.csv"
+	fileKey := "3fc97862-a9c7-4c67-bd55-8b83f5832342.csv"
 
 	// Download the file from S3
 	result, err := s3Svc.GetObject(&s3.GetObjectInput{
@@ -106,13 +115,18 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 		os.Exit(1)
 	}
 
-	producer := kafka.NewWriter(kafka.WriterConfig{
-		Brokers:      []string{"angelowlmsk.aznt6t.c3.kafka.ap-southeast-1.amazonaws.com:9092"},
-		Topic:        "transaction",
-		Balancer:     &kafka.LeastBytes{},
-		BatchSize:    1000,
-		BatchTimeout: 100 * time.Millisecond,
-	})
+	// producer := kafka.NewWriter(kafka.WriterConfig{
+	// 	Brokers:      []string{"angelowlmsk.aznt6t.c3.kafka.ap-southeast-1.amazonaws.com:9092"},
+	// 	Topic:        "transaction",
+	// 	Balancer:     &kafka.LeastBytes{},
+	// 	BatchSize:    1000,
+	// 	BatchTimeout: 100 * time.Millisecond,
+	// })
+	producer, err := newProducer()
+	if err != nil {
+		fmt.Printf("Failed to create producer: %v\n", err)
+		os.Exit(1)
+	}
 	defer producer.Close()
 
 	for {
@@ -137,10 +151,11 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 		}
 
 		go func() {
-			err := producer.WriteMessages(ctx, kafka.Message{
-				Key:   []byte("transaction6"),
-				Value: []byte(b),
-			})
+			// err := producer.WriteMessages(ctx, kafka.Message{
+			// 	Key:   []byte("transaction6"),
+			// 	Value: []byte(b),
+			// })
+			_, _, err := producer.SendMessage(prepareMessage(b))
 			if err != nil {
 				fmt.Printf("Error writing to Producer: %v", err)
 			}
