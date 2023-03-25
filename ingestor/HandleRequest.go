@@ -65,31 +65,6 @@ func init() {
 	}
 }
 
-// func addDashes(cardPAN string) string {
-// 	var sb strings.Builder
-// 	for i, char := range cardPAN {
-// 		if i == 4 || i == 8 || i == 12 {
-// 			sb.WriteRune('-')
-// 		}
-// 		sb.WriteRune(char)
-// 	}
-
-// 	return sb.String()
-// }
-
-// func validateCardPAN(cardPAN string) bool {
-// 	// The regex pattern for a valid 19-character card PAN with dashes
-// 	pattern := `^(\d{4}-){3}\d{4}$`
-// 	regex, err := regexp.Compile(pattern)
-
-// 	if err != nil {
-// 		fmt.Println("Error compiling regex:", err)
-// 		return false
-// 	}
-
-// 	return regex.MatchString(cardPAN)
-// }
-
 type ParseErrorInterface struct {
 	message string
 }
@@ -187,14 +162,6 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 		os.Exit(1)
 	}
 
-	// producer := kafka.NewWriter(kafka.WriterConfig{
-	// 	Brokers:      []string{"angelowlmsk.aznt6t.c3.kafka.ap-southeast-1.amazonaws.com:9092"},
-	// 	Topic:        "transaction",
-	// 	Balancer:     &kafka.LeastBytes{},
-	// 	BatchSize:    1000,
-	// 	BatchTimeout: 100 * time.Millisecond,
-	// })
-
 	for {
 		record, err := reader.Read()
 
@@ -220,18 +187,12 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 		}
 
 		go func() {
-			// err := producer.WriteMessages(ctx, kafka.Message{
-			// 	Key:   []byte("transaction6"),
-			// 	Value: []byte(b),
-			// })
 			_, _, err := producer.SendMessage(prepareMessage(b))
 			if err != nil {
 				fmt.Printf("Error writing to Producer: %v", err)
 			}
 		}()
 	}
-
-	// defer producer.Close()
 
 	return "", err
 }
