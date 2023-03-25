@@ -8,9 +8,7 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"regexp"
 	"strconv"
-	"strings"
 
 	"github.com/Shopify/sarama"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -67,30 +65,30 @@ func init() {
 	}
 }
 
-func addDashes(cardPAN string) string {
-	var sb strings.Builder
-	for i, char := range cardPAN {
-		if i == 4 || i == 8 || i == 12 {
-			sb.WriteRune('-')
-		}
-		sb.WriteRune(char)
-	}
+// func addDashes(cardPAN string) string {
+// 	var sb strings.Builder
+// 	for i, char := range cardPAN {
+// 		if i == 4 || i == 8 || i == 12 {
+// 			sb.WriteRune('-')
+// 		}
+// 		sb.WriteRune(char)
+// 	}
 
-	return sb.String()
-}
+// 	return sb.String()
+// }
 
-func validateCardPAN(cardPAN string) bool {
-	// The regex pattern for a valid 19-character card PAN with dashes
-	pattern := `^(\d{4}-){3}\d{4}$`
-	regex, err := regexp.Compile(pattern)
+// func validateCardPAN(cardPAN string) bool {
+// 	// The regex pattern for a valid 19-character card PAN with dashes
+// 	pattern := `^(\d{4}-){3}\d{4}$`
+// 	regex, err := regexp.Compile(pattern)
 
-	if err != nil {
-		fmt.Println("Error compiling regex:", err)
-		return false
-	}
+// 	if err != nil {
+// 		fmt.Println("Error compiling regex:", err)
+// 		return false
+// 	}
 
-	return regex.MatchString(cardPAN)
-}
+// 	return regex.MatchString(cardPAN)
+// }
 
 type ParseErrorInterface struct {
 	message string
@@ -114,8 +112,13 @@ func (transaction *Transaction) Parse(transactionCsv []string) (err error) {
 	transaction.TransactionID = transactionCsv[1]
 	transaction.Merchant = transactionCsv[2]
 
+	if transactionCsv[3] == "" {
+		transactionCsv[3] = "0"
+	}
+
 	transaction.MCC, err = strconv.Atoi(transactionCsv[3])
 	if err != nil {
+		fmt.Println(transactionCsv[3])
 		return err
 	}
 
@@ -129,15 +132,10 @@ func (transaction *Transaction) Parse(transactionCsv []string) (err error) {
 		return err
 	}
 
-	if len(transactionCsv[8]) == 16 {
-		transaction.CardPAN = addDashes(transactionCsv[8])
-	} else {
-		transaction.CardPAN = transactionCsv[8]
-	}
-
-	if !validateCardPAN(transaction.CardPAN) {
+	if len(transactionCsv[8]) < 13 || len(transactionCsv[8]) > 19 {
 		return ParseError("Card Pan failed to be validated")
 	}
+	transaction.CardPAN = transactionCsv[8]
 
 	transaction.CardType = transactionCsv[9]
 	return nil
@@ -197,8 +195,6 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 	// 	BatchTimeout: 100 * time.Millisecond,
 	// })
 
-	defer producer.Close()
-
 	for {
 		record, err := reader.Read()
 
@@ -235,11 +231,12 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 		}()
 	}
 
-	producer.Close()
+	// defer producer.Close()
 
 	return "", err
 }
 
 func main() {
 	lambda.Start(HandleRequest)
+	producer.Close()
 }
