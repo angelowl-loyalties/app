@@ -30,59 +30,10 @@ resource "aws_api_gateway_vpc_link" "angelowl" {
 }
 
 resource "aws_api_gateway_rest_api" "angelowl_rest" {
-  body = jsonencode({
-    openapi = "3.0.1"
-    info = {
-      title   = "AngelOwl"
-      version = "0.0.0"
-    }
-    paths = {
-      "/exclusion" = {
-        "x-amazon-apigateway-any-method" = {
-          produces = ["application/json"]
-          responses = {
-            "200" = {
-              description = "200 response"
-              content = {
-                "application/json" = {
-                  schema = {
-                    type = "string"
-                  }
-                }
-              }
-            }
-          }
-          x-amazon-apigateway-integration = {
-            connectionType = "VPC_LINK"
-            type           = "http"
-            uri            = "http://campaignex.itsag1t2.com/exclusion/"
-            connectionId   = aws_api_gateway_vpc_link.angelowl.id
-            httpMethod     = "ANY"
-            responses = {
-              default = {
-                statusCode = "200"
-              }
-            }
-            payloadFormatVersion = "1.0"
-            passthroughBehavior  = "when_no_match"
-          }
-        }
-      }
-      #   "/campaign" = {
-      #     x-amazon-apigateway-integration = {
-      #       connectionType       = "VPC_LINK"
-      #       type                 = "http"
-      #       uri                  = "http://campaignex.itsag1t2.com/campaign/"
-      #       httpMethod           = "ANY"
-      #       payloadFormatVersion = "1.0"
-      #       passthroughBehavior  = "when_no_match"
-      #     }
-      #   }
-    }
-  })
-
+  body = file("angelowl-rest-api.json")
   name              = "AngelOwl EKS APIGW REST"
   put_rest_api_mode = "merge"
+  # put_rest_api_mode = "overwrite"
 
   endpoint_configuration {
     types = ["REGIONAL"]
