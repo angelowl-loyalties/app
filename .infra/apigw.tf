@@ -32,8 +32,7 @@ resource "aws_api_gateway_vpc_link" "angelowl" {
 resource "aws_api_gateway_rest_api" "angelowl_rest" {
   body = file("angelowl-rest-api.json")
   name              = "AngelOwl EKS APIGW REST"
-  put_rest_api_mode = "merge"
-  # put_rest_api_mode = "overwrite"
+  put_rest_api_mode = "overwrite"
 
   endpoint_configuration {
     types = ["REGIONAL"]
