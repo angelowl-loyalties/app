@@ -139,8 +139,7 @@ func prepareMessage(message []byte) *sarama.ProducerMessage {
 func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 	// Define the S3 bucket and file key
 	bucket := "angel-owl-spendfiles"
-	// fileKey := event.Records[0].S3.Object.Key
-	fileKey := "bigspend.csv"
+	fileKey := event.Records[0].S3.Object.Key
 
 	// Download the file from S3
 	result, err := s3Svc.GetObject(&s3.GetObjectInput{
