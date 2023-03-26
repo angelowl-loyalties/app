@@ -4,12 +4,14 @@ on:
   push:
     branches: [ '**' ]
     paths:
+      - ".chart/**"
       - "profiler/**"
       - .github/workflows/ci_profiler.yml
       - .github/workflows/workflow_container.yml
   pull_request:
     branches: [ master ]
     paths:
+      - ".chart/**"
       - "profiler/**"
       - .github/workflows/ci_profiler.yml
       - .github/workflows/workflow_container.yml

@@ -4,12 +4,14 @@ on:
   push:
     branches: [ '**' ]
     paths:
+      - ".chart/**"
       - "rewarder/**"
       - .github/workflows/ci_rewarder.yml
       - .github/workflows/workflow_container.yml
   pull_request:
     branches: [ master ]
     paths:
+      - ".chart/**"
       - "rewarder/**"
       - .github/workflows/ci_rewarder.yml
       - .github/workflows/workflow_container.yml
