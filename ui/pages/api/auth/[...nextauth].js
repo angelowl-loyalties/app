@@ -12,14 +12,15 @@ const authOptions = {
             },
             authorize: async (credentials) => {
                 // Make POST request to log 
-                const request = axios.post(process.env.NEXT_PUBLIC_API_URL + "AUTH_ENDPOINT_HERE", {
+                const request = axios.post("https://itsag1t2.com/auth/login", {
                     email: credentials.email,
                     password: credentials.password
                 })
+                console.log(request)
 
                 // Store token response
                 return await request.then((response) => {
-                    const user = { id: "Token " + response.data.token, token: "Token " + response.data.token }
+                    const user = { user_id: response.data.data.user_id, token: "Bearer " + response.data.data.token }
                     return user
                 }).catch((e) => {
                     console.log(e);
@@ -31,7 +32,8 @@ const authOptions = {
     callbacks: {
         jwt: async ({ token, user }) => {
             if (user) {
-                token.id = user.id;
+                token.id = user.token;
+                token.userId = user.user_id;
             }
 
             return token;
@@ -39,7 +41,7 @@ const authOptions = {
         session: ({ session, token }) => {
             if (token) {
                 session.id = token.id;
-                session.userId = token.id;
+                session.userId = token.userId;
             }
 
             return session;
