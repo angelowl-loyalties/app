@@ -6,6 +6,11 @@ app:
   env:
     - name: PORT
       value: "8080"
+    - name: JWT_KMS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: profiler
+          key: jwt_kms_key_id
     - name: DB_CONN_STRING
       valueFrom:
         secretKeyRef:
