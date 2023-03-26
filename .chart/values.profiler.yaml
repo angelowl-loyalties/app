@@ -2,6 +2,7 @@ app:
   name: profiler
   port: 8080
   replicas: 2
+  roleArn: arn:aws:iam::276374573009:role/service-role/angel-owl-authorizer-role-oq6y0qqe
   env:
     - name: PORT
       value: "8080"
