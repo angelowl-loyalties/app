@@ -14,6 +14,7 @@ spec:
       labels:
         app: {{.Values.app.name}}
     spec:
+      serviceAccountName: angelowl-{{.Values.app.name}}-sa
       containers:
         - name: {{.Values.app.name}}-ctr
           image: {{.Values.registry.url}}/{{.Values.app.name}}:{{.Values.deployment.imageTag}}
