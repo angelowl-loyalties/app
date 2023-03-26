@@ -121,11 +121,13 @@ func isExcluded(transactionDate time.Time, mcc int) bool {
 		return true
 	}
 
+	exclusionsMutex.RLock()
 	for _, ex := range ExclusionsEtcd {
 		if ex.MCC == mcc && ex.ValidFrom.Before(transactionDate) {
 			return true
 		}
 	}
+	exclusionsMutex.RUnlock()
 
 	return false
 }
@@ -137,17 +139,21 @@ func getMatchingCampaigns(transaction models.Transaction) (campaign [][]models.C
 	var promoMatchingCampaigns []models.Campaign
 	var resultMatchingCampaigns [][]models.Campaign
 
+	baseCampaignMutex.RLock()
 	for _, campaign := range BaseCampaignsEtcd {
 		if isCampaignMatch(campaign, transaction) {
 			baseMatchingCampaigns = append(baseMatchingCampaigns, campaign)
 		}
 	}
+	baseCampaignMutex.RUnlock()
 
+	promoCampaignMutex.RLock()
 	for _, campaign := range PromoCampaignsEtcd {
 		if isCampaignMatch(campaign, transaction) {
 			promoMatchingCampaigns = append(promoMatchingCampaigns, campaign)
 		}
 	}
+	promoCampaignMutex.RUnlock()
 
 	resultMatchingCampaigns = append(resultMatchingCampaigns, baseMatchingCampaigns)
 	resultMatchingCampaigns = append(resultMatchingCampaigns, promoMatchingCampaigns)
