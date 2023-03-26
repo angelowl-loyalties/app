@@ -3,12 +3,14 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/internal"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/config"
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/models"
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/routes"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	_ "github.com/cs301-itsa/project-2022-23t2-g1-t7/campaignex/docs"
@@ -38,6 +40,12 @@ func main() {
 
 	// setup routes
 	router = gin.Default()
+	router.Use(cors.New(cors.Config{
+        AllowOrigins:     []string{"*"},
+        AllowMethods:     []string{"GET", "PUT", "DELETE", "POST"},
+        AllowCredentials: true,
+        MaxAge: 12 * time.Hour,
+    }))
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	routes.InitialiseRoutes(router)
 
