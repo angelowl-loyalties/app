@@ -30,8 +30,9 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const handleShowClick = () => setShowPassword(!showPassword);
 
-    const handleLogin = async () => {
+    const handleLogin = async (e) => {
         setLoading(true)
+        e.preventDefault()
         if (email.current.value && password.current.value) {
             signIn("credentials", {
                 email: email.current.value,
@@ -112,6 +113,7 @@ export default function Login() {
                                             size='md'
                                             variant='ghost'
                                             icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                                            onClick={handleShowClick}
                                         />
                                     </InputRightElement>
                                 </InputGroup>
@@ -125,7 +127,7 @@ export default function Login() {
                                 variant="solid"
                                 colorScheme="purple"
                                 width="full"
-                                onClick={() => router.push("/")}
+                                onClick={handleLogin}
                             >
                                 Login
                             </Button>

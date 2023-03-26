@@ -117,7 +117,7 @@ function Navbar(props) {
 						{routes.map((route) => {
 							return (
 								<Text
-									key={route}
+									key={route.path}
 									fontSize="sm"
 									fontWeight={600}
 									lineHeight="6"
@@ -197,7 +197,7 @@ function Navbar(props) {
 											{routes.map((route) => {
 												return (
 													<Text
-														key={route}
+														key={route.path + "mobile"}
 														fontSize="sm"
 														fontWeight={600}
 														lineHeight="6"
