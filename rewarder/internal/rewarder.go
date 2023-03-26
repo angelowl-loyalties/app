@@ -49,7 +49,7 @@ func ProcessMessage(transaction models.Transaction) error {
 			SGDAmount:       transaction.SGDAmount,
 			TransactionID:   transaction.TransactionID,
 			TransactionDate: transaction.TransactionDate,
-			CardPAN:         transaction.CardPAN,
+			CardPAN:         maskCardPAN(transaction.CardPAN),
 			CardType:        transaction.CardType,
 			RewardAmount:    delta,
 			Remarks:         remarks,
@@ -101,7 +101,7 @@ func ProcessMessage(transaction models.Transaction) error {
 			SGDAmount:       transaction.SGDAmount,
 			TransactionID:   transaction.TransactionID,
 			TransactionDate: transaction.TransactionDate,
-			CardPAN:         transaction.CardPAN,
+			CardPAN:         maskCardPAN(transaction.CardPAN),
 			CardType:        transaction.CardType,
 			RewardAmount:    baseDelta + promoDelta,
 			Remarks:         remarks,
@@ -112,6 +112,7 @@ func ProcessMessage(transaction models.Transaction) error {
 			return err
 		}
 	}
+
 	return nil
 }
 
@@ -125,18 +126,18 @@ func isExcluded(transactionDate time.Time, mcc int) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
 func getMatchingCampaigns(transaction models.Transaction) (campaign [][]models.Campaign) {
 	//Returns a 2D array of campaigns, [ [BaseMatchedCampaigns], [PromoMatchedCampaigns] ]
 
-	promoMatchingCampaigns := []models.Campaign{}
-	baseMatchingCampaigns := []models.Campaign{}
+	var baseMatchingCampaigns []models.Campaign
+	var promoMatchingCampaigns []models.Campaign
+	var resultMatchingCampaigns [][]models.Campaign
 
-	resultMatchingCampaigns := [][]models.Campaign{}
 	for _, campaign := range BaseCampaignsEtcd {
-
 		if isCampaignMatch(campaign, transaction) {
 			baseMatchingCampaigns = append(baseMatchingCampaigns, campaign)
 		}
@@ -150,6 +151,7 @@ func getMatchingCampaigns(transaction models.Transaction) (campaign [][]models.C
 
 	resultMatchingCampaigns = append(resultMatchingCampaigns, baseMatchingCampaigns)
 	resultMatchingCampaigns = append(resultMatchingCampaigns, promoMatchingCampaigns)
+
 	return resultMatchingCampaigns
 }
 
@@ -187,14 +189,23 @@ func isCampaignMatch(campaign models.Campaign, transaction models.Transaction) b
 			return true
 		}
 	}
+
 	return false
 }
 
 func calculateDeltaType(rewardAmount int, spentAmount float64) float64 {
-
 	return float64(rewardAmount) * spentAmount
 }
 
 func convertToSGD(spendAmount float64) float64 {
 	return spendAmount * 1.34
+}
+
+func maskCardPAN(cardPAN string) string {
+	strLen := len(cardPAN)
+
+	mask := strings.Repeat("*", strLen-4)
+	lastFour := cardPAN[strLen-4:]
+
+	return mask + lastFour
 }
