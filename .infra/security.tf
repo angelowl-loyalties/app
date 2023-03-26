@@ -117,7 +117,7 @@ resource "aws_security_group" "angelowl_http_s_ingress" {
     from_port   = 80
     to_port     = 80
     protocol    = "tcp"
-    cidr_blocks = ["10.10.0.0/15"]
+    cidr_blocks = ["10.8.0.0/14"]
   }
 
   ingress {
@@ -125,7 +125,7 @@ resource "aws_security_group" "angelowl_http_s_ingress" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["10.10.0.0/15"]
+    cidr_blocks = ["10.8.0.0/14"]
   }
 }
 
@@ -135,6 +135,26 @@ resource "aws_security_group" "angelowl_outbound" {
   vpc_id      = aws_vpc.angelowl.id
 
   egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "angelowl_wideopen" {
+  name        = "angelowl-wideopen-access"
+  description = "Allows INSECURE wide-open traffic"
+  vpc_id      = aws_vpc.angelowl.id
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
