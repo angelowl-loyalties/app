@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"strings"
+	"sync"
 	"time"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
@@ -19,9 +20,15 @@ const (
 )
 
 var ETCD *clientv3.Client
+
 var BaseCampaignsEtcd = make(map[string]models.Campaign)
+var baseCampaignMutex sync.RWMutex
+
 var PromoCampaignsEtcd = make(map[string]models.Campaign)
+var promoCampaignMutex sync.RWMutex
+
 var ExclusionsEtcd = make(map[string]models.Exclusion)
+var exclusionsMutex sync.RWMutex
 
 // we should consider whether these two global variables should have a mutex to prevent race conditions/dirty reads
 
@@ -84,31 +91,43 @@ func handleWatchEvents(watchCh clientv3.WatchChan, key string) {
 					if err != nil {
 						log.Println(err)
 					}
+					baseCampaignMutex.Lock()
 					BaseCampaignsEtcd[string(event.Kv.Key)] = campaign
+					baseCampaignMutex.Unlock()
 				} else if key == "promo_campaign" {
 					var campaign models.Campaign
 					err := json.Unmarshal(event.Kv.Value, &campaign)
 					if err != nil {
 						log.Println(err)
 					}
+					promoCampaignMutex.Lock()
 					PromoCampaignsEtcd[string(event.Kv.Key)] = campaign
+					promoCampaignMutex.Unlock()
 				} else if key == "exclusion" {
 					var exclusion models.Exclusion
 					err := json.Unmarshal(event.Kv.Value, &exclusion)
 					if err != nil {
 						log.Println(err)
 					}
+					exclusionsMutex.Lock()
 					ExclusionsEtcd[string(event.Kv.Key)] = exclusion
+					exclusionsMutex.Unlock()
 				}
 				// testPrint()
 			case clientv3.EventTypeDelete:
 				//testPrint()
 				if key == "base_campaign" {
+					baseCampaignMutex.Lock()
 					delete(BaseCampaignsEtcd, string(event.Kv.Key))
+					baseCampaignMutex.Unlock()
 				} else if key == "promo_campaign" {
+					promoCampaignMutex.Lock()
 					delete(PromoCampaignsEtcd, string(event.Kv.Key))
+					promoCampaignMutex.Unlock()
 				} else if key == "exclusion" {
+					exclusionsMutex.Lock()
 					delete(ExclusionsEtcd, string(event.Kv.Key))
+					exclusionsMutex.Unlock()
 				}
 				//testPrint()
 			}
@@ -116,6 +135,7 @@ func handleWatchEvents(watchCh clientv3.WatchChan, key string) {
 	}
 }
 
+// for initialisation of global variable
 func etcdGetCampaigns() (err error) {
 	response, err := ETCD.Get(context.Background(), "base_campaign", clientv3.WithPrefix())
 	if err != nil {
@@ -152,6 +172,7 @@ func etcdGetCampaigns() (err error) {
 	return nil
 }
 
+// for initialisation of global variable
 func etcdGetExclusions() (err error) {
 	response, err := ETCD.Get(context.Background(), "exclusion", clientv3.WithPrefix())
 	if err != nil {

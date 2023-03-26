@@ -1,8 +1,9 @@
 package models
 
 import (
-	"github.com/scylladb/gocqlx"
 	"log"
+
+	"github.com/scylladb/gocqlx"
 
 	"github.com/gocql/gocql"
 	"github.com/scylladb/gocqlx/qb"
@@ -44,7 +45,7 @@ func RewardCreate(reward Reward) error {
 
 	err := q.ExecRelease()
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 		return err
 	}
 
