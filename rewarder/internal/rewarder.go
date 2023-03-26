@@ -2,12 +2,13 @@ package internal
 
 import (
 	"encoding/json"
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
-	"github.com/gocql/gocql"
 	"log"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
+	"github.com/gocql/gocql"
 )
 
 const (
@@ -27,12 +28,10 @@ func ProcessMessageJSON(messageJSON string) error {
 }
 
 func ProcessMessage(transaction models.Transaction) error {
-	//TODO: Proper error handling
-	transactionDate, err := time.Parse(YYYYMMDD, transaction.TransactionDate)
 
-	// TODO: Proper Error handling
+	transactionDate, err := time.Parse(YYYYMMDD, transaction.TransactionDate)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 		return nil //TODO: Fix this to do something when date couldnt be parsed
 	}
 
@@ -59,7 +58,7 @@ func ProcessMessage(transaction models.Transaction) error {
 		err := models.RewardCreate(reward)
 		// TODO: Proper Error handling
 		if err != nil {
-			log.Fatalln(err)
+			log.Println(err)
 			return err
 		}
 
@@ -71,7 +70,6 @@ func ProcessMessage(transaction models.Transaction) error {
 		baseMatchedCampaigns := campaigns[0]
 		promoMatchedCampaigns := campaigns[1]
 
-		//TODO: Support multiple currencies other than USD
 		if transaction.Currency != "SGD" {
 			transaction.Amount = convertToSGD(transaction.Amount)
 		}
@@ -80,7 +78,7 @@ func ProcessMessage(transaction models.Transaction) error {
 			tempDelta := calculateDeltaType(campaign.RewardAmount, transaction.Amount)
 			if tempDelta > baseDelta {
 				baseDelta = tempDelta
-				remarks = campaign.Name + " applied" //TODO: Format this string to appropriate description
+				remarks = campaign.Name + " applied"
 			}
 		}
 
@@ -89,7 +87,7 @@ func ProcessMessage(transaction models.Transaction) error {
 			tempDelta := calculateDeltaType(campaign.RewardAmount, transaction.Amount)
 			if tempDelta > promoDelta {
 				promoDelta = tempDelta
-				remarks = campaign.Name + " applied" //TODO: Format this string to appropriate description
+				remarks = campaign.Name + " applied"
 			}
 		}
 
@@ -109,9 +107,8 @@ func ProcessMessage(transaction models.Transaction) error {
 			Remarks:         remarks,
 		}
 		err := models.RewardCreate(reward)
-		// TODO: Proper Error handling
 		if err != nil {
-			log.Fatalln(err)
+			log.Println(err)
 			return err
 		}
 	}
@@ -119,10 +116,12 @@ func ProcessMessage(transaction models.Transaction) error {
 }
 
 func isExcluded(transactionDate time.Time, mcc int) bool {
-	// TODO: Replace with transactionDate
-	today := time.Now()
+	if mcc < 1 || mcc > 9999 {
+		return true
+	}
+
 	for _, ex := range ExclusionsEtcd {
-		if ex.MCC == mcc && ex.ValidFrom.Before(today) {
+		if ex.MCC == mcc && ex.ValidFrom.Before(transactionDate) {
 			return true
 		}
 	}
@@ -132,7 +131,6 @@ func isExcluded(transactionDate time.Time, mcc int) bool {
 func getMatchingCampaigns(transaction models.Transaction) (campaign [][]models.Campaign) {
 	//Returns a 2D array of campaigns, [ [BaseMatchedCampaigns], [PromoMatchedCampaigns] ]
 
-	// TODO: start using the transactions start date instead of time now
 	promoMatchingCampaigns := []models.Campaign{}
 	baseMatchingCampaigns := []models.Campaign{}
 
@@ -156,11 +154,17 @@ func getMatchingCampaigns(transaction models.Transaction) (campaign [][]models.C
 }
 
 func isCampaignMatch(campaign models.Campaign, transaction models.Transaction) bool {
+	transactionDate, err := time.Parse(YYYYMMDD, transaction.TransactionDate)
+
+	//Should not reach here since its second time parsing
+	if err != nil {
+		log.Println(err)
+		return false
+	}
 	if campaign.RewardProgram != transaction.CardType {
 		return false
 	}
-	//TODO: Change to proper transaction date
-	if !campaign.Start.Before(time.Now()) || !campaign.End.After(time.Now()) {
+	if !campaign.Start.Before(transactionDate) || !campaign.End.After(transactionDate) {
 		return false
 	}
 	if campaign.ForForeignCurrency && transaction.Currency == "SGD" {
@@ -192,6 +196,5 @@ func calculateDeltaType(rewardAmount int, spentAmount float64) float64 {
 }
 
 func convertToSGD(spendAmount float64) float64 {
-	// TODO: Change to proper USD handling
 	return spendAmount * 1.34
 }
