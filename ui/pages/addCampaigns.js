@@ -31,8 +31,9 @@ import {
 	FormHelperText,
 	RadioGroup,
 	Radio,
-    Button
+	Button,
 } from "@chakra-ui/react";
+import axios from "axios";
 
 import { useState } from "react";
 
@@ -45,9 +46,11 @@ export default function AddCampaigns() {
 	const [endDate, setEndDate] = useState(new Date());
 	const [rewardProgram, setRewardProgram] = useState("");
 	const [rewardAmount, setRewardAmount] = useState(0);
-	const [mcc, setMcc] = useState(0);
+	const [mcc, setMcc] = useState("");
 	const [foreignCurrency, setForeignCurrency] = useState(false);
 	const [merchant, setMerchant] = useState("");
+
+	const jwtKey = ""
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		console.log(
@@ -61,6 +64,35 @@ export default function AddCampaigns() {
 			foreignCurrency,
 			merchant
 		);
+	};
+	const addCampaign = () => {
+		console.log("Hello")
+
+		const body = {
+			name: campaignName,
+			min_spend: minSpend,
+			start: startDate,
+			end: endDate,
+			reward_program: rewardProgram,
+			reward_amount: rewardAmount,
+			mcc: mcc.toString(),
+			merchant: merchant,
+			foreign_currency: foreignCurrency,
+		};
+		console.log(body)
+		axios
+			.post(`https://itsag1t2.com/campaign`, body,{
+				headers: {
+					Authorization:
+						`Bearer ${jwtKey}`,
+				},
+			})
+			.then((response) => {
+				console.log(response);
+			})
+			.catch((error) => {
+				console.log(error.toString());
+			});
 	};
 	return (
 		<Navbar>
@@ -87,7 +119,7 @@ export default function AddCampaigns() {
 								<RadioGroup
 									defaultValue="Shopping"
 									onChange={(event) => {
-										setRewardProgram(event.currentTarget.value);
+										setRewardProgram(event);
 									}}
 								>
 									<HStack spacing="24px">
@@ -103,7 +135,7 @@ export default function AddCampaigns() {
 									max={50}
 									min={1}
 									onChange={(event) => {
-										// setRewardAmount(event.target.value);
+										setRewardAmount(event);
 									}}
 								>
 									<NumberInputField />
@@ -116,7 +148,7 @@ export default function AddCampaigns() {
 								<NumberInput
 									min={1}
 									onChange={(event) => {
-										// setMinSpend(event.currentTarget.value);
+										setMinSpend(event);
 									}}
 								>
 									<NumberInputField />
@@ -160,7 +192,7 @@ export default function AddCampaigns() {
 									max={9999}
 									min={1}
 									onChange={(event) => {
-										// setMcc(event.currentTarget.value);
+										setMcc(event.currentTarget.value);
 									}}
 								>
 									<NumberInputField />
@@ -172,14 +204,14 @@ export default function AddCampaigns() {
 
 								<FormLabel mt={4}>For Foreign Currency</FormLabel>
 								<RadioGroup
-									defaultValue={false}
+									// defaultValue={false}
 									onChange={(event) => {
-										// setForeignCurrency(event.currentTarget.value);
+										setForeignCurrency(event === "true");
 									}}
 								>
 									<HStack spacing="24px">
-										<Radio value={false}>Local Transactions Only</Radio>
-										<Radio value={true}>Applicable for both</Radio>
+										<Radio value={"false"}>Local Transactions Only</Radio>
+										<Radio value={"true"}>Applicable for both</Radio>
 									</HStack>
 								</RadioGroup>
 								<Button
@@ -188,6 +220,7 @@ export default function AddCampaigns() {
 									type="submit"
 									width="full"
 									mt={4}
+									onClick = {()=>addCampaign()}
 								>
 									Add Campaign
 								</Button>
