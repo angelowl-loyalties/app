@@ -1,0 +1,40 @@
+name: Continuous Integration (Authorizer)
+
+on:
+  push:
+    branches: [ '**' ]
+    paths:
+      - "pet-rock/**"
+      - .github/workflows/ci_pet-rock.yml
+      - .github/workflows/workflow_lambda.yml
+  pull_request:
+    branches: [ master ]
+    paths:
+      - "pet-rock/**"
+      - .github/workflows/ci_pet-rock.yml
+      - .github/workflows/workflow_lambda.yml
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  lint:
+    name: Golang Linting
+    uses: ./.github/workflows/golangci-lint.yml
+    with:
+      workdir: 'pet-rock'
+  sast:
+    needs: lint
+    name: Golang SAST
+    uses: ./.github/workflows/sast_golang.yml
+    with:
+      workdir: 'pet-rock'
+  ci:
+    needs: [lint, sast]
+    name: Continuous Integration
+    uses: ./.github/workflows/workflow_lambda.yml
+    with:
+      dockerfile: 'Dockerfile'
+      workdir: 'pet-rock'
+      repository: 'pet-rock'

@@ -5,6 +5,7 @@ use (
 	./campaignex
 	./informer
 	./ingestor
+	./pet-rock
 	./profiler
 	./rewarder
 )
