@@ -2,6 +2,18 @@ resource "aws_route53_zone" "primary" {
   name = "itsag1t2.com"
 }
 
+resource "aws_route53_record" "primary" {
+  zone_id = aws_route53_zone.primary.zone_id
+  name    = "itsag1t2.com"
+  type    = "A"
+
+  alias {
+    name                   = aws_apigatewayv2_domain_name.itsag1t2.domain_name_configuration[0].target_domain_name
+    zone_id                = aws_apigatewayv2_domain_name.itsag1t2.domain_name_configuration[0].hosted_zone_id
+    evaluate_target_health = false
+  }
+}
+
 resource "aws_route53_record" "helm_dashboard" {
   zone_id = aws_route53_zone.primary.zone_id
   name    = "helm.dashboard.itsag1t2.com"

@@ -3,11 +3,13 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/informer/config"
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/informer/models"
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/informer/routes"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 
 	_ "github.com/cs301-itsa/project-2022-23t2-g1-t7/informer/docs"
 	swaggerfiles "github.com/swaggo/files"
@@ -36,6 +38,12 @@ func main() {
 	models.ConnectDB(dbHost, dbPort, dbUser, dbPass, dbKeyspace, dbUseSSL)
 
 	router = gin.Default()
+	router.Use(cors.New(cors.Config{
+        AllowOrigins:     []string{"*"},
+        AllowMethods:     []string{"GET"},
+        AllowCredentials: true,
+        MaxAge: 12 * time.Hour,
+    }))
 
 	// docs.SwaggerInfo.BasePath = "/api/v1"
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))

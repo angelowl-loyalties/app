@@ -2,9 +2,15 @@ app:
   name: profiler
   port: 8080
   replicas: 2
+  roleArn: arn:aws:iam::276374573009:role/service-role/angel-owl-authorizer-role-oq6y0qqe
   env:
     - name: PORT
       value: "8080"
+    - name: JWT_KMS_KEY_ID
+      valueFrom:
+        secretKeyRef:
+          name: profiler
+          key: jwt_kms_key_id
     - name: DB_CONN_STRING
       valueFrom:
         secretKeyRef:

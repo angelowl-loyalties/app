@@ -4,12 +4,14 @@ on:
   push:
     branches: [ '**' ]
     paths:
+      - ".chart/**"
       - "campaignex/**"
       - .github/workflows/ci_campaignex.yml
       - .github/workflows/workflow_container.yml
   pull_request:
     branches: [ master ]
     paths:
+      - ".chart/**"
       - "campaignex/**"
       - .github/workflows/ci_campaignex.yml
       - .github/workflows/workflow_container.yml

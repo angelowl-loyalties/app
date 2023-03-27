@@ -1,1 +1,1 @@
-nginx_ingress_lb_ip = "internal-a9d2b1654ea7f49c98cce5ae11ce3f5b-2025689007.ap-southeast-1.elb.amazonaws.com"
+nginx_ingress_lb_ip = "angelowl-ingress-bb60e499bd17760e.elb.ap-southeast-1.amazonaws.com"

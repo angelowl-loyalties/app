@@ -1,7 +1,7 @@
 app:
   name: rewarder
   port: 8080
-  replicas: 6
+  replicas: 4
   env:
     - name: PORT
       value: "8080"
