@@ -171,7 +171,7 @@ func etcdAddSeedData() {
 		End:                time.Date(2023, 8, 31, 23, 59, 59, 0, time.UTC),
 		RewardProgram:      "Points",
 		RewardAmount:       500,
-		MCC:                7011,
+		MCC:                "7011,5963",
 		Merchant:           "Best Buy",
 		ForForeignCurrency: true,
 	}
@@ -184,7 +184,7 @@ func etcdAddSeedData() {
 		End:                time.Date(2024, 2, 28, 23, 59, 59, 0, time.UTC),
 		RewardProgram:      "Cashback",
 		RewardAmount:       25,
-		MCC:                5913,
+		MCC:                "5913",
 		ForForeignCurrency: true,
 	}
 
@@ -196,7 +196,7 @@ func etcdAddSeedData() {
 		End:                time.Date(2023, 2, 28, 23, 59, 59, 0, time.UTC),
 		RewardProgram:      "Cashback",
 		RewardAmount:       25,
-		MCC:                5913,
+		MCC:                "5913",
 		ForForeignCurrency: true,
 	}
 
@@ -208,7 +208,7 @@ func etcdAddSeedData() {
 		End:                time.Date(2024, 5, 31, 23, 59, 59, 0, time.UTC),
 		RewardProgram:      "Visa",
 		RewardAmount:       300,
-		MCC:                5963,
+		MCC:                "5963",
 		ForForeignCurrency: true,
 		Merchant:           "",
 	}
@@ -221,7 +221,7 @@ func etcdAddSeedData() {
 		End:                time.Date(2024, 5, 31, 23, 59, 59, 0, time.UTC),
 		RewardProgram:      "Points",
 		RewardAmount:       600,
-		MCC:                5963,
+		MCC:                "5963,7011",
 		ForForeignCurrency: true,
 		Merchant:           "",
 	}
@@ -231,7 +231,7 @@ func etcdAddSeedData() {
 		ID:              uuid.MustParse("4aab2f7c-4dd3-4a77-beb8-8582048c9bdb"),
 		CardID:          uuid.MustParse("3c0b3d7f-c011-4a7d-b47e-1f7c03a8ca53"),
 		Merchant:        "Best Buy",
-		MCC:             5912,
+		MCC:             7011,
 		Currency:        "USD",
 		Amount:          500.00,
 		SGDAmount:       712.00,
