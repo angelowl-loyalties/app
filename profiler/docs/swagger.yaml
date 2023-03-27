@@ -21,6 +21,23 @@ definitions:
     required:
     - card_pan
     - card_type
+    - id
+    - user_id
+    type: object
+  models.CardInput:
+    properties:
+      card_pan:
+        type: string
+      card_type:
+        type: string
+      id:
+        type: string
+      user_id:
+        type: string
+    required:
+    - card_pan
+    - card_type
+    - id
     - user_id
     type: object
   models.CardType:
@@ -150,7 +167,7 @@ paths:
         name: card
         required: true
         schema:
-          $ref: '#/definitions/models.Card'
+          $ref: '#/definitions/models.CardInput'
       produces:
       - application/json
       responses:

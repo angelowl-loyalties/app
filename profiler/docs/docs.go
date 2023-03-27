@@ -90,7 +90,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Card"
+                            "$ref": "#/definitions/models.CardInput"
                         }
                     }
                 ],
@@ -488,6 +488,7 @@ const docTemplate = `{
             "required": [
                 "card_pan",
                 "card_type",
+                "id",
                 "user_id"
             ],
             "properties": {
@@ -503,6 +504,29 @@ const docTemplate = `{
                 },
                 "user_id": {
                     "description": "card belongs to one user",
+                    "type": "string"
+                }
+            }
+        },
+        "models.CardInput": {
+            "type": "object",
+            "required": [
+                "card_pan",
+                "card_type",
+                "id",
+                "user_id"
+            ],
+            "properties": {
+                "card_pan": {
+                    "type": "string"
+                },
+                "card_type": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }
