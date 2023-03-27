@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -80,9 +79,7 @@ func postToProfiler() (hasError bool) {
 		}
 		if resp.StatusCode != 201 {
 			hasError = true
-			body, _ := ioutil.ReadAll(resp.Body)
-			resp.Body.Close()
-			log.Printf("failed to create user: "+userID+" with HTTP status: %d and %s", resp.StatusCode, string(body))
+			log.Printf("failed to create user: "+userID+" with error: %d", resp.StatusCode)
 			continue
 		}
 	}
@@ -103,9 +100,10 @@ func postToProfiler() (hasError bool) {
 		}
 		if resp.StatusCode != 201 {
 			hasError = true
-			body, _ := ioutil.ReadAll(resp.Body)
-			resp.Body.Close()
-			log.Printf("failed to create card: "+cardID+" with HTTP status: %d and %s", resp.StatusCode, string(body))
+			log.Printf("failed to create card: "+cardID+" with error: %d", resp.StatusCode)
+			//body, _ := ioutil.ReadAll(resp.Body)
+			//resp.Body.Close()
+			//log.Printf(string(body))
 			continue
 		}
 	}
