@@ -66,7 +66,6 @@ export default function AddCampaigns() {
 		);
 	};
 	const addCampaign = () => {
-		console.log("Hello")
 
 		const body = {
 			name: campaignName,
@@ -79,7 +78,6 @@ export default function AddCampaigns() {
 			merchant: merchant,
 			foreign_currency: foreignCurrency,
 		};
-		console.log(body)
 		axios
 			.post(`https://itsag1t2.com/campaign`, body,{
 				headers: {
@@ -91,7 +89,7 @@ export default function AddCampaigns() {
 				console.log(response);
 			})
 			.catch((error) => {
-				console.log(error.toString());
+				console.log(error);
 			});
 	};
 	return (
@@ -204,7 +202,6 @@ export default function AddCampaigns() {
 
 								<FormLabel mt={4}>For Foreign Currency</FormLabel>
 								<RadioGroup
-									// defaultValue={false}
 									onChange={(event) => {
 										setForeignCurrency(event === "true");
 									}}
