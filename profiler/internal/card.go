@@ -73,13 +73,13 @@ func CreateCard(c *gin.Context) {
 		return
 	}
 
-	temp, err := models.CardGetByPan(newCard.CardPan)
+	temp, err := models.CardGetById(newCard.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	if temp != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Card with that PAN already exists"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Card with that ID already exists"})
 		return
 	}
 

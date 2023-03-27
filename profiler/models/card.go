@@ -41,15 +41,15 @@ func CardGetById(uuid string) (card *Card, err error) {
 	return card, err
 }
 
-func CardGetByPan(pan string) (card *Card, err error) {
-	err = DB.Where("card_pan = ?", pan).First(&card).Error
-
-	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, nil
-	}
-
-	return card, err
-}
+//func CardGetByPan(pan string) (card *Card, err error) {
+//	err = DB.Where("card_pan = ?", pan).First(&card).Error
+//
+//	if errors.Is(err, gorm.ErrRecordNotFound) {
+//		return nil, nil
+//	}
+//
+//	return card, err
+//}
 
 func CardCreate(card *Card) (_ *Card, err error) {
 	err = DB.Create(&card).Error
