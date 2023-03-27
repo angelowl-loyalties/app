@@ -173,6 +173,7 @@ func etcdAddSeedData() {
 		RewardAmount:       500,
 		MCC:                "7011,5963",
 		Merchant:           "Best Buy",
+		IsBaseReward:		true,
 		ForForeignCurrency: true,
 	}
 
@@ -185,6 +186,8 @@ func etcdAddSeedData() {
 		RewardProgram:      "Cashback",
 		RewardAmount:       25,
 		MCC:                "5913",
+		Merchant:           "Grab",
+		IsBaseReward:		true,
 		ForForeignCurrency: true,
 	}
 
@@ -197,7 +200,9 @@ func etcdAddSeedData() {
 		RewardProgram:      "Cashback",
 		RewardAmount:       25,
 		MCC:                "5913",
-		ForForeignCurrency: true,
+		Merchant:           "Grab",
+		IsBaseReward:		false,
+		ForForeignCurrency: false,
 	}
 
 	internal.BaseCampaignsEtcd["004"] = models.Campaign{
@@ -209,8 +214,9 @@ func etcdAddSeedData() {
 		RewardProgram:      "Visa",
 		RewardAmount:       300,
 		MCC:                "5963",
-		ForForeignCurrency: true,
 		Merchant:           "",
+		IsBaseReward:		false,
+		ForForeignCurrency: false,
 	}
 
 	internal.BaseCampaignsEtcd["005"] = models.Campaign{
@@ -222,8 +228,10 @@ func etcdAddSeedData() {
 		RewardProgram:      "Points",
 		RewardAmount:       600,
 		MCC:                "5963,7011",
-		ForForeignCurrency: true,
 		Merchant:           "",
+		IsBaseReward:		true,
+		ForForeignCurrency: true,
+		
 	}
 
 	// Add Transactions
