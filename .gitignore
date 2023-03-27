@@ -4,6 +4,8 @@
 /.idea/
 service_executable
 
+.env
+
 # Ignore all SSH files except pub
 **/ssh/**
 !**/ssh/**.pub
