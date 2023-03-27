@@ -43,7 +43,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal.AuthResponse"
+                            "$ref": "#/definitions/models.AuthResponse"
                         }
                     }
                 }
@@ -472,7 +472,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "internal.AuthResponse": {
+        "models.AuthResponse": {
             "type": "object",
             "properties": {
                 "token": {
@@ -590,6 +590,7 @@ const docTemplate = `{
                 "confirm_password",
                 "email",
                 "first_name",
+                "id",
                 "last_name",
                 "password",
                 "phone"
@@ -602,6 +603,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "first_name": {
+                    "type": "string"
+                },
+                "id": {
                     "type": "string"
                 },
                 "last_name": {

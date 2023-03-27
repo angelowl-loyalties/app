@@ -4,6 +4,7 @@ import (
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/profiler/models"
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/profiler/utils"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"net/http"
 )
 
@@ -84,7 +85,9 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 
+	userID, _ := uuid.Parse(newUser.ID)
 	user := &models.User{
+		ID:        userID,
 		FirstName: newUser.FirstName,
 		LastName:  newUser.LastName,
 		Phone:     newUser.Phone,

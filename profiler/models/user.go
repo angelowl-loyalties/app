@@ -22,6 +22,7 @@ type User struct {
 }
 
 type UserInput struct {
+	ID              string `json:"id" binding:"required,uuid4"`
 	FirstName       string `json:"first_name" binding:"required"`
 	LastName        string `json:"last_name" binding:"required"`
 	Phone           string `json:"phone" binding:"required,e164"`
@@ -40,10 +41,10 @@ type AuthResponse struct {
 	UserID string `json:"user_id"`
 }
 
-func (user *User) BeforeCreate(tx *gorm.DB) (err error) {
-	user.ID = uuid.New()
-	return
-}
+//func (user *User) BeforeCreate(tx *gorm.DB) (err error) {
+//	user.ID = uuid.New()
+//	return
+//}
 
 func UserGetAll() (users []User, err error) {
 	err = DB.Find(&users).Error
