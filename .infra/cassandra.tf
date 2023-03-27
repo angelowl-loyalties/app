@@ -117,6 +117,11 @@ resource "aws_keyspaces_table" "rewards" {
     }
 
     column {
+      name = "created_at"
+      type = "date"
+    }
+
+    column {
       name = "transaction_id"
       type = "ascii"
     }

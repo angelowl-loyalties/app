@@ -2,12 +2,13 @@ package internal
 
 import (
 	"encoding/json"
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
-	"github.com/gocql/gocql"
 	"log"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
+	"github.com/gocql/gocql"
 )
 
 const (
@@ -50,6 +51,7 @@ func ProcessMessage(transaction models.Transaction) error {
 			SGDAmount:       transaction.SGDAmount,
 			TransactionID:   transaction.TransactionID,
 			TransactionDate: transaction.TransactionDate,
+			CreatedAt:       time.Now().Format(YYYYMMDD),
 			CardPAN:         transaction.CardPAN,
 			CardType:        transaction.CardType,
 			RewardAmount:    delta,
@@ -103,6 +105,7 @@ func ProcessMessage(transaction models.Transaction) error {
 			SGDAmount:       transaction.SGDAmount,
 			TransactionID:   transaction.TransactionID,
 			TransactionDate: transaction.TransactionDate,
+			CreatedAt:       time.Now().Format(YYYYMMDD),
 			CardPAN:         transaction.CardPAN,
 			CardType:        transaction.CardType,
 			RewardAmount:    baseDelta + promoDelta,

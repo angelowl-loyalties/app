@@ -1,8 +1,9 @@
 package models
 
 import (
-	"github.com/scylladb/gocqlx"
 	"log"
+
+	"github.com/scylladb/gocqlx"
 
 	"github.com/gocql/gocql"
 	"github.com/scylladb/gocqlx/qb"
@@ -18,6 +19,7 @@ type Reward struct {
 	SGDAmount       float64    `json:"sgd_amount"`       // cassandra double
 	TransactionID   string     `json:"transaction_id"`   // cassandra text
 	TransactionDate string     `json:"transaction_date"` // cassandra text
+	CreatedAt       string     `json:"created_at"`       // cassandra text
 	CardPAN         string     `json:"card_pan"`         // cassandra text
 	CardType        string     `json:"card_type"`        // cassandra text
 	RewardAmount    float64    `json:"reward_amount"`    // cassandra double
@@ -35,6 +37,7 @@ func RewardCreate(reward Reward) error {
 		"sgd_amount",
 		"transaction_id",
 		"transaction_date",
+		"created_at",
 		"card_pan",
 		"card_type",
 		"reward_amount",
