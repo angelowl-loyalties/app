@@ -145,14 +145,12 @@ func CreateSESSession() {
 
 func GetTodaysRewards() (rewards []Reward, _ error) {
 	todaysDate := time.Now().Format(YYYYMMDD)
-
+	// Create a string literal with open close quotation marks
 	todaysDateLiteral := fmt.Sprintf("'%s'", todaysDate)
 
-	//TODO: Replace todaysDate with a date in the csv data from ftp server, since no rewards with todaysdate
-
 	// Equivalent to the following query
-	// select * from transactions.rewards where transaction_date == {today's date} and reward_amount > 0 ALLOW FILTERING;
-	stmt, _ := qb.Select("transactions.rewards").Where(qb.EqLit("transaction_date", todaysDateLiteral)).Where(qb.GtLit("reward_amount", "0")).AllowFiltering().ToCql()
+	// select * from transactions.rewards where created_at == {today's date} and reward_amount > 0 ALLOW FILTERING;
+	stmt, _ := qb.Select("transactions.rewards").Where(qb.EqLit("created_at", todaysDateLiteral)).Where(qb.GtLit("reward_amount", "0")).AllowFiltering().ToCql()
 
 	err := gocqlx.Select(&rewards, Cassandra.Query(stmt))
 	if err != nil {
