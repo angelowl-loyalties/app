@@ -36,9 +36,9 @@ func GetUsers(c *gin.Context) {
 // @Param user_id path string true "User ID"
 // @Router /user/{user_id} [get]
 func GetUser(c *gin.Context) {
-	uuid := c.Param("id")
+	reqId := c.Param("id")
 
-	user, err := models.UserGetById(uuid)
+	user, err := models.UserGetById(reqId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -94,6 +94,7 @@ func CreateUser(c *gin.Context) {
 		Email:     newUser.Email,
 		Password:  hashedPassword,
 		Role:      "user",
+		IsNew:     true,
 	}
 	user, err = models.UserCreate(user)
 	if err != nil {
@@ -117,8 +118,8 @@ func CreateUser(c *gin.Context) {
 func UpdateUser(c *gin.Context) {
 	var updatedUser models.UserInput
 
-	uuid := c.Param("id")
-	user, err := models.UserGetById(uuid)
+	reqId := c.Param("id")
+	user, err := models.UserGetById(reqId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -155,6 +156,7 @@ func UpdateUser(c *gin.Context) {
 	user.LastName = updatedUser.LastName
 	user.Email = updatedUser.Email
 	user.Password = hashedPassword
+	user.IsNew = false // after changing from default password
 
 	user, err = models.UserSave(user)
 	if err != nil {
@@ -174,8 +176,8 @@ func UpdateUser(c *gin.Context) {
 // @Param user_id path string true "User ID"
 // @Router /user/{user_id} [delete]
 func DeleteUser(c *gin.Context) {
-	uuid := c.Param("id")
-	user, err := models.UserGetById(uuid)
+	reqId := c.Param("id")
+	user, err := models.UserGetById(reqId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return

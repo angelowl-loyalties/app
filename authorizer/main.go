@@ -22,7 +22,8 @@ var KMSClient *kms.Client
 var KMSConfig *jwtkms.Config
 
 type CustomJWTClaims struct {
-	Role string `json:"role"`
+	Role  string `json:"role"`
+	IsNew bool   `json:"is_new"`
 	jwt.RegisteredClaims
 }
 
@@ -109,6 +110,13 @@ func handleRequest(ctx context.Context, event events.APIGatewayCustomAuthorizerR
 		"admin": {"*"},
 	}
 	resources := roleMapping[role]
+
+	// if new user and password not changed, restrict access to only the update password
+	if claims.IsNew {
+		resources = []string{
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/PUT/user/*",
+		}
+	}
 
 	return generatePolicy(principalID, "Allow", resources, authContext), nil
 }

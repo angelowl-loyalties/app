@@ -17,6 +17,7 @@ type User struct {
 	Password    string    `json:"-" gorm:"not null"`
 	Role        string    `gorm:"type:varchar(255);not null"`
 	CreditCards []Card    // one user has many credit cards
+	IsNew       bool      // is new user, password not changed from default
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }

@@ -28,17 +28,19 @@ func InitKMS(AK string, SK string, JWTKeyID string) {
 }
 
 type CustomJWTClaims struct {
-	Role string `json:"role"`
+	Role  string `json:"role"`
+	IsNew bool   `json:"is_new"`
 	jwt.RegisteredClaims
 }
 
 func CreateJWT(user *models.User) *jwt.Token {
 	claims := CustomJWTClaims{
-		Role: user.Role,
+		Role:  user.Role,
+		IsNew: user.IsNew,
 		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:   "angelowl.com",
+			Issuer:   "itsag1t2.com",
 			Subject:  user.ID.String(),
-			Audience: []string{"api.angelowl.com"},
+			Audience: []string{"itsag1t2.com"},
 			//ExpiresAt: jwt.NewNumericDate(time.Now().Add(20 * time.Minute)),
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
 			NotBefore: jwt.NewNumericDate(time.Now()),
