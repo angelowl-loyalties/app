@@ -32,7 +32,7 @@ func init() {
 		log.Fatalln("JWS_KMS_KEY_ID environment variable is empty")
 	}
 
-	awsCfg, err := config.LoadDefaultConfig(context.Background(), config.WithRegion("ap-southeast-1"))
+	awsCfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("ap-southeast-1"))
 	if err != nil {
 		log.Fatalln("config error: " + err.Error())
 	}
@@ -53,7 +53,7 @@ func handleRequest(ctx context.Context, event events.APIGatewayCustomAuthorizerR
 		bearerToken = tokenSlice[len(tokenSlice)-1]
 	}
 	if bearerToken == "" || strings.ToUpper(tokenSlice[0]) != "BEARER" {
-		return events.APIGatewayCustomAuthorizerResponse{}, errors.New("unauthorized")
+		return events.APIGatewayCustomAuthorizerResponse{}, errors.New("not a bearer token")
 	}
 
 	claims := CustomJWTClaims{}
@@ -72,30 +72,43 @@ func handleRequest(ctx context.Context, event events.APIGatewayCustomAuthorizerR
 		"role": role,
 	}
 
-	// TODO: determine the method ARNs that should be allowed, make use of map for users to resources
-	// arn:partition:execute-api:region:account-id:api-id/authorizers/authorizer-id
-	// requestARN := event.MethodArn
-	var resources []string
-
-	if role == "user" {
-		resources = []string{
-			//"arn:aws:execute-api:ap-southeast-1:account-id:api-id/authorizers/authorizer-id",
-			"*",
-		}
-	} else if role == "admin" {
-		resources = []string{
-			//"arn:aws:execute-api:ap-southeast-1:account-id:api-id/authorizers/authorizer-id",
-			"*",
-		}
-	} else if role == "bank" {
-		resources = []string{
-			//"arn:aws:execute-api:ap-southeast-1:account-id:api-id/authorizers/authorizer-id",
-			"*",
-		}
-	} else {
+	if role != "user" && role != "admin" && role != "bank" {
 		log.Printf("invalid role")
 		return events.APIGatewayCustomAuthorizerResponse{}, errors.New("invalid role")
 	}
+
+	// arn:partition:execute-api:region:account-id:api-id/authorizers/authorizer-id
+	// requestARN := event.MethodArn not needed
+	roleMapping := map[string][]string{
+		"user": {
+			// user account
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/*/user/*",
+			// informer's rewards
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/GET/reward/*",
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/GET/reward/total/*",
+			// card
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/GET/card/*",
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/GET/card/type/*",
+			// campaign
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/GET/campaign",
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/GET/campaign/*",
+		},
+		"bank": {
+			// user account
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/*/user/*",
+			// campaign
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/*/campaign",
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/*/campaign/*",
+			// card type
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/*/card/type",
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/&/card/type/*",
+			// exclusion
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/*/exclusion",
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/*/exclusion/*",
+		},
+		"admin": {"*"},
+	}
+	resources := roleMapping[role]
 
 	return generatePolicy(principalID, "Allow", resources, authContext), nil
 }
