@@ -1,5 +1,5 @@
 definitions:
-  internal.AuthResponse:
+  models.AuthResponse:
     properties:
       token:
         type: string
@@ -21,6 +21,23 @@ definitions:
     required:
     - card_pan
     - card_type
+    - id
+    - user_id
+    type: object
+  models.CardInput:
+    properties:
+      card_pan:
+        type: string
+      card_type:
+        type: string
+      id:
+        type: string
+      user_id:
+        type: string
+    required:
+    - card_pan
+    - card_type
+    - id
     - user_id
     type: object
   models.CardType:
@@ -83,6 +100,8 @@ definitions:
         type: string
       first_name:
         type: string
+      id:
+        type: string
       last_name:
         type: string
       password:
@@ -93,6 +112,7 @@ definitions:
     - confirm_password
     - email
     - first_name
+    - id
     - last_name
     - password
     - phone
@@ -118,7 +138,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/internal.AuthResponse'
+            $ref: '#/definitions/models.AuthResponse'
       summary: User login
       tags:
       - user
@@ -147,7 +167,7 @@ paths:
         name: card
         required: true
         schema:
-          $ref: '#/definitions/models.Card'
+          $ref: '#/definitions/models.CardInput'
       produces:
       - application/json
       responses:

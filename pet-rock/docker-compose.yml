@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  pet-rock:
+    build: .
+    ports:
+      - "9000:8080"
+    environment:
+      AWS_REGION: ap-southeast-1
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      PROFILER_ENDPOINT: ${PROFILER_ENDPOINT}

@@ -43,7 +43,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/internal.AuthResponse"
+                            "$ref": "#/definitions/models.AuthResponse"
                         }
                     }
                 }
@@ -90,7 +90,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Card"
+                            "$ref": "#/definitions/models.CardInput"
                         }
                     }
                 ],
@@ -472,7 +472,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "internal.AuthResponse": {
+        "models.AuthResponse": {
             "type": "object",
             "properties": {
                 "token": {
@@ -488,6 +488,7 @@ const docTemplate = `{
             "required": [
                 "card_pan",
                 "card_type",
+                "id",
                 "user_id"
             ],
             "properties": {
@@ -503,6 +504,29 @@ const docTemplate = `{
                 },
                 "user_id": {
                     "description": "card belongs to one user",
+                    "type": "string"
+                }
+            }
+        },
+        "models.CardInput": {
+            "type": "object",
+            "required": [
+                "card_pan",
+                "card_type",
+                "id",
+                "user_id"
+            ],
+            "properties": {
+                "card_pan": {
+                    "type": "string"
+                },
+                "card_type": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "user_id": {
                     "type": "string"
                 }
             }
@@ -590,6 +614,7 @@ const docTemplate = `{
                 "confirm_password",
                 "email",
                 "first_name",
+                "id",
                 "last_name",
                 "password",
                 "phone"
@@ -602,6 +627,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "first_name": {
+                    "type": "string"
+                },
+                "id": {
                     "type": "string"
                 },
                 "last_name": {
