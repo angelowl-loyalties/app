@@ -293,13 +293,16 @@ func SendEmail(recipient string, cardRewards map[uuid.UUID][]Reward) error {
 
 func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 	rewards, err := GetTodaysRewards()
+	log.Println("error getting today's rewards: ", err)
 
 	cards := GetUniqueCardIds(rewards)
 
 	mailMap, err := GetRewardsByEmailAndCardID(rewards, cards)
+	log.Println("error getting emails: ", err)
 
 	for email, cardRewards := range mailMap {
 		err = SendEmail(email, cardRewards)
+		log.Println("error sending email to "+email, err)
 	}
 
 	return "", err
