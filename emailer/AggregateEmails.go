@@ -7,7 +7,6 @@ import (
 	"log"
 	"os"
 
-	// "os"
 	"strconv"
 	"time"
 
@@ -136,7 +135,7 @@ func ConnectPostgres(dbConnString string) {
 func CreateSESSession() {
 	// Create a new session in the ap-southeast-1 region.
 	sess, _ := session.NewSession(&aws.Config{
-		Region: aws.String("ap-southeast-1")},
+		Region: aws.String(os.Getenv("AWS_REGION"))},
 	)
 
 	// Create an SES session.
