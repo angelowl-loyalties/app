@@ -60,5 +60,7 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: ap-southeast-1
           function_name: ${{ inputs.lambda_name }}
+          role: arn:aws:iam::276374573009:role/gh-actions-oidc-role
+          runtime: go1.x
           image_uri: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}:${{ github.sha }}
           dry_run: true
