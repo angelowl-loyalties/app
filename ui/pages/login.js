@@ -63,6 +63,7 @@ export default function Login() {
         document.title = "Log in | Ascenda"
     }, [session])
 
+    
     return (
         <>
         {loading ? <Loading /> :
