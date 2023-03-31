@@ -38,3 +38,4 @@ jobs:
       dockerfile: 'Dockerfile'
       workdir: 'authorizer'
       repository: 'authorizer'
+      lambda_name: 'angel-owl-authorizer'

@@ -38,3 +38,4 @@ jobs:
       dockerfile: 'Dockerfile'
       workdir: 'emailer'
       repository: 'emailer'
+      lambda_name: 'angel-owl-email-aggregator'

@@ -13,6 +13,10 @@ on:
         description: 'Repository'
         required: true
         type: string
+      lambda_name:
+        description: 'Lambda Function Name'
+        required: true
+        type: string
 
 defaults:
   run:
@@ -32,7 +36,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: arn:aws:iam::276374573009:role/gh-actions-oidc-role
-          aws-region: ap-southeast-1
+          aws-region: ${{ secrets.AWS_DEFAULT_REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -48,3 +52,14 @@ jobs:
         run: |
           docker build -t $REGISTRY/$REPOSITORY:$IMAGE_TAG $WORKDIR -f $WORKDIR/$DOCKERFILE
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
+
+      - name: AWS Lambda Deploy
+        if: github.ref == 'refs/heads/master'
+        uses: appleboy/lambda-action@v0.1.5
+        with:
+          aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws_region: ${{ secrets.AWS_DEFAULT_REGION }}
+          function_name: ${{ inputs.lambda_name }}
+          image_uri: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}:${{ github.sha }}
+          dry_run: true

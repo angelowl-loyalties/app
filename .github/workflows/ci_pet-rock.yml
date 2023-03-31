@@ -38,3 +38,4 @@ jobs:
       dockerfile: 'Dockerfile'
       workdir: 'pet-rock'
       repository: 'pet-rock'
+      lambda_name: 'angel-owl-user-ingestor'
