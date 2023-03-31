@@ -121,7 +121,7 @@ export default function Transactions() {
                             <TabPanels>
                                 {cards.map((card) => {
                                     return (
-                                        <RewardPanel card={card} />
+                                        <RewardPanel card={card} key={card.id} />
                                     )
                                 })}
                             </TabPanels>
