@@ -11,14 +11,12 @@ const authOptions = {
                 password: { label: "password", type: "password" }
             },
             authorize: async (credentials) => {
-                // Make POST request to log 
                 const request = axios.post("https://itsag1t2.com/auth/login", {
                     email: credentials.email,
                     password: credentials.password
                 })
                 console.log(request)
 
-                // Store token response
                 return await request.then((response) => {
                     const user = { user_id: response.data.data.user_id, token: "Bearer " + response.data.data.token }
                     return user
