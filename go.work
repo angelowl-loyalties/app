@@ -6,6 +6,7 @@ use (
 	./informer
 	./ingestor
 	./pet-rock
+	./passworder
 	./profiler
 	./rewarder
 )
