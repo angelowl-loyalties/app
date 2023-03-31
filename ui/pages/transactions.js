@@ -233,7 +233,7 @@ export default function Transactions() {
                                                                 <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>{`${transaction.remarks ? transaction.remarks : "Not applicable"}`}</Text>
                                                             </HStack>
                                                             <HStack>
-                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>Reard Programme: </Text>
+                                                                <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>Reward Programme: </Text>
                                                                 <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>{`${transaction.card_type.replace("_", " ").toUpperCase()}`}</Text>
                                                             </HStack>
                                                             <HStack>
@@ -308,7 +308,7 @@ export default function Transactions() {
                                                                             <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>{`${transaction.remarks ? transaction.remarks : "Not applicable"}`}</Text>
                                                                         </HStack>
                                                                         <HStack>
-                                                                            <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>Reard Programme: </Text>
+                                                                            <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>Reward Programme: </Text>
                                                                             <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>{`${transaction.card_type.replace("_", " ").toUpperCase()}`}</Text>
                                                                         </HStack>
                                                                         <HStack>
