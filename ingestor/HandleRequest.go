@@ -198,5 +198,5 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 
 func main() {
 	lambda.Start(HandleRequest)
-	producer.Close()
+	_ = producer.Close()
 }
