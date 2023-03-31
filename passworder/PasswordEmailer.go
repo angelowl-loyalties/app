@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"text/template"
@@ -48,7 +47,7 @@ func SendEmail(recipient string, name string, password string) error {
 		fmt.Println("Error getting working directory:", err)
 		return err
 	}
-	htmlBytes, err := ioutil.ReadFile(filepath.Join(dir, "template.html"))
+	htmlBytes, err := os.ReadFile(filepath.Join(dir, "template.html"))
 	if err != nil {
 		fmt.Println("Error reading HTML template file:", err)
 		return err
