@@ -39,3 +39,4 @@ jobs:
       workdir: 'pet-rock'
       repository: 'pet-rock'
       lambda_name: 'angel-owl-user-ingestor'
+      execution_role_arn: 'arn:aws:iam::276374573009:role/angel-owl-publish-to-msk'

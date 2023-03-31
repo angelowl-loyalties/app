@@ -17,6 +17,10 @@ on:
         description: 'Lambda Function Name'
         required: true
         type: string
+      execution_role_arn:
+        description: 'ARN of Execution Role'
+        required: true
+        type: string
 
 defaults:
   run:
@@ -60,7 +64,7 @@ jobs:
           aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws_region: ap-southeast-1
           function_name: ${{ inputs.lambda_name }}
-          role: arn:aws:iam::276374573009:role/gh-actions-oidc-role
+          role: ${{ inputs.execution_role_arn }}
           runtime: go1.x
           image_uri: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}:${{ github.sha }}
           dry_run: true

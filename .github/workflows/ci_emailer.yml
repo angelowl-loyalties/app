@@ -39,3 +39,4 @@ jobs:
       workdir: 'emailer'
       repository: 'emailer'
       lambda_name: 'angel-owl-email-aggregator'
+      execution_role_arn: 'arn:aws:iam::276374573009:role/service-role/angel-owl-email-aggregator-role-mg3jv0lj'
