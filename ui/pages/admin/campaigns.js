@@ -27,11 +27,11 @@ import { GiLibertyWing, GiShoppingBag } from 'react-icons/gi';
 import { IoDiamond } from 'react-icons/io5';
 import { MdOutlineFlightTakeoff } from 'react-icons/md';
 
-import Navbar from '../components/Navbar';
+import Navbar from '../../components/Navbar';
 
 export default function Campaigns() {
     return (
-        <Navbar user>
+        <Navbar admin>
             <VStack alignItems='start' w="full">
                 <HStack  mb={{base: 4, lg: 6}}>
                     <VStack alignItems='start'>

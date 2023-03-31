@@ -22,6 +22,7 @@ import Image from "next/image";
 import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
+import { useState, useEffect } from "react";
 import { RiLogoutCircleRLine } from "react-icons/ri";
 import { BellIcon } from "@chakra-ui/icons";
 
@@ -30,8 +31,35 @@ import MainContent from "./MainContent";
 
 function Navbar(props) {
 	const router = useRouter();
+    const [routes, setRoutes] = useState([]);
 
-	var routes = [
+	var routesBank = [
+		{
+			path: "/bank/upload",
+			tab: "Bulk upload",
+			header: "SCIS Bank",
+		}
+	];
+
+    var routesAdmin = [
+        {
+			path: "/admin/upload",
+			tab: "Bulk upload",
+			header: "SCIS Bank",
+		},
+		{
+			path: "/admin/campaigns",
+			tab: "View campaigns",
+			header: "Campaigns",
+		},
+		{
+			path: "/admin/addCampaigns",
+			tab: "Add campaigns",
+			header: "Add Campaigns",
+		}
+	];
+
+    var routesUser = [
 		{
 			path: "/",
 			tab: "Dashboard",
@@ -54,34 +82,32 @@ function Navbar(props) {
 		},
 		{
 			path: "/banks",
-			tab: " ",
+			tab: "Bulk upload",
 			header: "SCIS Bank",
-		},
-		{
-			path: "/addCampaigns",
-			tab: "Add campaigns",
-			header: "Add Campaigns",
-		},
+		}
 	];
+
+    useEffect(() => {
+        setRoutes(props.bank ? routesBank : props.admin ? routesAdmin : routesUser);
+    },[]);
 
 	return (
 		<>
 			<Head>
 				<title>
-					{routes.find((route) => route.path == router.pathname).header +
+					{routes.length != 0 && routes.find((route) => route.path == router.pathname).header +
 						" | Ascenda"}
 				</title>
 			</Head>
 			<Alert
-				status="info"
+				status={props.bank ? "info" : "error"}
 				h={7}
-				display={props.bank ? "inline-flex" : "none"}
+				display={props.bank | props.admin ? "inline-flex" : "none"}
 				py={0}
 			>
 				<AlertIcon w={4} />
 				<Text fontSize="xs">
-					Notice: You are currently logged in as a Organisational User from SCIS
-					Bank
+					Notice: You are currently logged in as a {props.bank? "Organisational User from SCIS Bank" : "Adminstrator"}
 				</Text>
 			</Alert>
 			<Stack
@@ -95,9 +121,9 @@ function Navbar(props) {
 					display={{ base: "none", md: "none", lg: "block" }}
 				>
 					<Box p={8}>
-						<Image
+						<img
 							priority={true}
-							src="/ascenda.webp"
+							src="https://ik.imagekit.io/alvinowyong/g1t2/ascenda.webp"
 							width="0"
 							height="0"
 							sizes="100vw"
