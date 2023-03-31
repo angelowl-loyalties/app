@@ -58,11 +58,13 @@ jobs:
           docker push $REGISTRY/$REPOSITORY:$IMAGE_TAG
 
       - name: AWS Lambda Deploy
-        uses: appleboy/lambda-action@v0.1.5
-        with:
-          aws_region: ap-southeast-1
-          function_name: ${{ inputs.lambda_name }}
-          role: ${{ inputs.execution_role_arn }}
-          runtime: go1.x
-          image_uri: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}:${{ github.sha }}
-          dry_run: true
+        run: |
+          aws lambda update-function-code --function-name ${{ inputs.lambda_name }} --image-uri ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}:${{ github.sha }}
+#        uses: appleboy/lambda-action@v0.1.5
+#        with:
+#          aws_region: ap-southeast-1
+#          function_name: ${{ inputs.lambda_name }}
+#          role: ${{ inputs.execution_role_arn }}
+#          runtime: go1.x
+#          image_uri: ${{ steps.login-ecr.outputs.registry }}/${{ inputs.repository }}:${{ github.sha }}
+#          dry_run: true
