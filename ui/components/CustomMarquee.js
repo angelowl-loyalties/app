@@ -19,7 +19,7 @@ function CustomMarquee() {
                         {array.map((num) => {
                             return (
                                 <Box mx={4} my={3} key={num}>
-                                    <Image priority key={num} id={`/merchant${num}.webp`} src={`/merchant${num}.webp`} width="0" height="0" sizes="100vw" style={{ width: '35px', height: 'auto' }} alt={`merchant ${num}`} />
+                                    <img key={num} id={`/merchant${num}.webp`} src={`https://ik.imagekit.io/alvinowyong/g1t2/merchant${num}.webp?tr=w-60`} width="0" height="0" sizes="100vw" style={{ width: '35px', height: 'auto' }} />
                                 </Box>
                             )
                         })}
