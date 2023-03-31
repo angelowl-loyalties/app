@@ -1,0 +1,40 @@
+name: Continuous Integration (Emailer)
+
+on:
+  push:
+    branches: [ '**' ]
+    paths:
+      - "emailer/**"
+      - .github/workflows/ci_emailer.yml
+      - .github/workflows/workflow_lambda.yml
+  pull_request:
+    branches: [ master ]
+    paths:
+      - "emailer/**"
+      - .github/workflows/ci_emailer.yml
+      - .github/workflows/workflow_lambda.yml
+
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  lint:
+    name: Golang Linting
+    uses: ./.github/workflows/golangci-lint.yml
+    with:
+      workdir: 'emailer'
+  sast:
+    needs: lint
+    name: Golang SAST
+    uses: ./.github/workflows/sast_golang.yml
+    with:
+      workdir: 'emailer'
+  ci:
+    needs: [lint, sast]
+    name: Continuous Integration
+    uses: ./.github/workflows/workflow_lambda.yml
+    with:
+      dockerfile: 'Dockerfile'
+      workdir: 'emailer'
+      repository: 'emailer'
