@@ -41,7 +41,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://campaignex.itsag1t2.com/campaign/{campaign_id}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
@@ -54,7 +53,8 @@
               "integration.request.path.campaign_id" : "method.request.path.campaign_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "put" : {
@@ -99,7 +99,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://campaignex.itsag1t2.com/campaign/{campaign_id}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "PUT",
@@ -112,7 +111,8 @@
               "integration.request.path.campaign_id" : "method.request.path.campaign_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "delete" : {
@@ -141,7 +141,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://campaignex.itsag1t2.com/campaign/{campaign_id}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "DELETE",
@@ -154,7 +153,8 @@
               "integration.request.path.campaign_id" : "method.request.path.campaign_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -201,7 +201,6 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
@@ -215,7 +214,8 @@
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -252,7 +252,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://campaignex.itsag1t2.com/exclusion/{exclusion_id}",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
@@ -268,7 +267,8 @@
               "integration.request.path.exclusion_id" : "method.request.path.exclusion_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "put" : {
@@ -313,7 +313,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://campaignex.itsag1t2.com/exclusion/{exclusion_id}",
             "connectionId" : "gzj0gl",
             "httpMethod" : "PUT",
@@ -329,7 +328,8 @@
               "integration.request.path.exclusion_id" : "method.request.path.exclusion_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "delete" : {
@@ -358,7 +358,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://campaignex.itsag1t2.com/exclusion/{exclusion_id}",
             "connectionId" : "gzj0gl",
             "httpMethod" : "DELETE",
@@ -374,7 +373,8 @@
               "integration.request.path.exclusion_id" : "method.request.path.exclusion_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -421,7 +421,6 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
@@ -435,7 +434,8 @@
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -464,7 +464,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://campaignex.itsag1t2.com/campaign/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
@@ -477,7 +476,8 @@
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "post" : {
@@ -514,7 +514,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://campaignex.itsag1t2.com/campaign/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "POST",
@@ -527,7 +526,8 @@
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -561,7 +561,6 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
@@ -575,7 +574,8 @@
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -626,7 +626,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://informer.itsag1t2.com/reward/{cardId}",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
@@ -644,7 +643,8 @@
               "integration.request.querystring.page_no" : "method.request.querystring.page_no"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -691,7 +691,6 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
@@ -705,7 +704,8 @@
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -742,7 +742,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://informer.itsag1t2.com/reward/total/{cardId}",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
@@ -758,7 +757,8 @@
               "integration.request.path.cardId" : "method.request.path.cardId"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -805,7 +805,6 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
@@ -819,7 +818,8 @@
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -845,7 +845,6 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "aws",
             "uri" : "arn:aws:apigateway:ap-southeast-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-southeast-1:276374573009:function:angel-owl-publish-single-msk/invocations",
             "httpMethod" : "POST",
             "responses" : {
@@ -857,7 +856,8 @@
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "contentHandling" : "CONVERT_TO_TEXT"
+            "contentHandling" : "CONVERT_TO_TEXT",
+            "type" : "aws"
           }
         },
         "options" : {
@@ -899,7 +899,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
@@ -913,7 +912,8 @@
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -939,7 +939,6 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://profiler.itsag1t2.com/auth/login",
             "connectionId" : "gzj0gl",
             "httpMethod" : "POST",
@@ -949,7 +948,8 @@
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -983,7 +983,6 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
@@ -997,7 +996,8 @@
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -1023,7 +1023,6 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://profiler.itsag1t2.com/health",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
@@ -1036,7 +1035,8 @@
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         }
       },
@@ -1065,7 +1065,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "aws",
             "uri" : "arn:aws:apigateway:ap-southeast-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-southeast-1:276374573009:function:angel-owl-presigned/invocations",
             "httpMethod" : "POST",
             "responses" : {
@@ -1077,7 +1076,8 @@
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "contentHandling" : "CONVERT_TO_TEXT"
+            "contentHandling" : "CONVERT_TO_TEXT",
+            "type" : "aws"
           }
         },
         "options" : {
@@ -1116,7 +1116,6 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
@@ -1130,7 +1129,8 @@
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -1174,7 +1174,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://profiler.itsag1t2.com/card/type/{card_type_pk}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
@@ -1190,7 +1189,8 @@
               "integration.request.path.card_type_pk" : "method.request.path.card_type_pk"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "put" : {
@@ -1235,7 +1235,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://profiler.itsag1t2.com/card/type/{card_type_pk}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "PUT",
@@ -1251,7 +1250,8 @@
               "integration.request.path.card_type_pk" : "method.request.path.card_type_pk"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "delete" : {
@@ -1280,7 +1280,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://profiler.itsag1t2.com/card/type/{card_type_pk}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "DELETE",
@@ -1296,7 +1295,8 @@
               "integration.request.path.card_type_pk" : "method.request.path.card_type_pk"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -1343,7 +1343,6 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
@@ -1357,7 +1356,8 @@
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -1394,7 +1394,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://profiler.itsag1t2.com/card/{card_id}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
@@ -1410,7 +1409,8 @@
               "integration.request.path.card_id" : "method.request.path.card_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "delete" : {
@@ -1439,7 +1439,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://profiler.itsag1t2.com/card/{card_id}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "DELETE",
@@ -1455,7 +1454,8 @@
               "integration.request.path.card_id" : "method.request.path.card_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -1502,7 +1502,6 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
@@ -1516,7 +1515,8 @@
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -1545,7 +1545,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://profiler.itsag1t2.com/card/type/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
@@ -1558,7 +1557,8 @@
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "post" : {
@@ -1595,7 +1595,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://profiler.itsag1t2.com/card/type/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "POST",
@@ -1608,7 +1607,8 @@
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -1647,7 +1647,6 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
@@ -1661,7 +1660,8 @@
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -1690,7 +1690,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://profiler.itsag1t2.com/user/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
@@ -1703,54 +1702,8 @@
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
-          }
-        },
-        "post" : {
-          "requestBody" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/UserInput"
-                }
-              }
-            },
-            "required" : true
-          },
-          "responses" : {
-            "200" : {
-              "description" : "200 response",
-              "headers" : {
-                "Access-Control-Allow-Origin" : {
-                  "schema" : {
-                    "type" : "string"
-                  }
-                }
-              },
-              "content" : {
-                "application/json" : {
-                  "schema" : {
-                    "$ref" : "#/components/schemas/User"
-                  }
-                }
-              }
-            }
-          },
-          "x-amazon-apigateway-integration" : {
-            "type" : "http",
-            "uri" : "http://profiler.itsag1t2.com/user/",
-            "connectionId" : "gzj0gl",
-            "httpMethod" : "POST",
-            "responses" : {
-              "default" : {
-                "statusCode" : "200",
-                "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
-                }
-              }
-            },
-            "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -1789,7 +1742,6 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
@@ -1803,7 +1755,8 @@
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -1832,7 +1785,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://profiler.itsag1t2.com/card/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
@@ -1845,57 +1797,8 @@
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
-          }
-        },
-        "post" : {
-          "requestBody" : {
-            "content" : {
-              "application/json" : {
-                "schema" : {
-                  "$ref" : "#/components/schemas/Card"
-                }
-              }
-            },
-            "required" : true
-          },
-          "responses" : {
-            "200" : {
-              "description" : "200 response",
-              "headers" : {
-                "Access-Control-Allow-Origin" : {
-                  "schema" : {
-                    "type" : "string"
-                  }
-                }
-              },
-              "content" : {
-                "application/json" : {
-                  "schema" : {
-                    "$ref" : "#/components/schemas/Card"
-                  }
-                }
-              }
-            }
-          },
-          "security" : [ {
-            "angelowl-authorizer" : [ ]
-          } ],
-          "x-amazon-apigateway-integration" : {
-            "type" : "http",
-            "uri" : "http://profiler.itsag1t2.com/card/",
-            "connectionId" : "gzj0gl",
-            "httpMethod" : "POST",
-            "responses" : {
-              "default" : {
-                "statusCode" : "200",
-                "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
-                }
-              }
-            },
-            "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -1934,7 +1837,6 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
@@ -1948,7 +1850,8 @@
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -1985,7 +1888,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://profiler.itsag1t2.com/user/{user_id}",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
@@ -2001,7 +1903,8 @@
               "integration.request.path.user_id" : "method.request.path.user_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "put" : {
@@ -2046,7 +1949,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://profiler.itsag1t2.com/user/{user_id}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "PUT",
@@ -2062,7 +1964,8 @@
               "integration.request.path.user_id" : "method.request.path.user_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "delete" : {
@@ -2091,7 +1994,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://profiler.itsag1t2.com/user/{user_id}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "DELETE",
@@ -2107,7 +2009,8 @@
               "integration.request.path.user_id" : "method.request.path.user_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -2154,7 +2057,6 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
@@ -2168,7 +2070,8 @@
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -2197,7 +2100,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://campaignex.itsag1t2.com/exclusion/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
@@ -2210,7 +2112,8 @@
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "post" : {
@@ -2247,7 +2150,6 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
             "uri" : "http://campaignex.itsag1t2.com/exclusion/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "POST",
@@ -2260,7 +2162,8 @@
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -2299,7 +2202,6 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
@@ -2313,7 +2215,8 @@
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       }
@@ -2601,9 +2504,9 @@
           "in" : "header",
           "x-amazon-apigateway-authtype" : "custom",
           "x-amazon-apigateway-authorizer" : {
-            "type" : "token",
             "authorizerUri" : "arn:aws:apigateway:ap-southeast-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-southeast-1:276374573009:function:angel-owl-authorizer/invocations",
-            "authorizerResultTtlInSeconds" : 300
+            "authorizerResultTtlInSeconds" : 300,
+            "type" : "token"
           }
         }
       }
