@@ -3,10 +3,11 @@ go 1.19
 use (
 	./authorizer
 	./campaignex
+	./emailer
 	./informer
 	./ingestor
-	./pet-rock
 	./passworder
+	./pet-rock
 	./profiler
 	./rewarder
 )
