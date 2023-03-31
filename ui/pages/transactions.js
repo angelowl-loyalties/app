@@ -42,6 +42,7 @@ export default function Transactions() {
     const [filteredTransactions, setFilteredTransactions] = useState([])
     const [loading, setLoading] = useState(true)
     const [pageNum, setPageNum] = useState(1)
+    const [total, setTotal] = useState(0)
 
     const { data: session, status } = useSession({
         required: true,
@@ -72,6 +73,13 @@ export default function Transactions() {
                                 amount: parseFloat(transaction.amount.toFixed(2))
                             }));
                             setFilteredTransactions(prevTransactions => [...prevTransactions, ...truncatedTransactions])
+                        }).catch((error) => {
+                            console.log(error)
+                        })
+                        
+                        axios.get(`https://itsag1t2.com/reward/total/${card.id}`, { headers: { Authorization: session.id } })
+                        .then((response) => {
+                            setTotal(total + response.data.data)
                             setLoading(false)
                         }).catch((error) => {
                             console.log(error)
@@ -82,6 +90,11 @@ export default function Transactions() {
 
 
     }, [session])
+
+    function getRunningTotal(reward) {
+        const temp = total
+        setTotal(total - reward)
+    }
 
     const loadPage = (e) => {
         try{
@@ -107,8 +120,8 @@ export default function Transactions() {
     }
 
     const handleSearch = (e) => {
-        const query = e.target.value
-        setFilteredTransactions(transactions.filter())
+        // const query = e.target.value
+        // setFilteredTransactions(transactions.filter())
     }
 
     return (
@@ -181,19 +194,20 @@ export default function Transactions() {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }} key="all">
                             <Accordion allowMultiple w="full">
-                                {filteredTransactions.map((transaction) => {
+                                {filteredTransactions.sort((a, b) => new Date(b.transaction_date) - new Date(a.transaction_date)).map((transaction) => {
                                     return (
                                         <AccordionItem key={transaction.id}>
                                             <AccordionButton p={{ base: 1, lg: 2 }}>
                                                 <Box as="span" flex='1' textAlign='left'>
                                                     <HStack pr={{ base: 0, lg: 8 }}>
                                                         <Text display={{ base: "none", md: "block" }}>{(transaction.mcc == '5499' | transaction.mcc == '5411') ? <CiShoppingBasket size={20} color='gray' /> : (transaction.mcc == '5541' | transaction.mcc == '5542') ? <CiDeliveryTruck size={20} color='gray' /> : (transaction.mcc == '5499') ? <CiForkAndKnife size={20} color='gray' /> : (transaction.mcc == '4121' | transaction.mcc == '5734' | transaction.mcc == '6540' | transaction.mcc == '4111') ? <CiRoute size={20} color='gray' /> : (transaction.mcc == '5999' | transaction.mcc == '5964' | transaction.mcc == '5691' | transaction.mcc == '5311' | transaction.mcc == '5411' | transaction.mcc == '5399' | transaction.mcc == '5311') ? <CiShoppingBasket size={20} color='gray' /> : <CiWallet size={20} color='gray' />}</Text>
-                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' w={{ base: 14, lg: 20 }}>{transaction.transaction_date}</Text>
-                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' noOfLines={1} overflow="hidden" w={{ base: 100, lg: 200 }}>{transaction.merchant}</Text>
-                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' noOfLines={1} overflow="hidden" w={{ base: 110, lg: 200 }}>Shopee 11.11 Sale</Text>
-                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' w={{ base: 100, lg: 100 }}>{"- " + transaction.currency + " " + transaction.amount}</Text>
+                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' w={{ base: 14, lg: 40 }}>{transaction.transaction_date}</Text>
+                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' noOfLines={1} overflow="hidden" w={{ base: 100, lg: 220 }}>{transaction.merchant}</Text>
+                                                        {/* <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' noOfLines={1} overflow="hidden" w={{ base: 110, lg: 180 }}>Shopee 11.11 Sale</Text> */}
+                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' w={{ base: 120, lg: 180 }}>{"- " + transaction.currency + " " + transaction.amount}</Text>
+                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} lineHeight='7' w={{ base: 120, lg: 130 }} onLoad= {() => setTotal(total - transaction.reward_amount)}>{total}</Text>
                                                         <Spacer />
-                                                        <Badge fontSize='xs' colorScheme="green" py={1} px={2} >+100 Miles</Badge>
+                                                        <Badge fontSize='xs' colorScheme={transaction.reward_amount > 0 ? "green" : "gray"} py={1} px={2}>{transaction.reward_amount > 0 ? `+${transaction.reward_amount} points` : "0 points"}</Badge>
                                                     </HStack>
                                                 </Box>
                                                 <AccordionIcon display={{ base: "none", md: "block" }} />
@@ -201,27 +215,31 @@ export default function Transactions() {
                                             <AccordionPanel pb={4}>
                                                 <VStack alignItems="left">
                                                     <HStack>
-                                                        <Text fontSize='xs' fontWeight={600} color={'green.400'} w={{ base: 'fit-content', lg: "fit-content" }}>Confirmed: Travel miles is added to your account.</Text>
+                                                        <Text fontSize='xs' fontWeight={600} color={'green.400'} w={{ base: 'fit-content', lg: "fit-content" }}>Confirmed: {transaction.merchant}.</Text>
                                                     </HStack>
                                                     <HStack>
                                                         <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>Transaction ID: </Text>
-                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>1234-5678-9012-3456</Text>
+                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>{transaction.id}</Text>
                                                     </HStack>
                                                     <HStack>
                                                         <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>Transaction date: </Text>
-                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>26-08-21</Text>
+                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>{transaction.transaction_date}</Text>
                                                     </HStack>
                                                     <HStack>
                                                         <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>Amount spent: </Text>
-                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>USD 317.79</Text>
+                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>{`${transaction.currency} ${transaction.amount}`}</Text>
                                                     </HStack>
                                                     <HStack>
                                                         <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>Remarks: </Text>
-                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>30% Cashback For Every S$1 Spent</Text>
+                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>{`${transaction.remarks ? transaction.remarks : "Not applicable"}`}</Text>
+                                                    </HStack>
+                                                    <HStack>
+                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>Reard Programme: </Text>
+                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>{`${transaction.card_type.replace("_"," ").toUpperCase()}`}</Text>
                                                     </HStack>
                                                     <HStack>
                                                         <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>Card: </Text>
-                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>7063</Text>
+                                                        <Text fontSize='xs' fontWeight={500} color={'gray.500'} w={{ base: 'fit-content', lg: "fit-content" }}>{transaction.card_pan.slice(-4)}</Text>
                                                     </HStack>
 
                                                 </VStack>
@@ -301,7 +319,7 @@ export default function Transactions() {
                                                 )
                                             })}
                                         </Accordion>
-                                        <Center display={pageNum == -1? "none" : "block"} textAlign="center" mt={5}><Button fontSize="xs" >Load more transactions</Button></Center>
+                                        <Center display={pageNum == -1? "none" : "block"} textAlign="center" mt={5}><Button fontSize="xs" >Load more</Button></Center>
                                         </>
                                         }
                                 </TabPanel>
