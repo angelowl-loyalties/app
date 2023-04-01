@@ -25,7 +25,7 @@ func GetRewards(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"data": rewards})
+	c.JSON(http.StatusOK, gin.H{"data": rewards, "total_rewards": len(rewards)})
 }
 
 // GetRewardsByCardID - GET /reward/:cardId
