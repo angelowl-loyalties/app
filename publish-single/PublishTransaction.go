@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
 
 	"github.com/Shopify/sarama"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -37,17 +36,17 @@ type Transaction struct {
 }
 
 type PublishEvent struct {
-	ID              string `json:"id"`
-	CardID          string `json:"card_id"`
-	Merchant        string `json:"merchant"`
-	MCC             string `json:"mcc"`
-	Currency        string `json:"currency"`
-	Amount          string `json:"amount"`
-	SGDAmount       string `json:"sgd_amount"`
-	TransactionID   string `json:"transaction_id"`
-	TransactionDate string `json:"transaction_date"`
-	CardPAN         string `json:"card_pan"`
-	CardType        string `json:"card_type"`
+	ID              string  `json:"id"`
+	CardID          string  `json:"card_id"`
+	Merchant        string  `json:"merchant"`
+	MCC             int     `json:"mcc"`
+	Currency        string  `json:"currency"`
+	Amount          float64 `json:"amount"`
+	SGDAmount       float64 `json:"sgd_amount"`
+	TransactionID   string  `json:"transaction_id"`
+	TransactionDate string  `json:"transaction_date"`
+	CardPAN         string  `json:"card_pan"`
+	CardType        string  `json:"card_type"`
 }
 
 func init() {
@@ -85,24 +84,11 @@ func (transaction *Transaction) Parse(transactionJson PublishEvent) (err error) 
 	transaction.TransactionID = transactionJson.TransactionID
 	transaction.Merchant = transactionJson.Merchant
 
-	if transactionJson.MCC == "" {
-		transactionJson.MCC = "0"
-	}
-
-	transaction.MCC, err = strconv.Atoi(transactionJson.MCC)
-	if err != nil {
-		fmt.Printf("Error in ATOI: %v\n", err)
-		fmt.Println(transactionJson.MCC)
-		return err
-	}
+	transaction.MCC = transactionJson.MCC
 
 	transaction.Currency = transactionJson.Currency
-	transaction.Amount, err = strconv.ParseFloat(transactionJson.Amount, 64)
-	if err != nil {
-		fmt.Printf("Error in parsing float: %v\n", err)
-		fmt.Println(transactionJson.Amount)
-		return err
-	}
+	transaction.Amount = transactionJson.Amount
+
 	transaction.SGDAmount = 0.0
 	transaction.TransactionDate = transactionJson.TransactionDate
 
