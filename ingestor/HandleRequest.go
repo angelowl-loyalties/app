@@ -81,6 +81,8 @@ func ParseError(message string) error {
 func (transaction *Transaction) Parse(transactionCsv []string) (err error) {
 	transaction.ID, err = uuid.Parse(transactionCsv[0])
 	if err != nil {
+		fmt.Printf("Error parsing uuid: %v\n", err)
+		fmt.Println(transactionCsv[0])
 		return err
 	}
 
@@ -93,6 +95,7 @@ func (transaction *Transaction) Parse(transactionCsv []string) (err error) {
 
 	transaction.MCC, err = strconv.Atoi(transactionCsv[3])
 	if err != nil {
+		fmt.Printf("Error in ATOI: %v\n", err)
 		fmt.Println(transactionCsv[3])
 		return err
 	}
@@ -100,6 +103,7 @@ func (transaction *Transaction) Parse(transactionCsv []string) (err error) {
 	transaction.Currency = transactionCsv[4]
 	transaction.Amount, err = strconv.ParseFloat(transactionCsv[5], 64)
 	if err != nil {
+		fmt.Printf("Error in parsing float: %v\n", err)
 		fmt.Println(transactionCsv[5])
 		return err
 	}
@@ -108,6 +112,7 @@ func (transaction *Transaction) Parse(transactionCsv []string) (err error) {
 
 	transaction.CardID, err = uuid.Parse(transactionCsv[7])
 	if err != nil {
+		fmt.Printf("Error parsing uuid: %v\n", err)
 		fmt.Println(transactionCsv[7])
 		return err
 	}
@@ -132,13 +137,19 @@ func newProducer() (sarama.SyncProducer, error) {
 	return producer, err
 }
 
-func prepareMessage(message []byte) *sarama.ProducerMessage {
-	msg := &sarama.ProducerMessage{
+func prepareMessage(message []byte) (msg *sarama.ProducerMessage, err error) {
+	_, err = sarama.ByteEncoder.Encode(message)
+
+	if err != nil {
+		return nil, err
+	}
+
+	msg = &sarama.ProducerMessage{
 		Topic: "transaction",
 		Value: sarama.ByteEncoder(message),
 	}
 
-	return msg
+	return msg, nil
 }
 
 func HandleRequest(ctx context.Context, event S3Event) (string, error) {
@@ -192,7 +203,13 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 		}
 
 		go func() {
-			_, _, err := producer.SendMessage(prepareMessage(b))
+			message, err := prepareMessage(b)
+
+			if err != nil {
+				fmt.Printf("Error preparing message to Kafka: %v", err)
+			}
+
+			_, _, err = producer.SendMessage(message)
 			if err != nil {
 				fmt.Printf("Error writing to Producer: %v", err)
 			}
