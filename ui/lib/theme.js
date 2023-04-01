@@ -6,7 +6,6 @@ const theme = extendTheme({
     textStyles: {
         title: {
             fontWeight: "bold",
-            mb: {base: 0, lg: 2},
             fontSize: {base: 'md', lg: '2xl'},
             fontWeight: {base: 'bold', lg: "semibold"},
         },

@@ -58,9 +58,9 @@ function Navbar(props) {
             header: "Add Campaigns",
         },
         {
-            path:"/admin/addExclusions",
+            path: "/admin/addExclusions",
             tab: "Add exclusions",
-            header:"Add Exclusions"
+            header: "Add Exclusions"
         }
     ];
 
@@ -122,7 +122,6 @@ function Navbar(props) {
                 >
                     <Box p={8}>
                         <img
-                            priority={true}
                             src="https://ik.imagekit.io/alvinowyong/g1t2/ascenda.webp"
                             width="0"
                             height="0"
@@ -262,14 +261,13 @@ function Navbar(props) {
                         <HStack>
                             <Flex align="center">
                                 <NextLink href="/" passHref>
-                                    <Image
-                                        priority={true}
-                                        src="/small_logo.webp"
+                                    <img
+                                        src="https://ik.imagekit.io/alvinowyong/g1t2/ascenda.webp"
                                         width="0"
                                         height="0"
                                         sizes="100vw"
-                                        style={{ width: "20px", height: "auto" }}
-                                        alt="ascenda logo"
+                                        style={{ width: "80px", height: "auto" }}
+                                        alt="logo"
                                     />
                                 </NextLink>
                             </Flex>
