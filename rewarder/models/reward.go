@@ -1,10 +1,18 @@
 package models
 
 import (
-	"github.com/scylladb/gocqlx"
+	"errors"
+	"log"
+	"sync"
+	"time"
 
 	"github.com/gocql/gocql"
 	"github.com/scylladb/gocqlx/qb"
+)
+
+const (
+	MaxBatchSize     = 100
+	MaxBatchWaitTime = 1 * time.Second
 )
 
 type Reward struct {
@@ -24,8 +32,59 @@ type Reward struct {
 	Remarks         string     `json:"remarks"`          // cassandra text
 }
 
-func RewardCreate(reward Reward) error {
-	stmt, names := qb.Insert("angelowl.rewards").Columns(
+var (
+	rewardBatch []*Reward
+	rewardChan  = make(chan *Reward, MaxBatchSize)
+	rewardMutex = &sync.Mutex{}
+	batchTimer  *time.Timer
+)
+
+func init() {
+	batchTimer = time.NewTimer(MaxBatchWaitTime)
+	go batchInsertLoop()
+}
+
+func batchInsertLoop() {
+	for {
+		select {
+		case reward := <-rewardChan:
+			addRewardToBatch(reward)
+		case <-batchTimer.C:
+			flushRewardBatch()
+			resetBatchTimer()
+		}
+	}
+}
+
+func resetBatchTimer() {
+	if !batchTimer.Stop() {
+		<-batchTimer.C
+	}
+	batchTimer.Reset(MaxBatchWaitTime)
+}
+
+func addRewardToBatch(reward *Reward) {
+	rewardMutex.Lock()
+	defer rewardMutex.Unlock()
+	rewardBatch = append(rewardBatch, reward)
+
+	if len(rewardBatch) >= MaxBatchSize {
+		flushRewardBatch()
+		resetBatchTimer()
+	}
+}
+
+func flushRewardBatch() {
+	rewardMutex.Lock()
+	defer rewardMutex.Unlock()
+
+	if len(rewardBatch) == 0 {
+		return
+	}
+
+	batch := DB.NewBatch(gocql.LoggedBatch)
+
+	stmt, _ := qb.Insert("angelowl.rewards").Columns(
 		"id",
 		"card_id",
 		"merchant",
@@ -41,12 +100,50 @@ func RewardCreate(reward Reward) error {
 		"reward_amount",
 		"remarks").ToCql()
 
-	q := gocqlx.Query(DB.Query(stmt), names).BindStruct(&reward)
-
-	err := q.ExecRelease()
-	if err != nil {
-		return err
+	for _, reward := range rewardBatch {
+		batch.Query(stmt, reward)
 	}
 
-	return nil
+	err := DB.ExecuteBatch(batch)
+	if err != nil {
+		log.Printf("Error executing batch insert: %v", err)
+	}
+
+	rewardBatch = rewardBatch[:0]
 }
+
+func RewardCreate(reward Reward) error {
+	select {
+	case rewardChan <- &reward:
+		return nil
+	default:
+		return errors.New("reward channel is full")
+	}
+}
+
+// func RewardCreate(reward Reward) error {
+// 	stmt, names := qb.Insert("angelowl.rewards").Columns(
+// 		"id",
+// 		"card_id",
+// 		"merchant",
+// 		"mcc",
+// 		"currency",
+// 		"amount",
+// 		"sgd_amount",
+// 		"transaction_id",
+// 		"transaction_date",
+// 		"created_at",
+// 		"card_pan",
+// 		"card_type",
+// 		"reward_amount",
+// 		"remarks").ToCql()
+
+// 	q := gocqlx.Query(DB.Query(stmt), names).BindStruct(&reward)
+
+// 	err := q.ExecRelease()
+// 	if err != nil {
+// 		return err
+// 	}
+
+// 	return nil
+// }
