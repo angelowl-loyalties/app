@@ -1,7 +1,6 @@
 package models
 
 import (
-	"errors"
 	"log"
 	"sync"
 	"time"
@@ -11,8 +10,8 @@ import (
 )
 
 const (
-	MaxBatchSize     = 100
-	MaxBatchWaitTime = 1 * time.Second
+	MaxBatchSize     = 2000
+	MaxBatchWaitTime = 100 * time.Millisecond
 )
 
 type Reward struct {
@@ -112,13 +111,14 @@ func flushRewardBatch() {
 	rewardBatch = rewardBatch[:0]
 }
 
-func RewardCreate(reward Reward) error {
-	select {
-	case rewardChan <- &reward:
-		return nil
-	default:
-		return errors.New("reward channel is full")
-	}
+func RewardCreate(reward Reward) {
+	rewardChan <- &reward
+	// select {
+	// case rewardChan <- &reward:
+	// 	return nil
+	// default:
+	// 	return errors.New("reward channel is full")
+	// }
 }
 
 // func RewardCreate(reward Reward) error {
