@@ -100,7 +100,7 @@ func flushRewardBatch() {
 		"remarks").ToCql()
 
 	for _, reward := range rewardBatch {
-		batch.Query(stmt, reward)
+		batch.Query(stmt, *reward)
 	}
 
 	err := DB.ExecuteBatch(batch)
