@@ -4,8 +4,8 @@ go 1.19
 
 require (
 	github.com/Shopify/sarama v1.38.1
-	github.com/aws/aws-lambda-go v1.37.0
-	github.com/aws/aws-sdk-go v1.44.199
+	github.com/aws/aws-lambda-go v1.39.1
+	github.com/aws/aws-sdk-go v1.44.219
 )
 
 require (
@@ -23,8 +23,9 @@ require (
 	github.com/jcmturner/gokrb5/v8 v8.4.3 // indirect
 	github.com/jcmturner/rpc/v2 v2.0.3 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
-	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa // indirect
-	golang.org/x/net v0.5.0 // indirect
+	golang.org/x/crypto v0.6.0 // indirect
+	golang.org/x/net v0.6.0 // indirect
+	gopkg.in/yaml.v2 v2.4.0 // indirect
 )
 
 require (
