@@ -1,0 +1,42 @@
+name: Continuous Integration (PublishSingle)
+
+on:
+  push:
+    branches: [ '**' ]
+    paths:
+      - "publish-single/**"
+      - .github/workflows/ci_publish-single.yml
+      - .github/workflows/workflow_lambda.yml
+  pull_request:
+    branches: [ master ]
+    paths:
+      - "publish-single/**"
+      - .github/workflows/ci_publish-single.yml
+      - .github/workflows/workflow_lambda.yml
+
+permissions:
+  id-token: write
+  contents: read 
+
+jobs:
+  lint:
+    name: Golang Linting
+    uses: ./.github/workflows/golangci-lint.yml
+    with:
+      workdir: 'publish-single'
+  sast:
+    needs: lint
+    name: Golang SAST
+    uses: ./.github/workflows/sast_golang.yml
+    with:
+      workdir: 'publish-single'
+  ci:
+    needs: [lint, sast]
+    name: Continuous Integration
+    uses: ./.github/workflows/workflow_lambda.yml
+    with:
+      dockerfile: 'Dockerfile'
+      workdir: 'publish-single'
+      repository: 'publish-single'
+      lambda_name: 'angel-owl-publish-single-msk'
+      execution_role_arn: 'arn:aws:iam::276374573009:role/angel-owl-publish-to-msk'
