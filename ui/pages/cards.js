@@ -1,26 +1,22 @@
 import {
+    Accordion,
+    AccordionButton,
+    AccordionItem,
     Box,
-    Divider,
-    Heading,
-    Select,
+    Container,
     HStack,
+    Select,
     Spacer,
-    Switch,
     Tab,
-    Table,
     TabList,
     TabPanel,
     TabPanels,
     Tabs,
-    Tbody,
-    Td,
     Text,
-    Th,
-    Thead,
-    Tr,
     VStack,
-    Container,
 } from '@chakra-ui/react';
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { FaCcAmex, FaCcDiscover, FaCcMastercard, FaCcVisa, FaCreditCard } from 'react-icons/fa';
@@ -29,8 +25,6 @@ import { IoDiamond } from 'react-icons/io5';
 import { MdOutlineFlightTakeoff } from 'react-icons/md';
 
 import Navbar from '../components/Navbar';
-import { useSession } from 'next-auth/react';
-import axios from 'axios';
 
 export default function Cards() {
     const router = useRouter()
@@ -90,6 +84,7 @@ export default function Cards() {
                 freedom = response.data.data.CreditCards.filter((el) => {
                     return el.card_type == 'scis_freedom';
                 })
+                console.log(response.data.data.CreditCards)
                 setData([response.data.data.CreditCards, amex, visa, mastercard, discover, others])
                 setLoading(false)
             }).catch((error) => {
@@ -97,16 +92,6 @@ export default function Cards() {
             })
 
     }, [session])
-
-
-    function handleToggle() {
-        if (toggle) {
-            setData([cards, shopping, premium, platinum, freedom])
-        } else {
-            setData([cards, amex, visa, mastercard, discover, others])
-        }
-        setToggle(!toggle)
-    }
 
     function renderProgram(card_type) {
         if (card_type == 'scis_freedom') {
@@ -123,15 +108,15 @@ export default function Cards() {
     function renderIssuer(card_pan) {
         switch (card_pan.charAt(0)) {
             case '3':
-                return <FaCcAmex size={23} />
+                return <FaCcAmex size={70} />
             case '4':
-                return <FaCcVisa size={23} />
+                return <FaCcVisa size={70} />
             case '5':
-                return <FaCcMastercard size={23} />
+                return <FaCcMastercard size={70} />
             case '6':
-                return <FaCcDiscover size={23} />
+                return <FaCcDiscover size={70} />
             default:
-                return <FaCreditCard size={23} />
+                return <FaCreditCard size={70} />
         }
     }
 
@@ -211,11 +196,9 @@ export default function Cards() {
                             </HStack>
                         </Box>
                         <Spacer />
-                        {/* <Text fontSize='sm' fontWeight={600} color={'gray.500'} lineHeight='7'>Card issuer</Text> */}
-                        {/* <Switch defaultChecked onChange={handleToggle} colorScheme='purple' size='md' /> */}
                     </HStack>
 
-                    <TabPanels >
+                    <TabPanels>
                         {data && data.map((cards1) => {
                             return (
                                 <TabPanel p={{ base: 0, lg: 4 }} mt={{ base: 4, lg: 0 }} key={cards1 && cards1.card_id}>
@@ -229,32 +212,26 @@ export default function Cards() {
                                                 </g>
                                             </g>
                                         </svg>
-                                        <Text fontSize='sm' fontWeight={500} color='#d9d9d9' lineHeight='7'>No transactions found</Text></Container> :
-                                        <Table size='sm'>
-                                            <Thead>
-                                                <Tr>
-                                                    <Th></Th>
-                                                    <Th>PAN</Th>
-                                                    <Th>Card ID</Th>
-                                                    <Th>Type</Th>
-                                                </Tr>
-                                            </Thead>
-                                            <Tbody>
-                                                {cards1 && cards1.map((card) => {
-                                                    console.log(card.card_pan)
-                                                    return (
-                                                        <>
-                                                            <Tr key={card && card.card_id}>
-                                                                <Td><Text fontSize='xs' color='gray.500'>{card.card_pan && renderIssuer(card.card_pan)}</Text></Td>
-                                                                <Td><Text fontSize='xs'>{card.card_pan && card.card_pan.substring(card.card_pan.length - 4)}</Text></Td>
-                                                                <Td><Text fontSize='xs' noOfLines={1} overflow="hidden">{card && card.id}</Text></Td>
-                                                                <Td><Text fontSize='xs' color='gray.500'>{card.card_type && renderProgram(card.card_type)}</Text></Td>
-                                                            </Tr>
-                                                        </>
-                                                    )
-                                                })}
-                                            </Tbody>
-                                        </Table>}
+                                        <Text fontSize='sm' fontWeight={500} color='#d9d9d9' lineHeight='7'>No cards found</Text></Container> :
+                                        <Accordion allowMultiple w="full">
+                                            {cards1 && cards1.map((card) => {
+                                                console.log(card.card_pan)
+                                                return (
+                                                    <AccordionItem key={card.id}>
+                                                        <AccordionButton p={{ base: 1, lg: 3 }}>
+                                                            <Text fontSize={{ base: 'xs', md: 'sm' }} color='gray.500' w={{ base: "fit-content", lg: "fit-content" }}>{card.card_pan && renderIssuer(card.card_pan)}</Text>
+                                                            <Box textAlign="left" ml={{base: 5, md: 10}}>
+                                                                <Text fontSize={{ base: 'xs', md: 'sm' }} noOfLines={1} overflow="hidden">{card && card.id}</Text>
+                                                                <Text fontSize={{ base: 'xs', md: 'sm' }}>{card.card_pan && card.card_pan.substring(card.card_pan.length - 4)}</Text>
+                                                                <Text fontSize={{ base: 'xs', md: 'sm' }} noOfLines={1} overflow="hidden">{card && card.card_type ? card.card_type : "Not eligible for rewards"} </Text>
+                                                            </Box>
+                                                        </AccordionButton>
+
+                                                    </AccordionItem>
+                                                )
+                                            })}
+                                        </Accordion>
+                                    }
                                 </TabPanel>
                             );
                         })

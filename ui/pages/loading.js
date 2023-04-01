@@ -9,7 +9,6 @@ export default function Loading() {
         <Center h="100vh" bg="white">
             <VStack>
                 <img
-                    priority={true}
                     src="https://ik.imagekit.io/alvinowyong/g1t2/ascenda.webp"
                     width="0"
                     height="0"
