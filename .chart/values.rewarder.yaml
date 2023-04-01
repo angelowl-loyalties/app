@@ -15,9 +15,9 @@ app:
     - name: DB_TABLE
       value: rewards
     - name: DB_SSL
-      value: "true"
-    - name: DB_CREATE_INDEX
       value: "false"
+    - name: DB_CREATE_INDEX
+      value: "true"
     - name: DB_CONN_STRING
       valueFrom:
         secretKeyRef:
