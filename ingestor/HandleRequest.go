@@ -7,6 +7,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"strconv"
 
@@ -208,12 +209,12 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 			message, err := prepareMessage(b)
 
 			if err != nil {
-				fmt.Printf("Error preparing message to Kafka: %v", err)
+				log.Printf("Error preparing message to Kafka: %v", err)
 			}
 
 			_, _, err = producer.SendMessage(message)
 			if err != nil {
-				fmt.Printf("Error writing to Producer: %v", err)
+				log.Printf("Error writing to Producer: %v", err)
 			}
 		}()
 		fmt.Println("Message number:" + strconv.Itoa(i))
