@@ -56,6 +56,11 @@ function Navbar(props) {
             path: "/admin/addCampaigns",
             tab: "Add campaigns",
             header: "Add Campaigns",
+        },
+        {
+            path:"/admin/addExclusions",
+            tab: "Add exclusions",
+            header:"Add Exclusions"
         }
     ];
 
