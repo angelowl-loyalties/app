@@ -20,6 +20,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { FaCcAmex, FaCcDiscover, FaCcMastercard, FaCcVisa, FaCreditCard } from 'react-icons/fa';
 
+
 import Navbar from '../components/Navbar';
 import RewardPanel from '../components/RewardPanel';
 import Loading from './loading';
@@ -28,6 +29,7 @@ export default function Transactions() {
     const router = useRouter()
     const [cards, setCards] = useState({})
     const [loading, setLoading] = useState(true)
+    const [search, setSearch] = useState('')
 
     const { data: session, status } = useSession({
         required: true,
@@ -52,7 +54,8 @@ export default function Transactions() {
 
 
     const handleSearch = (e) => {
-        console.log("Hello, not implemented 🚀")
+        console.log(e.target.value)
+        setSearch(e.target.value)
     }
 
     return (
@@ -97,15 +100,15 @@ export default function Transactions() {
                                             const num = card.card_pan.slice(-4)
                                             switch (card.card_pan.charAt(0)) {
                                                 case '3':
-                                                    return <Tab fontSize='sm' borderRadius='lg' key={num}><HStack><FaCcAmex size={23} /><Text>{num}</Text></HStack></Tab>
+                                                    return <Tab mx={1} fontSize='sm' borderRadius='lg' key={num}><HStack><FaCcAmex size={23} /><Text>{num}</Text></HStack></Tab>
                                                 case '4':
-                                                    return <Tab fontSize='sm' borderRadius='lg' key={num}><HStack><FaCcVisa size={23} /><Text>{num}</Text></HStack></Tab>
+                                                    return <Tab mx={1} fontSize='sm' borderRadius='lg' key={num}><HStack><FaCcVisa size={23} /><Text>{num}</Text></HStack></Tab>
                                                 case '5':
-                                                    return <Tab fontSize='sm' borderRadius='lg' key={num}><HStack><FaCcMastercard size={23} /><Text>{num}</Text></HStack></Tab>
+                                                    return <Tab mx={1} fontSize='sm' borderRadius='lg' key={num}><HStack><FaCcMastercard size={23} /><Text>{num}</Text></HStack></Tab>
                                                 case '6':
-                                                    return <Tab fontSize='sm' borderRadius='lg' key={num}><HStack><FaCcDiscover size={23} /><Text>{num}</Text></HStack></Tab>
+                                                    return <Tab mx={1} fontSize='sm' borderRadius='lg' key={num}><HStack><FaCcDiscover size={23} /><Text>{num}</Text></HStack></Tab>
                                                 default:
-                                                    return <Tab fontSize='sm' borderRadius='lg' key={num}><HStack><FaCreditCard size={23} /><Text>{num}</Text></HStack></Tab>
+                                                    return <Tab mx={1} fontSize='sm' borderRadius='lg' key={num}><HStack><FaCreditCard size={23} /><Text>{num}</Text></HStack></Tab>
                                             }
                                         })}
                                     </TabList>
@@ -121,7 +124,7 @@ export default function Transactions() {
                             <TabPanels>
                                 {cards.map((card) => {
                                     return (
-                                        <RewardPanel card={card} key={card.id} />
+                                        <RewardPanel card={card} key={card.id} search={search}/>
                                     )
                                 })}
                             </TabPanels>
