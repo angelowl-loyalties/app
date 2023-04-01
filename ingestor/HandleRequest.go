@@ -98,12 +98,17 @@ func (transaction *Transaction) Parse(transactionCsv []string) (err error) {
 	}
 
 	transaction.Currency = transactionCsv[4]
-	transaction.Amount, _ = strconv.ParseFloat(transactionCsv[5], 64)
+	transaction.Amount, err = strconv.ParseFloat(transactionCsv[5], 64)
+	if err != nil {
+		fmt.Println(transactionCsv[5])
+		return err
+	}
 	transaction.SGDAmount = 0.0
 	transaction.TransactionDate = transactionCsv[6]
 
 	transaction.CardID, err = uuid.Parse(transactionCsv[7])
 	if err != nil {
+		fmt.Println(transactionCsv[7])
 		return err
 	}
 
@@ -165,6 +170,7 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 		record, err := reader.Read()
 
 		if err == io.EOF {
+			fmt.Printf("Reader EOF: %v", err)
 			break
 		}
 		if err != nil {

@@ -20,7 +20,7 @@ func ProcessMessageJSON(messageJSON string) error {
 
 	err := json.Unmarshal([]byte(messageJSON), &transaction) // Convert JSON message to transaction object
 	if err != nil {
-		// log.Fatalln(err)
+		log.Printf("Error unmarshalling transaction JSON, skipping: %v", err)
 		return nil
 	}
 
@@ -28,11 +28,10 @@ func ProcessMessageJSON(messageJSON string) error {
 }
 
 func ProcessMessage(transaction models.Transaction) error {
-
 	transactionDate, err := time.Parse(YYYYMMDD, transaction.TransactionDate)
 	if err != nil {
-		log.Println(err)
-		return nil //TODO: Fix this to do something when date couldnt be parsed
+		log.Printf("Error parsing transaction date, skipping: %v", err)
+		return nil
 	}
 
 	if IsExcluded(transactionDate, transaction.MCC) {
@@ -57,9 +56,8 @@ func ProcessMessage(transaction models.Transaction) error {
 		}
 
 		err := models.RewardCreate(reward)
-		// TODO: Proper Error handling
 		if err != nil {
-			log.Println(err)
+			log.Printf("Error creating reward: %v", err)
 			return err
 		}
 
@@ -110,7 +108,7 @@ func ProcessMessage(transaction models.Transaction) error {
 		}
 		err := models.RewardCreate(reward)
 		if err != nil {
-			log.Println(err)
+			log.Printf("Error creating reward: %v", err)
 			return err
 		}
 	}
@@ -166,9 +164,8 @@ func GetMatchingCampaigns(transaction models.Transaction) (campaign [][]models.C
 func IsCampaignMatch(campaign models.Campaign, transaction models.Transaction) bool {
 	transactionDate, err := time.Parse(YYYYMMDD, transaction.TransactionDate)
 
-	//Should not reach here since its second time parsing
 	if err != nil {
-		log.Println(err)
+		log.Printf("Error parsing transaction date in campaign match, skipping: %v", err)
 		return false
 	}
 	if campaign.RewardProgram != transaction.CardType {
@@ -190,7 +187,7 @@ func IsCampaignMatch(campaign models.Campaign, transaction models.Transaction) b
 	for _, mcc := range campaignMcc {
 		intMCC, err := strconv.Atoi(mcc)
 		if err != nil {
-			// log.Fatalln(err)
+			log.Printf("Error parsing MCC: %v", err)
 			return false
 		}
 		if intMCC == 0 || intMCC == transaction.MCC {
@@ -206,7 +203,6 @@ func CalculateDeltaType(rewardAmount int, spentAmount float64) float64 {
 }
 
 func ConvertToSGD(spendAmount float64) float64 {
-	// TODO: Change to proper USD handling
 	return spendAmount * 1.34
 }
 

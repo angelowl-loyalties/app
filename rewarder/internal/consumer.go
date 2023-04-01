@@ -162,8 +162,7 @@ func (consumer *Consumer) ConsumeClaim(session sarama.ConsumerGroupSession, clai
 			session.MarkMessage(message, "")
 			err := ProcessMessageJSON(string(message.Value))
 			if err != nil {
-				// log.Fatalln(err)
-				log.Println("Error back to consumer")
+				log.Printf("Error back to consumer: %v", err)
 			}
 
 		case <-session.Context().Done():
