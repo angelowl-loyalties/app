@@ -111,8 +111,9 @@ func flushRewardBatch() {
 	rewardBatch = rewardBatch[:0]
 }
 
-func RewardCreate(reward Reward) {
+func RewardCreate(reward Reward) error {
 	rewardChan <- &reward
+	return nil
 	// select {
 	// case rewardChan <- &reward:
 	// 	return nil
