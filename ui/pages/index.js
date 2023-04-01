@@ -17,8 +17,11 @@ export default function Home() {
     });
     
     useEffect(() => {
+        if (!session) {
+            return
+        }
         setLoading(false)
-    },[])
+    },[session])
 
     return (
         <>
