@@ -38,3 +38,5 @@ jobs:
       dockerfile: 'Dockerfile'
       workdir: 'ingestor'
       repository: 'ingestor'
+      lambda_name: 'angel-owl-publish-to-msk'
+      execution_role_arn: 'arn:aws:iam::276374573009:role/angel-owl-publish-to-msk'

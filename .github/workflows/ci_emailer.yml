@@ -1,17 +1,17 @@
-name: Continuous Integration (Pet Rock)
+name: Continuous Integration (Emailer)
 
 on:
   push:
     branches: [ '**' ]
     paths:
-      - "pet-rock/**"
-      - .github/workflows/ci_pet-rock.yml
+      - "emailer/**"
+      - .github/workflows/ci_emailer.yml
       - .github/workflows/workflow_lambda.yml
   pull_request:
     branches: [ master ]
     paths:
-      - "pet-rock/**"
-      - .github/workflows/ci_pet-rock.yml
+      - "emailer/**"
+      - .github/workflows/ci_emailer.yml
       - .github/workflows/workflow_lambda.yml
 
 permissions:
@@ -23,20 +23,20 @@ jobs:
     name: Golang Linting
     uses: ./.github/workflows/golangci-lint.yml
     with:
-      workdir: 'pet-rock'
+      workdir: 'emailer'
   sast:
     needs: lint
     name: Golang SAST
     uses: ./.github/workflows/sast_golang.yml
     with:
-      workdir: 'pet-rock'
+      workdir: 'emailer'
   ci:
     needs: [lint, sast]
     name: Continuous Integration
     uses: ./.github/workflows/workflow_lambda.yml
     with:
       dockerfile: 'Dockerfile'
-      workdir: 'pet-rock'
-      repository: 'pet-rock'
-      lambda_name: 'angel-owl-user-ingestor'
-      execution_role_arn: 'arn:aws:iam::276374573009:role/angel-owl-publish-to-msk'
+      workdir: 'emailer'
+      repository: 'emailer'
+      lambda_name: 'angel-owl-email-aggregator'
+      execution_role_arn: 'arn:aws:iam::276374573009:role/service-role/angel-owl-email-aggregator-role-mg3jv0lj'

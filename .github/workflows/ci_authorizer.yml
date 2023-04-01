@@ -38,3 +38,5 @@ jobs:
       dockerfile: 'Dockerfile'
       workdir: 'authorizer'
       repository: 'authorizer'
+      lambda_name: 'angel-owl-authorizer'
+      execution_role_arn: 'arn:aws:iam::276374573009:role/service-role/angel-owl-authorizer-role-oq6y0qqe'

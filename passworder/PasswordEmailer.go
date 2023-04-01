@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"os"
-	"path/filepath"
 	"text/template"
 
 	"github.com/aws/aws-lambda-go/lambda"
@@ -33,7 +32,7 @@ func init() {
 func CreateSESSession() {
 	// Create a new session in the ap-southeast-1 region.
 	sess, _ := session.NewSession(&aws.Config{
-		Region: aws.String("ap-southeast-1")},
+		Region: aws.String(os.Getenv("AWS_REGION"))},
 	)
 
 	// Create an SES session.
@@ -42,12 +41,7 @@ func CreateSESSession() {
 
 func SendEmail(recipient string, name string, password string) error {
 	// Read the HTML template file.
-	dir, err := os.Getwd()
-	if err != nil {
-		fmt.Println("Error getting working directory:", err)
-		return err
-	}
-	htmlBytes, err := os.ReadFile(filepath.Join(dir, "template.html"))
+	htmlBytes, err := os.ReadFile("/var/task/template.html")
 	if err != nil {
 		fmt.Println("Error reading HTML template file:", err)
 		return err
