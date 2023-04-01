@@ -10,6 +10,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"sync"
 
 	"github.com/Shopify/sarama"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -179,6 +180,7 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 	}
 
 	var i = 1
+	var wg sync.WaitGroup
 
 	for {
 		record, err := reader.Read()
@@ -204,10 +206,13 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 			fmt.Printf("Error marshaling JSON: %v", err)
 			continue
 		}
+		// Increment the WaitGroup counter.
+		wg.Add(1)
 
 		go func() {
+			defer wg.Done()
+			
 			message, err := prepareMessage(b)
-
 			if err != nil {
 				log.Printf("Error preparing message to Kafka: %v", err)
 			}
@@ -220,6 +225,7 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 		fmt.Println("Message number:" + strconv.Itoa(i))
 		i += 1
 	}
+	wg.Wait()
 
 	return "", err
 }
