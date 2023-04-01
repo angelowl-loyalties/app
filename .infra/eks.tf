@@ -49,8 +49,8 @@ resource "aws_eks_node_group" "angelowl_eks_node_group" {
 
   scaling_config {
     desired_size = 3
-    max_size     = 4
-    min_size     = 2
+    max_size     = 10
+    min_size     = 3
   }
 
   instance_types = ["t3.small"]

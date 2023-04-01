@@ -17,9 +17,11 @@ resource "aws_db_instance" "campaignex_db" {
     aws_security_group.angelowl_postgres.id
   ]
 
-  identifier = "campaignex-db"
-  db_name    = "campaignex"
-  engine     = "postgres"
+  storage_encrypted = true
+  kms_key_id        = "arn:aws:kms:ap-southeast-1:276374573009:key/5e9b5264-8d3d-4496-8682-7268e25ff848"
+  identifier        = "campaignex-db"
+  db_name           = "campaignex"
+  engine            = "postgres"
 
   engine_version = "14.6"
   instance_class = "db.t3.micro"
@@ -40,9 +42,11 @@ resource "aws_db_instance" "profiler_db" {
     aws_security_group.angelowl_postgres.id
   ]
 
-  identifier = "profiler-db"
-  db_name    = "profiler"
-  engine     = "postgres"
+  storage_encrypted = true
+  kms_key_id        = "arn:aws:kms:ap-southeast-1:276374573009:key/5e9b5264-8d3d-4496-8682-7268e25ff848"
+  identifier        = "profiler-db"
+  db_name           = "profiler"
+  engine            = "postgres"
 
   engine_version = "14.6"
   instance_class = "db.t3.micro"
