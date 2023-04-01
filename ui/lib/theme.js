@@ -15,6 +15,12 @@ const theme = extendTheme({
             fontSize: {base: 'small', lg: 'sm'},
             fontWeight: {base: 500, lg: 600}
         },
+        head: {
+            fontWeight: "bold",
+            mb: {base: 0, lg: 2},
+            fontSize: {base: 'sm', lg: 'xl'},
+            fontWeight: {base: 'bold', lg: "semibold"},
+        },
         tab: {
             fontSize: {base: "xs", lg: "sm"},
         },
