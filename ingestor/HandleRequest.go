@@ -215,9 +215,9 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 			if err != nil {
 				fmt.Printf("Error writing to Producer: %v", err)
 			}
-			fmt.Println("Message number:" + strconv.Itoa(i))
-			i += 1
 		}()
+		fmt.Println("Message number:" + strconv.Itoa(i))
+		i += 1
 	}
 
 	return "", err
