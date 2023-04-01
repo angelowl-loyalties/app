@@ -129,7 +129,7 @@ func (transaction *Transaction) Parse(transactionCsv []string) (err error) {
 func newProducer() (sarama.SyncProducer, error) {
 	config := sarama.NewConfig()
 	config.Producer.Partitioner = sarama.NewRoundRobinPartitioner
-	// config.Producer.RequiredAcks = sarama.WaitForAll
+	config.Producer.RequiredAcks = sarama.WaitForAll
 	config.Producer.Return.Successes = true
 	config.Producer.Transaction.Retry.Backoff = 10
 	producer, err := sarama.NewSyncProducer(brokers, config)
@@ -177,6 +177,8 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 		os.Exit(1)
 	}
 
+	var i = 1
+
 	for {
 		record, err := reader.Read()
 
@@ -202,18 +204,20 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 			continue
 		}
 
-		// go func() {
-		message, err := prepareMessage(b)
+		go func() {
+			message, err := prepareMessage(b)
 
-		if err != nil {
-			fmt.Printf("Error preparing message to Kafka: %v", err)
-		}
+			if err != nil {
+				fmt.Printf("Error preparing message to Kafka: %v", err)
+			}
 
-		_, _, err = producer.SendMessage(message)
-		if err != nil {
-			fmt.Printf("Error writing to Producer: %v", err)
-		}
-		// }()
+			_, _, err = producer.SendMessage(message)
+			if err != nil {
+				fmt.Printf("Error writing to Producer: %v", err)
+			}
+			fmt.Println("Message number:" + strconv.Itoa(i))
+			i += 1
+		}()
 	}
 
 	return "", err
