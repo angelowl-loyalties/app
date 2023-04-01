@@ -6,7 +6,6 @@ import (
 	"context"
 	"encoding/csv"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -62,7 +61,7 @@ func parse(csvRecord []string) (record CSVRecord, err error) {
 	return record, nil
 }
 
-func postToProfiler() (hasError bool) {
+func postToProfiler() (result OTPEvent, hasError bool) {
 	for userID, user := range userMap {
 		userJson, err := json.Marshal(user)
 		if err != nil {
@@ -82,6 +81,12 @@ func postToProfiler() (hasError bool) {
 			log.Printf("failed to create user: "+userID+" with error: %d", resp.StatusCode)
 			continue
 		}
+
+		result.Users = append(result.Users, EmailContent{
+			Email:    user.Email,
+			Name:     user.FirstName + user.LastName,
+			Password: user.Password,
+		})
 	}
 
 	for cardID, card := range cardMap {
@@ -108,7 +113,7 @@ func postToProfiler() (hasError bool) {
 		}
 	}
 
-	return hasError
+	return result, hasError
 }
 
 func generateTempPassword() string {
@@ -116,12 +121,12 @@ func generateTempPassword() string {
 	return res
 }
 
-func handleRequest(ctx context.Context, event events.S3Event) (string, error) {
+func handleRequest(ctx context.Context, event events.S3Event) (OTPEvent, error) {
 	// Define the S3 bucket and file key
-	bucket := "angel-owl-profiler-pet-rock"
-	fileKey := "test.csv"
-	//bucket := event.Records[0].S3.Bucket.Name
-	//fileKey := event.Records[0].S3.Object.Key
+	//bucket := "angel-owl-profiler-pet-rock"
+	//fileKey := "test.csv"
+	bucket := event.Records[0].S3.Bucket.Name
+	fileKey := event.Records[0].S3.Object.Key
 
 	// Download the file from S3
 	s3Object, err := S3Svc.GetObject(&s3.GetObjectInput{
@@ -185,8 +190,8 @@ func handleRequest(ctx context.Context, event events.S3Event) (string, error) {
 		}
 	}
 
-	hasError := postToProfiler()
-	result := fmt.Sprintf("users processed: %d, cards processed: %d, errors: %t", len(userMap), len(cardMap), hasError)
+	result, hasError := postToProfiler()
+	log.Printf("users processed: %d, cards processed: %d, errors: %t\n", len(userMap), len(cardMap), hasError)
 
 	return result, nil
 }
