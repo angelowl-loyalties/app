@@ -1,24 +1,8 @@
-import { Search2Icon } from "@chakra-ui/icons";
+import { useToast } from "@chakra-ui/react";
 import {
-	Box,
-	Card,
-	CardBody,
-	Divider,
-	Heading,
 	HStack,
-	Select,
 	Input,
-	InputGroup,
-	InputLeftElement,
-	ListItem,
-	Spacer,
-	Tab,
-	TabList,
-	TabPanel,
-	TabPanels,
-	Tabs,
 	Text,
-	UnorderedList,
 	VStack,
 	FormControl,
 	NumberInputField,
@@ -27,13 +11,12 @@ import {
 	NumberDecrementStepper,
 	NumberIncrementStepper,
 	FormLabel,
-	FormErrorMessage,
-	FormHelperText,
 	RadioGroup,
 	Radio,
 	Button,
 } from "@chakra-ui/react";
 import axios from "axios";
+import { useSession } from "next-auth/react";
 
 import { useState } from "react";
 
@@ -44,13 +27,19 @@ export default function AddCampaigns() {
 	const [minSpend, setMinSpend] = useState(0);
 	const [startDate, setStartDate] = useState(new Date());
 	const [endDate, setEndDate] = useState(new Date());
-	const [rewardProgram, setRewardProgram] = useState("");
+	const [rewardProgram, setRewardProgram] = useState("Shopping");
 	const [rewardAmount, setRewardAmount] = useState(0);
-	const [mcc, setMcc] = useState("");
+	const [mcc, setMcc] = useState("0");
 	const [foreignCurrency, setForeignCurrency] = useState(false);
 	const [merchant, setMerchant] = useState("");
 
-	const jwtKey = ""
+	const { data: session, status } = useSession({
+		required: true,
+		onUnauthenticated() {
+			router.push("/login");
+		},
+	});
+
 	const handleSubmit = (event) => {
 		event.preventDefault();
 		console.log(
@@ -65,31 +54,54 @@ export default function AddCampaigns() {
 			merchant
 		);
 	};
-	const addCampaign = () => {
+	const toast = useToast();
 
+	const addCampaign = () => {
+		toast({
+			title: "In progress",
+			description: "Please hold on while we create a campaign",
+			status: "info",
+			duration: 9000,
+			isClosable: true,
+		});
 		const body = {
 			name: campaignName,
-			min_spend: minSpend,
-			start: startDate,
-			end: endDate,
+			min_spend: parseFloat(minSpend),
+			start_date: startDate + ":00Z",
+			end_date: endDate + ":00Z",
 			reward_program: rewardProgram,
-			reward_amount: rewardAmount,
+			reward_amount: parseInt(rewardAmount),
 			mcc: mcc.toString(),
 			merchant: merchant,
 			foreign_currency: foreignCurrency,
 		};
 		axios
-			.post(`https://itsag1t2.com/campaign`, body,{
+			.post(`https://itsag1t2.com/campaign`, body, {
 				headers: {
-					Authorization:
-						`Bearer ${jwtKey}`,
+					Authorization: session.id,
 				},
 			})
 			.then((response) => {
 				console.log(response);
+				toast.closeAll();
+				toast({
+					title: "Success",
+					description: `Campaign created successfully`,
+					status: "success",
+					duration: 9000,
+					isClosable: true,
+				});
 			})
 			.catch((error) => {
 				console.log(error);
+				toast.closeAll();
+				toast({
+					title: "Error",
+					description: "An error occurred while creating a campaign",
+					status: "error",
+					duration: 9000,
+					isClosable: true,
+				});
 			});
 	};
 	return (
@@ -122,8 +134,8 @@ export default function AddCampaigns() {
 								>
 									<HStack spacing="24px">
 										<Radio value="Shopping">Shopping</Radio>
-										<Radio value="Premium Miles">Premium Miles</Radio>
-										<Radio value="Platinum Miles">Platinum Miles</Radio>
+										<Radio value="PremiumMiles">PremiumMiles</Radio>
+										<Radio value="PlatinumMiles">PlatinumMiles</Radio>
 										<Radio value="Freedom">Freedom</Radio>
 									</HStack>
 								</RadioGroup>
@@ -189,8 +201,9 @@ export default function AddCampaigns() {
 								<NumberInput
 									max={9999}
 									min={1}
+									defaultValue={0}
 									onChange={(event) => {
-										setMcc(event.currentTarget.value);
+										setMcc(event);
 									}}
 								>
 									<NumberInputField />
@@ -217,7 +230,7 @@ export default function AddCampaigns() {
 									type="submit"
 									width="full"
 									mt={4}
-									onClick = {()=>addCampaign()}
+									onClick={() => addCampaign()}
 								>
 									Add Campaign
 								</Button>

@@ -32,8 +32,12 @@ import Loading from "./loading";
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 
+import axios from 'axios';
+
+
 export default function Campaigns() {
 	const router = useRouter();
+	
 	const [loading, setLoading] = useState(true);
 	const { data: session, status } = useSession({
 		required: true,
@@ -41,11 +45,20 @@ export default function Campaigns() {
 			router.push("/login");
 		},
 	});
+	const [campaigns, setCampaigns] = useState([]);
 	useEffect(() => {
 		if (!session) {
 			console.log(status);
 			return;
 		}
+		axios
+			.get(`https://itsag1t2.com/campaign`, {
+				headers: { Authorization: session.id },
+			})
+			.then((response) => {
+				console.log(response.data.data)
+				setCampaigns(response.data.data);
+			});
 		setLoading(false);
 	}, [session]);
 
@@ -81,7 +94,7 @@ export default function Campaigns() {
 									p={2}
 									bgColor="gray.100"
 									borderRadius="xl"
-									display={{ base: "none", lg: "inline-block" }}
+								display={{ base: "none", lg: "inline-block" }}
 								>
 									<TabList>
 										<Tab fontSize="md" borderRadius="lg">
@@ -121,10 +134,10 @@ export default function Campaigns() {
 
 							<TabPanels>
 								<TabPanel p={{ base: 0, lg: 4 }} mt={{ base: 4, lg: 0 }}>
-									{[...Array(15).keys()].map((num) => {
+									{campaigns.filter((campaign)=> campaign.reward_program=="Shopping").map((campaign) => {
 										return (
 											<Card
-												key={num}
+												key={campaign}
 												w="full"
 												mb={4}
 												border="1px"
@@ -147,18 +160,203 @@ export default function Campaigns() {
 																fontWeight={600}
 																color={"gray.900"}
 															>
-																Supercharge your credit cards and get rewarded
-																when you spend
+																{campaign.name}
 															</Text>
 															<UnorderedList px={6} fontSize="xs">
-																<ListItem>Lorem ipsum dolor sit amet</ListItem>
-																<ListItem>Consectetur adipiscing elit</ListItem>
+															<ListItem>
+																	Reward Program: {campaign.reward_program}
+																</ListItem>
+																<ListItem>Min Spend: {campaign.min_spend}</ListItem>
+																<ListItem>Merchant: {campaign.merchant}</ListItem>
 																<ListItem>
-																	Integer molestie lorem at massa
+																		Reward Amount: {campaign.reward_amount}
 																</ListItem>
 																<ListItem>
-																	Facilisis in pretium nisl aliquet
+																	Applicable MCC: {campaign.mcc}
 																</ListItem>
+																
+																<ListItem>
+																	Start Date: {campaign.start_date}
+																</ListItem>
+																<ListItem>
+																	End Date: {campaign.end_date}
+																</ListItem>
+																
+																
+															</UnorderedList>
+														</VStack>
+													</CardBody>
+												</HStack>
+											</Card>
+										);
+									})}
+								</TabPanel>
+								<TabPanel p={{ base: 0, lg: 4 }} mt={{ base: 4, lg: 0 }}>
+									{campaigns.filter((campaign)=> campaign.reward_program=="PremiumMiles").map((campaign) => {
+										return (
+											<Card
+												key={campaign}
+												w="full"
+												mb={4}
+												border="1px"
+												borderColor="gray.200"
+											>
+												<HStack>
+													<Box w={180} textAlign="-webkit-center">
+														<Image
+															src="/ascenda.webp"
+															height="150"
+															width="150"
+															style={{ objectFit: "cover" }}
+															alt="campaign image"
+														/>
+													</Box>
+													<CardBody px={0} py={4}>
+														<VStack alignItems="start">
+															<Text
+																fontSize="sm"
+																fontWeight={600}
+																color={"gray.900"}
+															>
+																{campaign.name}
+															</Text>
+															<UnorderedList px={6} fontSize="xs">
+															<ListItem>
+																	Reward Program: {campaign.reward_program}
+																</ListItem>
+																<ListItem>Min Spend: {campaign.min_spend}</ListItem>
+																<ListItem>Merchant: {campaign.merchant}</ListItem>
+																<ListItem>
+																		Reward Amount: {campaign.reward_amount}
+																</ListItem>
+																<ListItem>
+																	Applicable MCC: {campaign.mcc}
+																</ListItem>
+																
+																<ListItem>
+																	Start Date: {campaign.start_date}
+																</ListItem>
+																<ListItem>
+																	End Date: {campaign.end_date}
+																</ListItem>
+																
+																
+															</UnorderedList>
+														</VStack>
+													</CardBody>
+												</HStack>
+											</Card>
+										);
+									})}
+								</TabPanel>
+								<TabPanel p={{ base: 0, lg: 4 }} mt={{ base: 4, lg: 0 }}>
+									{campaigns.filter((campaign)=> campaign.reward_program=="PlatinumMiles").map((campaign) => {
+										return (
+											<Card
+												key={campaign}
+												w="full"
+												mb={4}
+												border="1px"
+												borderColor="gray.200"
+											>
+												<HStack>
+													<Box w={180} textAlign="-webkit-center">
+														<Image
+															src="/ascenda.webp"
+															height="150"
+															width="150"
+															style={{ objectFit: "cover" }}
+															alt="campaign image"
+														/>
+													</Box>
+													<CardBody px={0} py={4}>
+														<VStack alignItems="start">
+															<Text
+																fontSize="sm"
+																fontWeight={600}
+																color={"gray.900"}
+															>
+																{campaign.name}
+															</Text>
+															<UnorderedList px={6} fontSize="xs">
+															<ListItem>
+																	Reward Program: {campaign.reward_program}
+																</ListItem>
+																<ListItem>Min Spend: {campaign.min_spend}</ListItem>
+																<ListItem>Merchant: {campaign.merchant}</ListItem>
+																<ListItem>
+																		Reward Amount: {campaign.reward_amount}
+																</ListItem>
+																<ListItem>
+																	Applicable MCC: {campaign.mcc}
+																</ListItem>
+																
+																<ListItem>
+																	Start Date: {campaign.start_date}
+																</ListItem>
+																<ListItem>
+																	End Date: {campaign.end_date}
+																</ListItem>
+																
+																
+															</UnorderedList>
+														</VStack>
+													</CardBody>
+												</HStack>
+											</Card>
+										);
+									})}
+								</TabPanel>
+								<TabPanel p={{ base: 0, lg: 4 }} mt={{ base: 4, lg: 0 }}>
+									{campaigns.filter((campaign)=> campaign.reward_program=="Freedom").map((campaign) => {
+										return (
+											<Card
+												key={campaign}
+												w="full"
+												mb={4}
+												border="1px"
+												borderColor="gray.200"
+											>
+												<HStack>
+													<Box w={180} textAlign="-webkit-center">
+														<Image
+															src="/ascenda.webp"
+															height="150"
+															width="150"
+															style={{ objectFit: "cover" }}
+															alt="campaign image"
+														/>
+													</Box>
+													<CardBody px={0} py={4}>
+														<VStack alignItems="start">
+															<Text
+																fontSize="sm"
+																fontWeight={600}
+																color={"gray.900"}
+															>
+																{campaign.name}
+															</Text>
+															<UnorderedList px={6} fontSize="xs">
+															<ListItem>
+																	Reward Program: {campaign.reward_program}
+																</ListItem>
+																<ListItem>Min Spend: {campaign.min_spend}</ListItem>
+																<ListItem>Merchant: {campaign.merchant}</ListItem>
+																<ListItem>
+																		Reward Amount: {campaign.reward_amount}
+																</ListItem>
+																<ListItem>
+																	Applicable MCC: {campaign.mcc}
+																</ListItem>
+																
+																<ListItem>
+																	Start Date: {campaign.start_date}
+																</ListItem>
+																<ListItem>
+																	End Date: {campaign.end_date}
+																</ListItem>
+																
+																
 															</UnorderedList>
 														</VStack>
 													</CardBody>
