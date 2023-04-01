@@ -48,6 +48,7 @@ export default function Login() {
                 callbackUrl: "/",
             }).then(function (response) {
                 // TODO: Remove response
+                setLoading(false)
                 console.log(response);
             }).catch(function (e) {
                 console.log(e)
@@ -63,7 +64,7 @@ export default function Login() {
         document.title = "Log in | Ascenda"
     }, [session])
 
-    
+
     return (
         <>
             {loading ? <Loading /> :
