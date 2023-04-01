@@ -1,10 +1,12 @@
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
+	Avatar,
 	Box,
 	Button,
 	Flex,
 	FormControl,
 	FormHelperText,
+	Heading,
 	IconButton,
 	Input,
 	InputGroup,
@@ -12,15 +14,15 @@ import {
 	InputRightElement,
 	Link,
 	Stack,
-	useToast,
+	Text,
+    useToast,
 } from "@chakra-ui/react";
+import Loading from "../loading";
 import { getCsrfToken, signIn, useSession } from "next-auth/react";
-import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { useRouter } from "next/router";
 import { useRef, useState } from "react";
-import { FaLock, FaUserAlt } from "react-icons/fa";
-
-import Loading from "./loading";
+import { FaUserAlt, FaLock } from "react-icons/fa";
 
 export default function Login() {
 	const router = useRouter();
@@ -32,22 +34,25 @@ export default function Login() {
 	const { data: session, status } = useSession({
 		required: false,
 	});
-	const toast = useToast();
-
+	const [errorMessage, setErrorMessage] = useState("");
+    const toast = useToast()
 	const handleLogin = async (e) => {
-		setLoading(true);
 		e.preventDefault();
+		if (!email.current.value || !password.current.value) {
+			setErrorMessage("Email or password cannot be empty");
+			return;
+		}
+		setLoading(true);
 		if (email.current.value && password.current.value) {
 			signIn("credentials", {
 				email: email.current.value,
 				password: password.current.value,
 				csrfToken: getCsrfToken(),
-				// callbackUrl: "/",
 				redirect: false,
 			}).then(({ ok, error }) => {
 				if (ok) {
 					console.log("OK");
-					router.push("/");
+					router.push("/admin/upload");
 				} else {
 					setLoading(false);
 					toast({
@@ -63,7 +68,7 @@ export default function Login() {
 
 	useEffect(() => {
 		if (session) {
-			router.push("/");
+			router.push("/admin/upload");
 		}
 		document.title = "Log in | Ascenda";
 	}, [session]);
@@ -160,6 +165,7 @@ export default function Login() {
 									>
 										Login
 									</Button>
+									<Text>{errorMessage}</Text>
 								</Stack>
 							</form>
 						</Box>
