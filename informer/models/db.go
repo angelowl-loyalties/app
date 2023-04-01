@@ -31,7 +31,6 @@ func InitDB(dbHost, dbPort, keyspace, table, username, password string, useSSL, 
 		}
 	}
 
-	log.Println(*(cluster.SslOpts))
 	session, err := cluster.CreateSession()
 	if err != nil {
 		log.Fatalln(err)
