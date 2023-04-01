@@ -32,8 +32,8 @@ type Reward struct {
 }
 
 var (
-	rewardBatch []*Reward
-	rewardChan  = make(chan *Reward, MaxBatchSize)
+	rewardBatch []Reward
+	rewardChan  = make(chan Reward, MaxBatchSize)
 	rewardMutex = &sync.Mutex{}
 	batchTimer  *time.Timer
 )
@@ -62,7 +62,7 @@ func resetBatchTimer() {
 	batchTimer.Reset(MaxBatchWaitTime)
 }
 
-func addRewardToBatch(reward *Reward) {
+func addRewardToBatch(reward Reward) {
 	rewardMutex.Lock()
 	defer rewardMutex.Unlock()
 	rewardBatch = append(rewardBatch, reward)
@@ -100,7 +100,7 @@ func flushRewardBatch() {
 		"remarks").ToCql()
 
 	for _, reward := range rewardBatch {
-		batch.Query(stmt, *reward)
+		batch.Query(stmt, reward)
 	}
 
 	err := DB.ExecuteBatch(batch)
@@ -112,7 +112,7 @@ func flushRewardBatch() {
 }
 
 func RewardCreate(reward Reward) error {
-	rewardChan <- &reward
+	rewardChan <- reward
 	return nil
 	// select {
 	// case rewardChan <- &reward:
