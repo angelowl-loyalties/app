@@ -18,7 +18,7 @@ import (
 // @Tags user
 // @Accept json
 // @Produce json
-// @Success 200 {object} AuthResponse
+// @Success 200 {object} models.AuthResponse
 // @Param credentials body models.SignIn true "Credentials"
 // @Router /auth/login [post]
 func LoginUser(c *gin.Context) {

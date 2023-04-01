@@ -1,9 +1,13 @@
 package internal
 
 import (
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/profiler/models"
-	"github.com/gin-gonic/gin"
 	"net/http"
+	"strings"
+
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/profiler/models"
+
+	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 )
 
 //var validate = validator.New()
@@ -36,9 +40,9 @@ func GetCards(c *gin.Context) {
 // @Param card_id path string true "Card ID"
 // @Router /card/{card_id} [get]
 func GetCard(c *gin.Context) {
-	uuid := c.Param("id")
+	reqId := c.Param("id")
 
-	card, err := models.CardGetById(uuid)
+	card, err := models.CardGetById(reqId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -59,55 +63,72 @@ func GetCard(c *gin.Context) {
 // @Accept json
 // @Produce json
 // @Success 201 {object} models.Card
-// @Param card body models.Card true "New Card"
+// @Param card body models.CardInput true "New Card"
 // @Router /card [post]
 func CreateCard(c *gin.Context) {
-	var newCard models.Card
+	var newCard models.CardInput
 
 	if err := c.ShouldBindJSON(&newCard); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	temp, err := models.CardGetByPan(newCard.CardPan)
+	temp, err := models.CardGetById(newCard.ID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 	if temp != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Card with that PAN already exists"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Card with that ID already exists"})
 		return
 	}
 
-	userID := newCard.UserID.String()
+	userID := newCard.UserID
 	user, err := models.UserGetById(userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	if user != nil {
+	if user == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid User with UUID: " + userID})
 		return
 	}
 
-	reqCardType := newCard.CardTypeCardType
+	reqCardType := newCard.CardType
 	cardType, err := models.CardTypeGetByType(reqCardType)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	if cardType != nil {
+	if cardType == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid Card Type: " + reqCardType})
 		return
 	}
 
-	card, err := models.CardCreate(&newCard)
+	cardID, _ := uuid.Parse(newCard.ID)
+	toCreate := models.Card{
+		ID:               cardID,
+		CardPan:          maskCardPAN(newCard.CardPan),
+		UserID:           user.ID,
+		CardTypeCardType: reqCardType,
+	}
+
+	card, err := models.CardCreate(&toCreate)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{"data": card})
+}
+
+func maskCardPAN(cardPAN string) string {
+	strLen := len(cardPAN)
+
+	mask := strings.Repeat("*", strLen-4)
+	lastFour := cardPAN[strLen-4:]
+
+	return mask + lastFour
 }
 
 // DeleteCard - DELETE /card/:id
@@ -119,9 +140,9 @@ func CreateCard(c *gin.Context) {
 // @Param card_id path string true "Card ID"
 // @Router /card/{card_id} [delete]
 func DeleteCard(c *gin.Context) {
-	uuid := c.Param("id")
+	reqId := c.Param("id")
 
-	card, err := models.CardGetById(uuid)
+	card, err := models.CardGetById(reqId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
