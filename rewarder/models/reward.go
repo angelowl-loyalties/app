@@ -84,23 +84,27 @@ func flushRewardBatch() {
 	batch := DB.NewBatch(gocql.LoggedBatch)
 
 	stmt, _ := qb.Insert("angelowl.rewards").Columns(
-		"id",
 		"card_id",
-		"merchant",
-		"mcc",
-		"currency",
-		"amount",
-		"sgd_amount",
-		"transaction_id",
 		"transaction_date",
-		"created_at",
+		"id",
 		"card_pan",
 		"card_type",
+		"amount",
+		"created_at",
+		"currency",
+		"mcc",
+		"merchant",
+		"remarks",
 		"reward_amount",
-		"remarks").ToCql()
+		"sgd_amount",
+		"transaction_id",
+	).ToCql()
 
 	for _, reward := range rewardBatch {
-		batch.Query(stmt, reward)
+		batch.Query(stmt, reward.CardID, reward.TransactionDate, reward.ID, reward.CardPAN, reward.CardType,
+			reward.Amount, reward.CreatedAt, reward.Currency, reward.MCC, reward.Merchant, reward.Remarks,
+			reward.RewardAmount, reward.SGDAmount, reward.TransactionID,
+		)
 	}
 
 	err := DB.ExecuteBatch(batch)
