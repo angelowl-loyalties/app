@@ -27,7 +27,7 @@ type Reward struct {
 }
 
 func RewardCreate(reward Reward) error {
-	stmt, names := qb.Insert("transactions.rewards").Columns(
+	stmt, names := qb.Insert("angelowl.rewards").Columns(
 		"id",
 		"card_id",
 		"merchant",
