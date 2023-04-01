@@ -21,6 +21,7 @@ func InitDB(dbHost, dbPort, keyspace, table, username, password string, useSSL, 
 		cluster.SslOpts = &gocql.SslOptions{
 			CaPath: "/root-ca.crt",
 		}
+		log.Println("Connecting to Cassandra DB with SSL")
 	}
 
 	if username != "" && password != "" {
@@ -30,6 +31,7 @@ func InitDB(dbHost, dbPort, keyspace, table, username, password string, useSSL, 
 		}
 	}
 
+	log.Println(*(cluster.SslOpts))
 	session, err := cluster.CreateSession()
 	if err != nil {
 		log.Fatalln(err)
@@ -81,6 +83,7 @@ func ConnectDB(dbHost, dbPort, username, password, keyspace string, useSSL bool)
 		cluster.SslOpts = &gocql.SslOptions{
 			CaPath: "/root-ca.crt",
 		}
+		log.Println("Connecting to Cassandra DB with SSL")
 	}
 
 	session, err := cluster.CreateSession()
