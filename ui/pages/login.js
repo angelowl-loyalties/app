@@ -1,12 +1,10 @@
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import {
-    Avatar,
     Box,
     Button,
     Flex,
     FormControl,
     FormHelperText,
-    Heading,
     IconButton,
     Input,
     InputGroup,
@@ -15,13 +13,13 @@ import {
     Link,
     Stack,
 } from '@chakra-ui/react';
-import Loading from './loading';
 import { getCsrfToken, signIn, useSession } from 'next-auth/react';
-import Image from 'next/image';
-import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { useEffect } from 'react';
 import { useRef, useState } from 'react';
-import { FaUserAlt, FaLock } from "react-icons/fa";
+import { FaLock, FaUserAlt } from 'react-icons/fa';
+
+import Loading from './loading';
 
 export default function Login() {
     const router = useRouter()
@@ -31,10 +29,7 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const handleShowClick = () => setShowPassword(!showPassword);
     const { data: session, status } = useSession({
-        required: true,
-        onUnauthenticated() {
-            router.push("/login")
-        }
+        required: false,
     });
 
     const handleLogin = async (e) => {
@@ -46,11 +41,9 @@ export default function Login() {
                 password: password.current.value,
                 csrfToken: getCsrfToken(),
                 callbackUrl: "/",
-            }).then(function (response) {
-                // TODO: Remove response
-                setLoading(false)
+            }).then((response) => {
                 console.log(response);
-            }).catch(function (e) {
+            }).catch((e) => {
                 console.log(e)
                 setLoading(false)
             });
