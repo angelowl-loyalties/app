@@ -86,7 +86,7 @@ func init() {
 func ConnectCassandra(dbHost, dbPort, username, password, keyspace string, useSSL bool) {
 	cluster := gocql.NewCluster(dbHost)
 	cluster.Keyspace = keyspace
-	cluster.Consistency = gocql.LocalQuorum
+	cluster.Consistency = gocql.Quorum
 
 	dbPortInt, err := strconv.Atoi(dbPort)
 	if err == nil {
