@@ -36,3 +36,13 @@ type Card struct {
 	UserID   uuid.UUID `json:"user_id"`
 	CardType string    `json:"card_type"`
 }
+
+type EmailContent struct {
+	Email    string `json:"email"`
+	Name     string `json:"name"`
+	Password string `json:"password"`
+}
+
+type OTPEvent struct {
+	Users []EmailContent `json:"users"`
+}
