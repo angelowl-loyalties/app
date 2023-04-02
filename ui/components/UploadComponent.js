@@ -38,7 +38,7 @@ export default function Upload(props) {
         axios.get(`https://itsag1t2.com/${type}/presigned`, { headers: { Authorization: props.session.id } })
             .then((response) => {
                 var f_file = null
-                if (type == "seed") {
+                if (type == "user") {
                     if (!seedFile) {
                         props.toast.closeAll()
                         props.toast({
