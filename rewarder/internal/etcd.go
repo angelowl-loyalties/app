@@ -47,17 +47,6 @@ func InitEtcdClient(endpointsCsv string, username string, password string) {
 	}
 }
 
-func RefreshFromEtcd() {
-	err := etcdGetCampaigns()
-	if err != nil {
-		log.Fatalln(err)
-	}
-	err = etcdGetExclusions()
-	if err != nil {
-		log.Fatalln(err)
-	}
-}
-
 func WatchEtcd() {
 	ctx := context.Background()
 
@@ -152,9 +141,7 @@ func etcdGetCampaigns() (err error) {
 		if err != nil {
 			return err
 		}
-		baseCampaignMutex.Lock()
 		BaseCampaignsEtcd[string(ev.Key)] = campaign
-		baseCampaignMutex.Unlock()
 	}
 
 	response, err = ETCD.Get(context.Background(), "promo_campaign", clientv3.WithPrefix())
@@ -169,9 +156,7 @@ func etcdGetCampaigns() (err error) {
 		if err != nil {
 			return err
 		}
-		promoCampaignMutex.Lock()
 		PromoCampaignsEtcd[string(ev.Key)] = campaign
-		promoCampaignMutex.Unlock()
 	}
 
 	return nil
@@ -191,9 +176,7 @@ func etcdGetExclusions() (err error) {
 		if err != nil {
 			return err
 		}
-		exclusionsMutex.Lock()
 		ExclusionsEtcd[string(ev.Key)] = exclusion
-		exclusionsMutex.Unlock()
 	}
 
 	return nil
