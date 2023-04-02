@@ -68,7 +68,7 @@ export default function Login() {
 
 	useEffect(() => {
 		if (session) {
-			router.push("/admin/upload");
+			router.push("/admin");
 		}
 		document.title = "Log in | Ascenda";
 	}, [session]);
