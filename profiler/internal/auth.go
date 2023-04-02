@@ -56,6 +56,7 @@ func LoginUser(c *gin.Context) {
 	response := models.AuthResponse{
 		JWT:    signedJWT,
 		UserID: user.ID.String(),
+		IsNew:  user.IsNew,
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": response})

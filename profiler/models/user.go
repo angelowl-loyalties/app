@@ -40,6 +40,7 @@ type SignIn struct {
 type AuthResponse struct {
 	JWT    string `json:"token"`
 	UserID string `json:"user_id"`
+	IsNew  bool   `json:"is_new"`
 }
 
 //func (user *User) BeforeCreate(tx *gorm.DB) (err error) {
