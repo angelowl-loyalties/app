@@ -33,10 +33,10 @@ func main() {
 	internal.InitEtcdClient(etcdEndpoints, etcdUsername, etcdPassword)
 
 	// For benchmarking purposes, comment this out for crappy performance
-	internal.WatchEtcd()
+	// internal.WatchEtcd()
 
 	// For benchmarking purposes, this is FOR crappy performance
-	// internal.RefreshFromEtcd()
+	internal.RefreshFromEtcd()
 
 	// Broker address and topic
 	kafkaBroker := c.Broker
