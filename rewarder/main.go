@@ -31,10 +31,8 @@ func main() {
 	etcdUsername := c.EtcdUsername
 	etcdPassword := c.EtcdPassword
 	internal.InitEtcdClient(etcdEndpoints, etcdUsername, etcdPassword)
-	internal.WatchEtcd()
 
-	// while loop to test etcd without consuming from kafka
-	//for {}
+	internal.WatchEtcd()
 
 	// Broker address and topic
 	kafkaBroker := c.Broker

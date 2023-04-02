@@ -129,21 +129,21 @@ resource "aws_keyspaces_table" "rewards" {
 }
 
 # CREATE TABLE angelowl.rewards (
-#     card_id uuid,
-#     transaction_date date,
-#     amount double,
-#     currency ascii,
-#     id uuid,
-#     mcc int,
-#     merchant ascii,
-#     remarks text,
-#     reward_amount double,
-#     sgd_amount double,
-#     transaction_id ascii,
-#     card_pan ascii static,
-#     card_type ascii static,
-#     PRIMARY KEY (card_id, transaction_date)
-# ) WITH CLUSTERING ORDER BY (transaction_date DESC)
+#      card_id: uuid
+#      id: uuid
+#      transaction_date: date
+#      amount: double
+#      currency: ascii
+#      mcc: int
+#      merchant: ascii
+#      remarks: text
+#      reward_amount: double
+#      sgd_amount: double
+#      transaction_id: ascii
+#      card_pan: ascii static
+#      card_type: ascii static
+#     PRIMARY KEY: (card_id, id, transaction_date)
+# ) WITH CLUSTERING ORDER BY (transaction_date DESC, id ASC)
 
 output "keyspaces_endpoint_dns" {
   value = aws_vpc_endpoint.keyspaces.dns_entry

@@ -15,11 +15,13 @@ import (
 )
 
 type OTPEvent struct {
-	Users []struct {
-		Email    string `json:"email"`
-		Name     string `json:"name"`
-		Password string `json:"password"`
-	} `json:"users"`
+	ResponsePayload struct {
+		Users []struct {
+			Email    string `json:"email"`
+			Name     string `json:"name"`
+			Password string `json:"password"`
+		} `json:"users"`
+	} `json:"responsePayload"`
 }
 
 var svc *ses.SES
@@ -121,7 +123,7 @@ func SendEmail(recipient string, name string, password string) error {
 }
 
 func HandleRequest(ctx context.Context, event OTPEvent) (string, error) {
-	for _, detail := range event.Users {
+	for _, detail := range event.ResponsePayload.Users {
 		err := SendEmail(detail.Email, detail.Name, detail.Password)
 		if err != nil {
 			return "", err

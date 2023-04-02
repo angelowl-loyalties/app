@@ -41,33 +41,23 @@ type Reward struct {
 }
 
 type Card struct {
-	ID               uuid.UUID `json:"id" gorm:"type:uuid;primaryKey;<-:create"`
-	CardPan          string    `json:"card_pan" gorm:"unique;not null" binding:"required,credit_card"`
-	UserID           uuid.UUID `json:"user_id" gorm:"type:uuid" binding:"required"` // card belongs to one user
-	CardTypeCardType string    `json:"card_type" binding:"required"`                // card belongs to one card type
+	ID               uuid.UUID `json:"id"`
+	CardPan          string    `json:"card_pan"`
+	UserID           uuid.UUID `json:"user_id"`   // card belongs to one user
+	CardTypeCardType string    `json:"card_type"` // card belongs to one card type
 }
 
 type User struct {
-	ID          uuid.UUID `json:"id" gorm:"type:uuid;primaryKey;<-:create"`
-	FirstName   string    `json:"first_name" gorm:"type:varchar(255);not null"`
-	LastName    string    `json:"last_name" gorm:"type:varchar(255);not null"`
-	Phone       string    `json:"phone" gorm:"not null"`
-	Email       string    `json:"email" gorm:"unique;not null"`
-	Password    string    `json:"-" gorm:"not null"`
-	Role        string    `gorm:"type:varchar(255);not null"`
-	CreditCards []Card    // one user has many credit cards
+	ID          uuid.UUID `json:"id"`
+	FirstName   string    `json:"first_name"`
+	LastName    string    `json:"last_name"`
+	Phone       string    `json:"phone"`
+	Email       string    `json:"email"`
+	Password    string    `json:"-"`
+	Role        string
+	CreditCards []Card // one user has many credit cards
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
-}
-
-type S3Event struct {
-	Records []struct {
-		S3 struct {
-			Object struct {
-				Key string `json:"key"`
-			} `json:"object"`
-		} `json:"s3"`
-	} `json:"Records"`
 }
 
 var Cassandra *gocql.Session
@@ -76,7 +66,7 @@ var svc *ses.SES
 
 const YYYYMMDD = "2006-01-02"
 
-// If any of the connections fail, lambda wont run
+// If any of the connections fail, lambda won't run
 func init() {
 	os.Getenv("CASSANDRA_CONN_STRING")
 	dbHost := os.Getenv("CASSANDRA_CONN_STRING")
@@ -96,7 +86,7 @@ func init() {
 func ConnectCassandra(dbHost, dbPort, username, password, keyspace string, useSSL bool) {
 	cluster := gocql.NewCluster(dbHost)
 	cluster.Keyspace = keyspace
-	cluster.Consistency = gocql.LocalQuorum
+	cluster.Consistency = gocql.Quorum
 
 	dbPortInt, err := strconv.Atoi(dbPort)
 	if err == nil {
@@ -114,12 +104,12 @@ func ConnectCassandra(dbHost, dbPort, username, password, keyspace string, useSS
 		}
 	}
 
-	session, err := cluster.CreateSession()
+	createSession, err := cluster.CreateSession()
 	if err != nil {
 		log.Fatalln(err)
 	}
 	log.Println("Connected to Rewards Cassandra DB")
-	Cassandra = session
+	Cassandra = createSession
 }
 
 func ConnectPostgres(dbConnString string) {
@@ -166,8 +156,8 @@ func GetUniqueCardIds(rewards []Reward) []uuid.UUID {
 
 	// Iterate over the rewards and add the card IDs to the map
 	for _, reward := range rewards {
-		card_uuid := uuid.MustParse(reward.CardID.String())
-		uniqueCardIds[card_uuid] = true
+		cardUuid := uuid.MustParse(reward.CardID.String())
+		uniqueCardIds[cardUuid] = true
 	}
 
 	// Convert the map keys to an array
@@ -291,7 +281,9 @@ func SendEmail(recipient string, cardRewards map[uuid.UUID][]Reward) error {
 	return nil
 }
 
-func HandleRequest(ctx context.Context, event S3Event) (string, error) {
+type Event struct{}
+
+func HandleRequest(ctx context.Context, placeholder Event) (string, error) {
 	rewards, err := GetTodaysRewards()
 	log.Println("error getting today's rewards: ", err)
 

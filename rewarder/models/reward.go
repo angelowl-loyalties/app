@@ -1,9 +1,8 @@
 package models
 
 import (
-	"github.com/scylladb/gocqlx"
-
 	"github.com/gocql/gocql"
+	"github.com/scylladb/gocqlx"
 	"github.com/scylladb/gocqlx/qb"
 )
 
@@ -50,3 +49,99 @@ func RewardCreate(reward Reward) error {
 
 	return nil
 }
+
+// Batched Insert code. Not working
+
+// const (
+// 	MaxBatchSize     = 2000
+// 	MaxBatchWaitTime = 100 * time.Millisecond
+// )
+
+// var (
+// 	rewardBatch []Reward
+// 	rewardChan  = make(chan Reward, MaxBatchSize)
+// 	rewardMutex = &sync.Mutex{}
+// 	batchTimer  *time.Timer
+// )
+
+// func init() {
+// 	batchTimer = time.NewTimer(MaxBatchWaitTime)
+// 	go batchInsertLoop()
+// }
+
+// func batchInsertLoop() {
+// 	for {
+// 		select {
+// 		case reward := <-rewardChan:
+// 			addRewardToBatch(reward)
+// 		case <-batchTimer.C:
+// 			flushRewardBatch()
+// 			resetBatchTimer()
+// 		}
+// 	}
+// }
+
+// func resetBatchTimer() {
+// 	if !batchTimer.Stop() {
+// 		<-batchTimer.C
+// 	}
+// 	batchTimer.Reset(MaxBatchWaitTime)
+// }
+
+// func addRewardToBatch(reward Reward) {
+// 	rewardMutex.Lock()
+// 	defer rewardMutex.Unlock()
+// 	rewardBatch = append(rewardBatch, reward)
+
+// 	if len(rewardBatch) >= MaxBatchSize {
+// 		flushRewardBatch()
+// 		resetBatchTimer()
+// 	}
+// }
+
+// func flushRewardBatch() {
+// 	rewardMutex.Lock()
+// 	defer rewardMutex.Unlock()
+
+// 	if len(rewardBatch) == 0 {
+// 		return
+// 	}
+
+// 	batch := DB.NewBatch(gocql.LoggedBatch)
+
+// 	stmt, _ := qb.Insert("angelowl.rewards").Columns(
+// 		"card_id",
+// 		"transaction_date",
+// 		"id",
+// 		"card_pan",
+// 		"card_type",
+// 		"amount",
+// 		"created_at",
+// 		"currency",
+// 		"mcc",
+// 		"merchant",
+// 		"remarks",
+// 		"reward_amount",
+// 		"sgd_amount",
+// 		"transaction_id",
+// 	).ToCql()
+
+// 	for _, reward := range rewardBatch {
+// 		batch.Query(stmt, reward.CardID, reward.TransactionDate, reward.ID, reward.CardPAN, reward.CardType,
+// 			reward.Amount, reward.CreatedAt, reward.Currency, reward.MCC, reward.Merchant, reward.Remarks,
+// 			reward.RewardAmount, reward.SGDAmount, reward.TransactionID,
+// 		)
+// 	}
+
+// 	err := DB.ExecuteBatch(batch)
+// 	if err != nil {
+// 		log.Printf("Error executing batch insert: %v", err)
+// 	}
+
+// 	rewardBatch = rewardBatch[:0]
+// }
+
+// func RewardCreate(reward Reward) error {
+// 	rewardChan <- reward
+// 	return nil
+// }

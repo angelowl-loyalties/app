@@ -21,6 +21,7 @@ func InitDB(dbHost, dbPort, keyspace, table, username, password string, useSSL, 
 		cluster.SslOpts = &gocql.SslOptions{
 			CaPath: "/root-ca.crt",
 		}
+		log.Println("Connecting to Cassandra DB with SSL")
 	}
 
 	if username != "" && password != "" {
@@ -37,16 +38,16 @@ func InitDB(dbHost, dbPort, keyspace, table, username, password string, useSSL, 
 	defer session.Close()
 
 	err = session.Query("CREATE KEYSPACE IF NOT EXISTS " + keyspace +
-		" WITH REPLICATION = {'class' : 'SimpleStrategy', 'replication_factor' : 1};").Exec()
+		" WITH REPLICATION = {'class' : 'SimpleStrategy', 'replication_factor' : 3};").Exec()
 	if err != nil {
 		log.Fatalln(err)
 	}
 	log.Println("Created keyspace: ", keyspace)
 
 	err = session.Query("CREATE TABLE IF NOT EXISTS " + keyspace + "." + table +
-		" (id uuid, card_id uuid, merchant text, mcc int, currency text, amount double, sgd_amount double, " +
-		"transaction_id text, transaction_date date, card_pan text, card_type text, reward_amount double, " +
-		"remarks text, PRIMARY KEY(id));").Exec()
+		" (card_id uuid, id uuid, transaction_date date, created_at date, amount double, currency text, mcc int, merchant text, remarks text, " +
+		"reward_amount double, sgd_amount double, transaction_id text, card_pan text static, card_type text static, " +
+		"PRIMARY KEY(card_id, transaction_date, id)) WITH CLUSTERING ORDER BY (transaction_date DESC, id ASC);").Exec()
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -65,7 +66,7 @@ func InitDB(dbHost, dbPort, keyspace, table, username, password string, useSSL, 
 func ConnectDB(dbHost, dbPort, username, password, keyspace string, useSSL bool) {
 	cluster := gocql.NewCluster(dbHost)
 	cluster.Keyspace = keyspace
-	cluster.Consistency = gocql.LocalQuorum
+	cluster.Consistency = gocql.One
 
 	dbPortInt, err := strconv.Atoi(dbPort)
 	if err == nil {
@@ -81,6 +82,7 @@ func ConnectDB(dbHost, dbPort, username, password, keyspace string, useSSL bool)
 		cluster.SslOpts = &gocql.SslOptions{
 			CaPath: "/root-ca.crt",
 		}
+		log.Println("Connecting to Cassandra DB with SSL")
 	}
 
 	session, err := cluster.CreateSession()

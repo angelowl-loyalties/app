@@ -10,7 +10,6 @@ import (
 	"time"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
-	"github.com/google/uuid"
 
 	clientv3 "go.etcd.io/etcd/client/v3"
 )
@@ -29,8 +28,6 @@ var promoCampaignMutex sync.RWMutex
 
 var ExclusionsEtcd = make(map[string]models.Exclusion)
 var exclusionsMutex sync.RWMutex
-
-// we should consider whether these two global variables should have a mutex to prevent race conditions/dirty reads
 
 func InitEtcdClient(endpointsCsv string, username string, password string) {
 	endpoints := strings.Split(endpointsCsv, ",")
@@ -70,11 +67,6 @@ func WatchEtcd() {
 	go handleWatchEvents(baseCampaignsWatchCh, "base_campaign")
 	go handleWatchEvents(promoCampaignsWatchCh, "promo_campaign")
 	go handleWatchEvents(exclusionsWatchCh, "exclusion")
-
-	err = etcdAddInitial()
-	if err != nil {
-		log.Fatalln(err)
-	}
 
 	testPrint()
 }
@@ -149,7 +141,6 @@ func etcdGetCampaigns() (err error) {
 		if err != nil {
 			return err
 		}
-
 		BaseCampaignsEtcd[string(ev.Key)] = campaign
 	}
 
@@ -165,7 +156,6 @@ func etcdGetCampaigns() (err error) {
 		if err != nil {
 			return err
 		}
-
 		PromoCampaignsEtcd[string(ev.Key)] = campaign
 	}
 
@@ -186,53 +176,9 @@ func etcdGetExclusions() (err error) {
 		if err != nil {
 			return err
 		}
-
 		ExclusionsEtcd[string(ev.Key)] = exclusion
 	}
 
-	return nil
-}
-
-func etcdAddInitial() (err error) {
-	var campaign = models.Campaign{
-		ID:                 uuid.MustParse("ddb0a58f-6dca-41f3-a3a9-d40961670b5b"),
-		Name:               "Spring Fling",
-		MinSpend:           75.0,
-		Start:              time.Date(2023, 3, 1, 0, 0, 0, 0, time.UTC),
-		End:                time.Date(2023, 5, 31, 23, 59, 59, 0, time.UTC),
-		RewardProgram:      "scis_shopping",
-		RewardAmount:       10,
-		MCC:                "9311",
-		Merchant:           "Petco",
-		IsBaseReward:       false,
-		ForForeignCurrency: true,
-	}
-
-	seed_campaign, err := json.Marshal(campaign)
-	if err != nil {
-		return err
-	}
-
-	_, err = ETCD.Put(context.Background(), "promo_campaign_ddb0a58f-6dca-41f3-a3a9-d40961670b5b", string(seed_campaign))
-	if err != nil {
-		return err
-	}
-
-	var exclusion = models.Exclusion{
-		ID:        uuid.MustParse("e38adb10-a96a-4b55-aebd-7cdc9b973e7b"),
-		MCC:       4125,
-		ValidFrom: time.Date(2023, 2, 1, 0, 0, 0, 0, time.UTC),
-	}
-
-	seed_exclusion, err := json.Marshal(exclusion)
-	if err != nil {
-		return err
-	}
-
-	_, err = ETCD.Put(context.Background(), "exclusion_e38adb10-a96a-4b55-aebd-7cdc9b973e7b", string(seed_exclusion))
-	if err != nil {
-		return err
-	}
 	return nil
 }
 

@@ -1,7 +1,7 @@
 version: "3.8"
 
 services:
-  passworder:
+  publish-single:
     build: .
     ports:
       - "9000:8080"

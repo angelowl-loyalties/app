@@ -11,11 +11,11 @@ app:
           name: rewarder
           key: database_port
     - name: DB_KEYSPACE
-      value: transactions
+      value: angelowl
     - name: DB_TABLE
       value: rewards
     - name: DB_SSL
-      value: "true"
+      value: "false"
     - name: DB_CREATE_INDEX
       value: "false"
     - name: DB_CONN_STRING

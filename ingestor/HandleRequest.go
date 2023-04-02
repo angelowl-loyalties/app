@@ -179,7 +179,6 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 		os.Exit(1)
 	}
 
-	var i = 1
 	var wg sync.WaitGroup
 
 	for {
@@ -211,7 +210,7 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 
 		go func() {
 			defer wg.Done()
-			
+
 			message, err := prepareMessage(b)
 			if err != nil {
 				log.Printf("Error preparing message to Kafka: %v", err)
@@ -222,8 +221,6 @@ func HandleRequest(ctx context.Context, event S3Event) (string, error) {
 				log.Printf("Error writing to Producer: %v", err)
 			}
 		}()
-		fmt.Println("Message number:" + strconv.Itoa(i))
-		i += 1
 	}
 	wg.Wait()
 

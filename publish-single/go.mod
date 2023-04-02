@@ -1,11 +1,11 @@
-module github.com/cs301-itsa/project-2022-23t2-g1-t7/ingestor
+module main
 
 go 1.19
 
 require (
 	github.com/Shopify/sarama v1.38.1
 	github.com/aws/aws-lambda-go v1.39.1
-	github.com/aws/aws-sdk-go v1.44.219
+	github.com/google/uuid v1.3.0
 )
 
 require (
@@ -22,15 +22,9 @@ require (
 	github.com/jcmturner/gofork v1.7.6 // indirect
 	github.com/jcmturner/gokrb5/v8 v8.4.3 // indirect
 	github.com/jcmturner/rpc/v2 v2.0.3 // indirect
+	github.com/klauspost/compress v1.15.14 // indirect
+	github.com/pierrec/lz4/v4 v4.1.17 // indirect
 	github.com/rcrowley/go-metrics v0.0.0-20201227073835-cf1acfcdf475 // indirect
 	golang.org/x/crypto v0.6.0 // indirect
 	golang.org/x/net v0.6.0 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
-)
-
-require (
-	github.com/google/uuid v1.3.0
-	github.com/jmespath/go-jmespath v0.4.0 // indirect
-	github.com/klauspost/compress v1.15.14 // indirect
-	github.com/pierrec/lz4/v4 v4.1.17 // indirect
 )
