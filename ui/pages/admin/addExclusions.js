@@ -23,15 +23,8 @@ import { useState } from "react";
 import Navbar from "../../components/Navbar";
 
 export default function AddExclusions() {
-	const [campaignName, setCampaignName] = useState("");
-	const [minSpend, setMinSpend] = useState(0);
 	const [startDate, setStartDate] = useState(new Date());
-	const [endDate, setEndDate] = useState(new Date());
-	const [rewardProgram, setRewardProgram] = useState("Shopping");
-	const [rewardAmount, setRewardAmount] = useState(0);
 	const [mcc, setMcc] = useState(0);
-	const [foreignCurrency, setForeignCurrency] = useState(false);
-	const [merchant, setMerchant] = useState("");
 
 	const { data: session, status } = useSession({
 		required: true,
@@ -42,17 +35,6 @@ export default function AddExclusions() {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		console.log(
-			campaignName,
-			minSpend,
-			startDate,
-			endDate,
-			rewardProgram,
-			rewardAmount,
-			mcc,
-			foreignCurrency,
-			merchant
-		);
 	};
 	const toast = useToast();
 
@@ -65,15 +47,9 @@ export default function AddExclusions() {
 			isClosable: true,
 		});
 		const body = {
-			// name: campaignName,
-			// min_spend: parseFloat(minSpend),
 			valid_from: startDate + ":00Z",
-			// end_date: endDate + ":00Z",
-			// reward_program: rewardProgram,
-			// reward_amount: parseInt(rewardAmount),
 			mcc: parseInt(mcc),
-			// merchant: merchant,
-			// foreign_currency: foreignCurrency,
+
 		};
 		axios
 			.post(`https://itsag1t2.com/exclusion`, body, {
