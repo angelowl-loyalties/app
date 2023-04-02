@@ -2,8 +2,9 @@ import { Button, HStack, Text, VStack } from '@chakra-ui/react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
-import Loading from '../loading';
+import Loading from '../../components/Loading';
 import { useToast } from '@chakra-ui/react'
+import Upload from '../../components/UploadComponent'
 
 import Navbar from '../../components/Navbar';
 import { useSession } from 'next-auth/react';
@@ -78,16 +79,9 @@ export default function Banks() {
         <>
             {loading ? <Loading /> :
                 <Navbar bank>
-                    <HStack mb={{ base: 4, lg: 6 }}>
-                        <VStack alignItems='start'>
-                            <Text textStyle="title">Transactions Upload</Text>
-                            <Text textStyle="subtitle" pb={5}>
-                                Upload CSV file for processing
-                            </Text>
-                            <input type='file' accept=".csv" onChange={handleFileChange} />
-                            <Button onClick={submitFile}>Submit</Button>
-                        </VStack>
-                    </HStack>
+                    <VStack alignItems="start" w="full" h="full">
+                        <Upload toast={toast} session={session} />
+                    </VStack>
                 </Navbar>
             }
         </>

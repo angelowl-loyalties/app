@@ -35,32 +35,17 @@ function Navbar(props) {
 
     var routesBank = [
         {
-            path: "/bank/upload",
-            tab: "Bulk upload",
-            header: "SCIS Bank",
+            path: "/bank",
+            tab: "Dashboard",
+            header: "Dashboard",
         }
     ];
 
     var routesAdmin = [
         {
-            path: "/admin/upload",
-            tab: "Bulk upload",
-            header: "SCIS Bank",
-        },
-        {
-            path: "/admin/campaigns",
-            tab: "View campaigns",
-            header: "Campaigns",
-        },
-        {
-            path: "/admin/addCampaigns",
-            tab: "Add campaigns",
-            header: "Add Campaigns",
-        },
-        {
-            path: "/admin/addExclusions",
-            tab: "Add exclusions",
-            header: "Add Exclusions"
+            path: "/admin",
+            tab: "Dashboard",
+            header: "Dashboard",
         }
     ];
 
@@ -101,22 +86,27 @@ function Navbar(props) {
             </Head>
             <Alert
                 status={props.bank ? "info" : "error"}
-                h={7}
+                h={{base: 7, md: 7}}
                 display={props.bank | props.admin ? "inline-flex" : "none"}
                 py={0}
+                zIndex={99}
+                position={{base: "fixed", md: "fixed"}}
             >
-                <AlertIcon w={4} />
-                <Text fontSize="xs">
-                    Notice: You are currently logged in as a {props.bank ? "Organisational User from SCIS Bank" : "Adminstrator"}
-                </Text>
+                    <AlertIcon h="4" />
+                    <Text fontSize="xs" textColor={props.bank ? "blue" : "red"}>
+                        Notice: You are currently logged in as a {props.bank ? "Organisational User from SCIS Bank" : "Adminstrator"}
+                    </Text>
             </Alert>
             <Stack
-                minH="100vh"
                 direction={{ base: "column", md: "column", lg: "row" }}
+                pt={props.user ? 0 : 7}
+                minH="fit-content"
+                // h={300}
+                backgroundColor="#f5f7f9"
             >
                 <VStack
-                    alignItems="start"
                     backgroundColor="#f5f7f9"
+                    alignItems="start"
                     w="26%"
                     display={{ base: "none", md: "none", lg: "block" }}
                 >
@@ -183,6 +173,7 @@ function Navbar(props) {
                     zIndex={2}
                 >
                     <Box
+                    mt={{ base: -2, lg: 0 }}
                         display="flex"
                         pb={2}
                         px={{ base: 4, md: 4 }}
@@ -201,6 +192,7 @@ function Navbar(props) {
                                 width={{ base: "full", md: "full" }}
                                 float="right"
                                 flexGrow={1}
+                                pt={{ base: 2, lg: 0 }}
                                 mt={{ base: 0, md: 0 }}
                             >
                                 <Box
@@ -271,7 +263,6 @@ function Navbar(props) {
                                     />
                                 </NextLink>
                             </Flex>
-                            <Text></Text>
                         </HStack>
                         <Box flex={1} align="right">
                             <Stack
@@ -288,8 +279,9 @@ function Navbar(props) {
                                         md: "inline-block",
                                         lg: "none",
                                     }}
+                                    
                                 >
-                                    <Menu id="navbar-menu">
+                                    <Menu id="navbar-menu" >
                                         <MenuButton
                                             as={IconButton}
                                             icon={<BellIcon />}
@@ -306,9 +298,12 @@ function Navbar(props) {
                     </Box>
                 </Box>
                 <Box
+                    backgroundColor="white"
                     p={{ base: 6, lg: 8 }}
-                    w={{ base: "100%", lg: "75%" }}
-                    maxH={"98vh"}
+                    w={{ base: "100%", lg: "74%" }}
+                    overflow="hidden"
+                    h="fit-content"
+                    minH="100vh"
                     pt={{ base: "60px", lg: 8 }}
                 >
                     <MainContent>{props.children}</MainContent>

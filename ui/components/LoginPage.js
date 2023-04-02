@@ -1,12 +1,10 @@
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import {
-	Avatar,
 	Box,
 	Button,
 	Flex,
 	FormControl,
 	FormHelperText,
-	Heading,
 	IconButton,
 	Input,
 	InputGroup,
@@ -14,17 +12,17 @@ import {
 	InputRightElement,
 	Link,
 	Stack,
-	Text,
-    useToast,
+	useToast,
 } from "@chakra-ui/react";
-import Loading from "../../components/Loading";
 import { getCsrfToken, signIn, useSession } from "next-auth/react";
-import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { useRef, useState } from "react";
-import { FaUserAlt, FaLock } from "react-icons/fa";
+import { FaLock, FaUserAlt } from "react-icons/fa";
 
-export default function Login() {
+import Loading from "./Loading";
+
+export default function LoginPage(props) {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const email = useRef();
@@ -34,25 +32,22 @@ export default function Login() {
 	const { data: session, status } = useSession({
 		required: false,
 	});
-	const [errorMessage, setErrorMessage] = useState("");
-    const toast = useToast()
+	const toast = useToast();
+
 	const handleLogin = async (e) => {
-		e.preventDefault();
-		if (!email.current.value || !password.current.value) {
-			setErrorMessage("Email or password cannot be empty");
-			return;
-		}
 		setLoading(true);
+		e.preventDefault();
 		if (email.current.value && password.current.value) {
 			signIn("credentials", {
 				email: email.current.value,
 				password: password.current.value,
 				csrfToken: getCsrfToken(),
+				// callbackUrl: "/",
 				redirect: false,
 			}).then(({ ok, error }) => {
 				if (ok) {
 					console.log("OK");
-					router.push("/admin/upload");
+					router.push("/");
 				} else {
 					setLoading(false);
 					toast({
@@ -68,7 +63,7 @@ export default function Login() {
 
 	useEffect(() => {
 		if (session) {
-			router.push("/admin/upload");
+			router.push("/");
 		}
 		document.title = "Log in | Ascenda";
 	}, [session]);
@@ -122,6 +117,7 @@ export default function Login() {
 												<FaUserAlt />
 											</InputLeftElement>
 											<Input
+                                                fontSize="sm"
 												type="email"
 												placeholder="john@doe.com"
 												ref={email}
@@ -134,6 +130,7 @@ export default function Login() {
 												<FaLock />
 											</InputLeftElement>
 											<Input
+                                                fontSize="sm"
 												type={showPassword ? "text" : "password"}
 												placeholder="Password"
 												ref={password}
@@ -164,7 +161,6 @@ export default function Login() {
 									>
 										Login
 									</Button>
-									<Text>{errorMessage}</Text>
 								</Stack>
 							</form>
 						</Box>

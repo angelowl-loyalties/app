@@ -20,9 +20,9 @@ import { useEffect } from "react";
 import { useRef, useState } from "react";
 import { FaLock, FaUserAlt } from "react-icons/fa";
 
-import Loading from "./loading";
+import Loading from "../components/Loading";
 
-export default function Login() {
+export default function Login(props) {
 	const router = useRouter();
 	const [loading, setLoading] = useState(false);
 	const email = useRef();
@@ -117,6 +117,7 @@ export default function Login() {
 												<FaUserAlt />
 											</InputLeftElement>
 											<Input
+                                                fontSize="sm"
 												type="email"
 												placeholder="john@doe.com"
 												ref={email}
@@ -129,6 +130,7 @@ export default function Login() {
 												<FaLock />
 											</InputLeftElement>
 											<Input
+                                                fontSize="sm"
 												type={showPassword ? "text" : "password"}
 												placeholder="Password"
 												ref={password}

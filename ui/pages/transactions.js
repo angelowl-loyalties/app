@@ -23,7 +23,7 @@ import { FaCcAmex, FaCcDiscover, FaCcMastercard, FaCcVisa, FaCreditCard } from '
 
 import Navbar from '../components/Navbar';
 import RewardPanel from '../components/RewardPanel';
-import Loading from './loading';
+import Loading from '../components/Loading';
 
 export default function Transactions() {
     const router = useRouter()

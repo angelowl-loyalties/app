@@ -18,7 +18,7 @@ const theme = extendTheme({
         head: {
             fontWeight: "bold",
             mb: {base: 0, lg: 2},
-            fontSize: {base: 'sm', lg: 'xl'},
+            fontSize: {base: 'sm', lg: 'lg'},
             fontWeight: {base: 'bold', lg: "semibold"},
         },
         tab: {

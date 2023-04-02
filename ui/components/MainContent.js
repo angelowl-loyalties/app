@@ -1,8 +1,7 @@
-import { motion } from 'framer-motion'
-import { chakra, shouldForwardProp } from '@chakra-ui/react'
-import React from 'react'
-import { getCsrfToken, signIn, useSession } from 'next-auth/react';
+import { chakra, shouldForwardProp } from '@chakra-ui/react';
+import { motion } from 'framer-motion';
 import { useRouter } from 'next/router';
+import React from 'react';
 
 const StyledDiv = chakra(motion.div, {
     shouldForwardProp: prop => {
@@ -12,12 +11,6 @@ const StyledDiv = chakra(motion.div, {
 
 const MainContent = ({ children }) => {
     const router = useRouter()
-    // const { data: session, status } = useSession({
-    //     required: true,
-    //     onUnauthenticated() {
-    //         // router.push('/login')
-    //     },
-    // })
 
     return (
         <StyledDiv

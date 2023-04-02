@@ -1,48 +1,59 @@
-import { Search2Icon } from "@chakra-ui/icons";
+import { QuestionIcon, Search2Icon } from '@chakra-ui/icons';
 import {
     Box,
+    Button,
     Card,
     CardBody,
     Divider,
+    Grid,
     Heading,
     HStack,
-    Select,
+    IconButton,
     Image,
     Input,
     InputGroup,
     InputLeftElement,
-    ListItem,
+    Modal,
+    ModalBody,
+    ModalCloseButton,
+    ModalContent,
+    ModalFooter,
+    ModalHeader,
+    ModalOverlay,
+    Select,
     Spacer,
     Tab,
+    Table,
+    TableContainer,
     TabList,
     TabPanel,
     TabPanels,
     Tabs,
+    Tbody,
+    Td,
     Text,
-    UnorderedList,
+    Th,
+    Thead,
+    Tr,
+    useDisclosure,
     VStack,
-    Stack,
-    CardFooter,
-    ButtonGroup,
-    Button,
-    Grid,
-} from "@chakra-ui/react";
-import { GiLibertyWing, GiShoppingBag } from "react-icons/gi";
-import { IoDiamond } from "react-icons/io5";
-import { MdOutlineFlightTakeoff } from "react-icons/md";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import Loading from "./loading";
-
-import { useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
-
+} from '@chakra-ui/react';
 import axios from 'axios';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { GiLibertyWing, GiShoppingBag } from 'react-icons/gi';
+import { IoDiamond } from 'react-icons/io5';
+import { MdOutlineFlightTakeoff } from 'react-icons/md';
+
+import Loading from '../components/Loading';
+import Navbar from '../components/Navbar';
 
 
 export default function Campaigns() {
+    const { isOpen, onOpen, onClose } = useDisclosure()
     const router = useRouter();
-
+    const [exclusions, setExclusions] = useState([]);
     const [loading, setLoading] = useState(true);
     const [campaigns, setCampaigns] = useState([]);
     const { data: session, status } = useSession({
@@ -59,12 +70,17 @@ export default function Campaigns() {
         axios
             .get(`https://itsag1t2.com/campaign`, {
                 headers: { Authorization: session.id },
-            })
-            .then((response) => {
-                console.log(response.data.data)
+            }).then((response) => {
                 setCampaigns(response.data.data);
+                axios.get(`https://itsag1t2.com/exclusion`, {
+                    headers: { Authorization: session.id },
+                }).then((response) => {
+                    setExclusions(response.data.data);
+                    setLoading(false);
+                });
             });
-        setLoading(false);
+
+
     }, [session]);
 
     return (
@@ -74,8 +90,8 @@ export default function Campaigns() {
             ) : (
                 <Navbar user>
                     <VStack alignItems="start" w="full">
-                        <HStack mb={{ base: 4, lg: 6 }}>
-                            <VStack alignItems="start">
+                        <HStack mb={{ base: 4, lg: 6 }} >
+                            <VStack alignItems="start" >
                                 <Text textStyle="title">Payment campaigns</Text>
                                 <Text textStyle="subtitle">
                                     Supercharge your credit cards and get rewarded when you spend
@@ -128,6 +144,7 @@ export default function Campaigns() {
                                         </Tab>
                                     </TabList>
                                 </Box>
+                                <IconButton size="lg" aria-label='Excluded' variant="ghost" onClick={onOpen} icon={<QuestionIcon color="gray.500" />} />
                                 <Spacer />
                                 <InputGroup w="30%">
                                     <InputLeftElement pointerEvents="none">
@@ -162,7 +179,7 @@ export default function Campaigns() {
                                                 hour12: true,
                                             });
                                             return (
-                                                <Card maxW={{ base: '100%', lg: '100%' }} borderRadius="xl">
+                                                <Card maxW={{ base: '100%', lg: '100%' }} borderRadius="xl" key={campaigns.id}>
                                                     <CardBody>
                                                         <Image
                                                             src={`https://picsum.photos/seed/${Math.random()}/400/250`}
@@ -171,15 +188,15 @@ export default function Campaigns() {
                                                             alt='Green double couch with wooden legs'
                                                             borderRadius='lg'
                                                         />
-                                                            <Heading size='md' py={4}>{campaign.name}</Heading>
-                                                            <Text textAlign="justify" fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>
-                                                                <Text fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>
-                                                                    Spend with your <b>SCIS {campaign.reward_program} Card</b> and earn rewards! <u>From {start_date} to {end_date}</u>,
-                                                                    earn <b>{campaign.reward_amount} {campaign.reward_program == "Freedom" ? "% Cashback" : campaign.reward_program == "PlatinumMiles" || campaign.reward_program == "PremiumMiles"
-                                                                        ? "Miles/SGD" : campaign.reward_program == "Shopping" ? "Point(s) / SGD" : ""}</b> rewards when you make purchases at {campaign.merchant}.
-                                                                </Text>
+                                                        <Heading size='md' py={4}>{campaign.name}</Heading>
+                                                        <Text textAlign="justify" fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>
+                                                            <Text fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>
+                                                                Spend with your <b>SCIS {campaign.reward_program} Card</b> and earn rewards! <u>From {start_date} to {end_date}</u>,
+                                                                earn <b>{campaign.reward_amount} {campaign.reward_program == "Freedom" ? "% Cashback" : campaign.reward_program == "PlatinumMiles" || campaign.reward_program == "PremiumMiles"
+                                                                    ? "Miles/SGD" : campaign.reward_program == "Shopping" ? "Point(s) / SGD" : ""}</b> rewards when you make purchases at {campaign.merchant}.
                                                             </Text>
-                                                            <Text fontSize={12} color="blue.600" py={3} fontWeight={600} w={{ base: 'fit-content', lg: "fit-content" }}>Available for a limited time{campaign.foreign_currency ? "for foreign transactions only. T&C applies." : "."}</Text>
+                                                        </Text>
+                                                        <Text fontSize={12} color="blue.600" py={3} fontWeight={600} w={{ base: 'fit-content', lg: "fit-content" }}>Available for a limited time{campaign.foreign_currency ? "for foreign transactions only. T&C applies." : "."}</Text>
                                                     </CardBody>
                                                 </Card>
                                             );
@@ -210,7 +227,7 @@ export default function Campaigns() {
                                                 hour12: true,
                                             });
                                             return (
-                                                <Card maxW={{ base: '100%', lg: '100%' }} borderRadius="xl">
+                                                <Card maxW={{ base: '100%', lg: '100%' }} borderRadius="xl" key={campaigns.id}>
                                                     <CardBody>
                                                         <Image
                                                             src={`https://picsum.photos/seed/${Math.random()}/400/250`}
@@ -219,15 +236,15 @@ export default function Campaigns() {
                                                             alt='Green double couch with wooden legs'
                                                             borderRadius='lg'
                                                         />
-                                                            <Heading size='md' py={4}>{campaign.name}</Heading>
-                                                            <Text textAlign="justify" fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>
-                                                                <Text fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>
-                                                                    Spend with your <b>SCIS {campaign.reward_program} Card</b> and earn rewards! <u>From {start_date} to {end_date}</u>,
-                                                                    earn <b>{campaign.reward_amount} {campaign.reward_program == "Freedom" ? "% Cashback" : campaign.reward_program == "PlatinumMiles" || campaign.reward_program == "PremiumMiles"
-                                                                        ? "Miles/SGD" : campaign.reward_program == "Shopping" ? "Point(s) / SGD" : ""}</b> rewards when you make purchases at {campaign.merchant}.
-                                                                </Text>
+                                                        <Heading size='md' py={4}>{campaign.name}</Heading>
+                                                        <Text textAlign="justify" fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>
+                                                            <Text fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>
+                                                                Spend with your <b>SCIS {campaign.reward_program} Card</b> and earn rewards! <u>From {start_date} to {end_date}</u>,
+                                                                earn <b>{campaign.reward_amount} {campaign.reward_program == "Freedom" ? "% Cashback" : campaign.reward_program == "PlatinumMiles" || campaign.reward_program == "PremiumMiles"
+                                                                    ? "Miles/SGD" : campaign.reward_program == "Shopping" ? "Point(s) / SGD" : ""}</b> rewards when you make purchases at {campaign.merchant}.
                                                             </Text>
-                                                            <Text fontSize={12} color="blue.600" py={3} fontWeight={600} w={{ base: 'fit-content', lg: "fit-content" }}>Available for a limited time{campaign.foreign_currency ? "for foreign transactions only. T&C applies." : "."}</Text>
+                                                        </Text>
+                                                        <Text fontSize={12} color="blue.600" py={3} fontWeight={600} w={{ base: 'fit-content', lg: "fit-content" }}>Available for a limited time{campaign.foreign_currency ? "for foreign transactions only. T&C applies." : "."}</Text>
                                                     </CardBody>
                                                 </Card>
                                             );
@@ -258,7 +275,7 @@ export default function Campaigns() {
                                                 hour12: true,
                                             });
                                             return (
-                                                <Card maxW={{ base: '100%', lg: '100%' }} borderRadius="xl">
+                                                <Card maxW={{ base: '100%', lg: '100%' }} borderRadius="xl" key={campaigns.id}>
                                                     <CardBody>
                                                         <Image
                                                             src={`https://picsum.photos/seed/${Math.random()}/400/250`}
@@ -267,15 +284,15 @@ export default function Campaigns() {
                                                             alt='Green double couch with wooden legs'
                                                             borderRadius='lg'
                                                         />
-                                                            <Heading size='md' py={4}>{campaign.name}</Heading>
-                                                            <Text textAlign="justify" fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>
-                                                                <Text fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>
-                                                                    Spend with your <b>SCIS {campaign.reward_program} Card</b> and earn rewards! <u>From {start_date} to {end_date}</u>,
-                                                                    earn <b>{campaign.reward_amount} {campaign.reward_program == "Freedom" ? "% Cashback" : campaign.reward_program == "PlatinumMiles" || campaign.reward_program == "PremiumMiles"
-                                                                        ? "Miles/SGD" : campaign.reward_program == "Shopping" ? "Point(s) / SGD" : ""}</b> rewards when you make purchases at {campaign.merchant}.
-                                                                </Text>
+                                                        <Heading size='md' py={4}>{campaign.name}</Heading>
+                                                        <Text textAlign="justify" fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>
+                                                            <Text fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>
+                                                                Spend with your <b>SCIS {campaign.reward_program} Card</b> and earn rewards! <u>From {start_date} to {end_date}</u>,
+                                                                earn <b>{campaign.reward_amount} {campaign.reward_program == "Freedom" ? "% Cashback" : campaign.reward_program == "PlatinumMiles" || campaign.reward_program == "PremiumMiles"
+                                                                    ? "Miles/SGD" : campaign.reward_program == "Shopping" ? "Point(s) / SGD" : ""}</b> rewards when you make purchases at {campaign.merchant}.
                                                             </Text>
-                                                            <Text fontSize={12} color="blue.600" py={3} fontWeight={600} w={{ base: 'fit-content', lg: "fit-content" }}>Available for a limited time{campaign.foreign_currency ? " for foreign transactions only. T&C applies." : "."}</Text>
+                                                        </Text>
+                                                        <Text fontSize={12} color="blue.600" py={3} fontWeight={600} w={{ base: 'fit-content', lg: "fit-content" }}>Available for a limited time{campaign.foreign_currency ? " for foreign transactions only. T&C applies." : "."}</Text>
                                                     </CardBody>
                                                 </Card>
                                             );
@@ -306,7 +323,7 @@ export default function Campaigns() {
                                                 hour12: true,
                                             });
                                             return (
-                                                <Card maxW={{ base: '100%', lg: '100%' }} borderRadius="xl">
+                                                <Card maxW={{ base: '100%', lg: '100%' }} borderRadius="xl" key={campaigns.id}>
                                                     <CardBody>
                                                         <Image
                                                             src={`https://picsum.photos/seed/${Math.random()}/400/250`}
@@ -315,15 +332,15 @@ export default function Campaigns() {
                                                             alt='Green double couch with wooden legs'
                                                             borderRadius='lg'
                                                         />
-                                                            <Heading size='md' py={4}>{campaign.name}</Heading>
-                                                            <Text textAlign="justify" fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>
-                                                                <Text fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>
-                                                                    Spend with your <b>SCIS {campaign.reward_program} Card</b> and earn rewards! <u>From {start_date} to {end_date}</u>,
-                                                                    earn <b>{campaign.reward_amount} {campaign.reward_program == "Freedom" ? "% Cashback" : campaign.reward_program == "PlatinumMiles" || campaign.reward_program == "PremiumMiles"
-                                                                        ? "Miles/SGD" : campaign.reward_program == "Shopping" ? "Point(s) / SGD" : ""}</b> rewards when you make purchases at {campaign.merchant}.
-                                                                </Text>
+                                                        <Heading size='md' py={4}>{campaign.name}</Heading>
+                                                        <Text textAlign="justify" fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>
+                                                            <Text fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>
+                                                                Spend with your <b>SCIS {campaign.reward_program} Card</b> and earn rewards! <u>From {start_date} to {end_date}</u>,
+                                                                earn <b>{campaign.reward_amount} {campaign.reward_program == "Freedom" ? "% Cashback" : campaign.reward_program == "PlatinumMiles" || campaign.reward_program == "PremiumMiles"
+                                                                    ? "Miles/SGD" : campaign.reward_program == "Shopping" ? "Point(s) / SGD" : ""}</b> rewards when you make purchases at {campaign.merchant}.
                                                             </Text>
-                                                            <Text fontSize={12} color="blue.600" py={3} fontWeight={600} w={{ base: 'fit-content', lg: "fit-content" }}>Available for a limited time{campaign.foreign_currency ? " for foreign transactions only. T&C applies." : "."}</Text>
+                                                        </Text>
+                                                        <Text fontSize={12} color="blue.600" py={3} fontWeight={600} w={{ base: 'fit-content', lg: "fit-content" }}>Available for a limited time{campaign.foreign_currency ? " for foreign transactions only. T&C applies." : "."}</Text>
                                                     </CardBody>
                                                 </Card>
                                             );
@@ -333,6 +350,40 @@ export default function Campaigns() {
                             </TabPanels>
                         </Tabs>
                         <Divider />
+                        <Modal onClose={onClose} size="lg" isOpen={isOpen}>
+                            <ModalOverlay />
+                            <ModalContent>
+                                <ModalHeader>Excluded MCC transactions</ModalHeader>
+                                <ModalCloseButton />
+                                <ModalBody>
+                                    <TableContainer w="fit-content">
+                                        <Table size='sm'>
+                                            <Thead>
+                                                <Tr>
+                                                    <Th fontSize="small">MCC</Th>
+                                                    <Th fontSize="small">Valid from</Th>
+                                                </Tr>
+                                            </Thead>
+                                            <Tbody>
+                                                {exclusions.map((exclusion) => {
+                                                    return (
+                                                        <Tr key={exclusion.id}>
+                                                            <Td fontSize="small">{exclusion.mcc}</Td>
+                                                            <Td fontSize="small">{exclusion.valid_from}</Td>
+                                                        </Tr>
+                                                    );
+                                                })}
+                                            </Tbody>
+                                        </Table>
+                                    </TableContainer>
+                                </ModalBody>
+                                <ModalFooter>
+                                    <Button variant='ghost' colorScheme="purple" mr={3} onClick={onClose}>
+                                        Close
+                                    </Button>
+                                </ModalFooter>
+                            </ModalContent>
+                        </Modal>
                     </VStack>
                 </Navbar>
             )}{" "}

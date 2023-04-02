@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
 import Navbar from '../components/Navbar';
-import Loading from './loading';
+import Loading from '../components/Loading';
 
 export default function Home() {
     const [loading, setLoading] = useState(true)
@@ -56,7 +56,7 @@ export default function Home() {
     return (
         <>
             {loading ? <Loading /> :
-                <Navbar>
+                <Navbar user>
                     <HStack mb={{ base: 4, lg: 6 }}>
                         <VStack alignItems='start'>
                             <Text textStyle="title">Dashboard</Text>
@@ -73,7 +73,7 @@ export default function Home() {
                                     }
                                     const total = cards.reduce((total, card) => total + card.total, 0)
                                     return (
-                                        <StatGroup>
+                                        <StatGroup key={type}>
                                             <Stat>
                                                 <StatLabel>{card[0].card_type.reward_unit}</StatLabel>
                                                 <StatNumber>{total}</StatNumber>
