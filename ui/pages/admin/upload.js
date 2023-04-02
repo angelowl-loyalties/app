@@ -1,4 +1,4 @@
-import { Button, HStack, Text, VStack } from '@chakra-ui/react';
+import { Button, Container, Divider, HStack, Text, VStack } from '@chakra-ui/react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
@@ -74,18 +74,69 @@ export default function Banks() {
 
     }
 
+    const seedFile = () => {
+        toast({
+            title: 'In progress',
+            description: "Please hold while we upload your file",
+            status: 'info',
+            duration: 9000,
+            isClosable: true,
+        })
+        axios.get(`https://itsag1t2.com/user/presigned`, { headers: { Authorization: session.id } })
+            .then((response) => {
+                console.log(response)
+                axios.put(response.data, file, {
+                    headers: {
+                        'Content-Type': 'text/csv'
+                    }
+                }).then((response) => {
+                    console.log(response)
+                    toast.closeAll()
+                    toast({
+                        title: 'Success',
+                        description: `File uploaded successfully`,
+                        status: 'success',
+                        duration: 9000,
+                        isClosable: true,
+                    })
+                }).catch((error) => {
+                    console.log(error)
+                    toast.closeAll()
+                    toast({
+                        title: 'Error',
+                        description: "An error occurred while uploading your file",
+                        status: 'error',
+                        duration: 9000,
+                        isClosable: true,
+                    })
+                })
+            }).catch((error) => {
+                console.log(error)
+            })
+
+    }
+
     return (
         <>
             {loading ? <Loading /> :
                 <Navbar admin>
                     <HStack mb={{ base: 4, lg: 6 }}>
                         <VStack alignItems='start'>
-                            <Text textStyle="title">Transactions Upload</Text>
+                            <Text textStyle="title">File Upload</Text>
                             <Text textStyle="subtitle" pb={5}>
                                 Upload CSV file for processing
                             </Text>
-                            <input type='file' accept=".csv" onChange={handleFileChange} />
-                            <Button onClick={submitFile}>Submit</Button>
+                            <Container>
+                                <Text textStyle="head">Bank Transactions</Text>
+                                <input type='file' accept=".csv" onChange={handleFileChange} />
+                                <Button onClick={submitFile}>Submit</Button>
+                            </Container>
+
+                            <Container>
+                                <Text textStyle="head">User Accounts</Text>
+                                <input type='file' accept=".csv" onChange={handleFileChange} />
+                                <Button onClick={seedFile}>Submit</Button>
+                            </Container>
                         </VStack>
                     </HStack>
                 </Navbar>

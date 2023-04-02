@@ -105,7 +105,6 @@ export default function Login() {
 					>
 						<Box pt={8}>
 							<img
-								priority={true}
 								src="https://ik.imagekit.io/alvinowyong/g1t2/ascenda.webp"
 								width="0"
 								height="0"
