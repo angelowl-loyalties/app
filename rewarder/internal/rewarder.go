@@ -117,6 +117,7 @@ func ProcessMessage(transaction models.Transaction) error {
 }
 
 func IsExcluded(transactionDate time.Time, mcc int) bool {
+	RefreshFromEtcd()
 	if mcc < 1 || mcc > 9999 {
 		return true
 	}
@@ -133,6 +134,7 @@ func IsExcluded(transactionDate time.Time, mcc int) bool {
 }
 
 func GetMatchingCampaigns(transaction models.Transaction) (campaign [][]models.Campaign) {
+	RefreshFromEtcd()
 	//Returns a 2D array of campaigns, [ [BaseMatchedCampaigns], [PromoMatchedCampaigns] ]
 
 	var baseMatchingCampaigns []models.Campaign
