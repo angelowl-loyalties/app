@@ -132,7 +132,7 @@ export default function Upload(props) {
                     >
                         <Text textStyle="head">Seed User(s)</Text>
                         <Box>
-                            {file ? (
+                            {seedFile ? (
                                 <Box><Text fontSize="small" textColor="gray.500">{seedFile && seedFile.name}</Text></Box>
                             ) : (
                                 <Box><Text fontSize="small" textColor="gray.500">Drag and drop a file here</Text></Box>
