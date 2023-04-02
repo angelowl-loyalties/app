@@ -25,21 +25,16 @@ type Reward struct {
 	Remarks         string     `json:"remarks"`          // cassandra text
 }
 
-type Count struct {
-	Count int `json:"count"`
-}
+func RewardGetAll() (rewards []Reward, _ error) {
+	stmt, _ := qb.Select("angelowl.rewards").ToCql()
 
-func RewardGetCount() (count Count, _ error) {
-	stmt, _ := qb.Select("angelowl.rewards").CountAll().ToCql()
-
-	err := gocqlx.Select(&count, DB.Query(stmt))
+	err := gocqlx.Select(&rewards, DB.Query(stmt))
 	if err != nil {
 		log.Println(err)
-		count.Count = -1
-		return count, err
+		return nil, err
 	}
 
-	return count, nil
+	return rewards, nil
 }
 
 func RewardGetByCardID(reqCardId string) (rewards []Reward, _ error) {
@@ -51,16 +46,4 @@ func RewardGetByCardID(reqCardId string) (rewards []Reward, _ error) {
 	}
 
 	return rewards, nil
-}
-
-func RewardGetCountByCardID(reqCardId string) (count Count, _ error) {
-	stmt, _ := qb.Select("angelowl.rewards").CountAll().Where(qb.EqLit("card_id", reqCardId)).AllowFiltering().ToCql()
-	err := gocqlx.Select(&count, DB.Query(stmt))
-	if err != nil {
-		log.Println(err)
-		count.Count = -1
-		return count, err
-	}
-
-	return count, nil
 }

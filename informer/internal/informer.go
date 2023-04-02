@@ -8,21 +8,25 @@ import (
 	"strconv"
 )
 
-// GetRewardsCount - GET /reward
-// @Summary Get total number of rewards
-// @Description Get total number of rewards
+// GetRewards - GET /reward
+// @Summary Get all rewards
+// @Description Get all rewards
 // @Tags reward
 // @Produce json
 // @Success 200 {array} models.Reward
 // @Router /reward [get]
-func GetRewardsCount(c *gin.Context) {
-	count, err := models.RewardGetCount()
+func GetRewards(c *gin.Context) {
+	// this function should be deprecated and removed in the future
+	var rewards []models.Reward
+
+	rewards, err := models.RewardGetAll()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"total_rewards": count.Count})
+	c.JSON(http.StatusOK, gin.H{"total_rewards": len(rewards)})
+	//c.JSON(http.StatusOK, gin.H{"data": rewards, "total_rewards": len(rewards)})
 }
 
 // GetRewardsByCardID - GET /reward/:cardId
