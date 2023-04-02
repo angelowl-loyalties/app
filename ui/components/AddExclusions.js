@@ -32,6 +32,19 @@ export default function AddExclusions(props) {
             valid_from: startDate + ":00Z",
             mcc: parseInt(mcc),
         };
+
+        if (!Object.values(body).every(value => value)) {
+            props.toast.closeAll();
+            props.toast({
+                title: "Empty field(s)",
+                description: "Please fill in all the fields",
+                status: "warning",
+                duration: 9000,
+                isClosable: true,
+            });
+            return
+        }
+
         axios
             .post(`https://itsag1t2.com/exclusion`, body, {
                 headers: {
@@ -48,6 +61,8 @@ export default function AddExclusions(props) {
                     duration: 9000,
                     isClosable: true,
                 });
+                props.refresh()
+                props.onClose()
             })
             .catch((error) => {
                 console.log(error);

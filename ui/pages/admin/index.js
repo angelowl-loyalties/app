@@ -1,6 +1,9 @@
-import { CheckCircleIcon, MinusIcon } from '@chakra-ui/icons';
+import { AddIcon, CheckCircleIcon, MinusIcon } from '@chakra-ui/icons';
 import {
     Button,
+    HStack,
+    IconButton,
+    Spacer,
     Table,
     TableContainer,
     Tbody,
@@ -29,6 +32,7 @@ export default function Home() {
     const [campaigns, setCampaigns] = useState([]);
     const [exclusions, setExclusions] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [refreshData, setRefreshData] = useState(false);
 
     const { data: session, status } = useSession({
         required: true,
@@ -36,6 +40,10 @@ export default function Home() {
             router.push("/admin/login");
         },
     });
+
+    const refresh = () => {
+        setRefreshData(!refreshData);
+    };
 
 
     useEffect(() => {
@@ -59,21 +67,19 @@ export default function Home() {
                     });
             });
         setLoading(false);
-    }, [session]);
+    }, [session, refreshData]);
 
 
 
     return (
         <Navbar admin>
             <VStack alignItems="start" w="full">
-                <Text textStyle="head">Manage campaign(s)</Text>
-                <Button
-                    onClick={onCampaignOpen}
-                    key='xl'
-                    mb={4}
-                    size="sm"
-                    colorScheme="green"
-                >Add campaign</Button>
+                <HStack mb={4} w="full">
+                    <Text textStyle="head" mb={0}>Manage campaign(s)</Text>
+                    <IconButton onClick={onCampaignOpen}
+                        size="xs" variant="outline"
+                        colorScheme="green" icon={<AddIcon />} />
+                </HStack>
                 <TableContainer w="full">
                     <Table size='sm'>
                         <Thead>
@@ -101,22 +107,20 @@ export default function Home() {
                                         <Td fontSize="x-small">{campaign.mcc}</Td>
                                         <Td fontSize="x-small">{campaign.merchant}</Td>
                                         <Td fontSize="x-small">{campaign.base_reward}</Td>
-                                        <Td fontSize="x-small">{campaign.foreign_currency ? <CheckCircleIcon color="green.400" /> : <MinusIcon color="red.400"/>}</Td>
+                                        <Td fontSize="x-small">{campaign.foreign_currency ? <CheckCircleIcon color="green.400" /> : <MinusIcon color="red.400" />}</Td>
                                     </Tr>
                                 );
                             })}
                         </Tbody>
                     </Table>
                 </TableContainer>
-                <Text textStyle="head" pt={8}>Manage exclusion(s)</Text>
-                <Button
-                    onClick={onExclusionOpen}
-                    key='xl'
-                    mb={4}
-                    size="sm"
-                    colorScheme="green"
-                >Add exclusion</Button>
-                <TableContainer w="full">
+                <HStack pt={8} w="full">
+                    <Text textStyle="head" mb={0}>Manage exclusion(s)</Text>
+                    <IconButton onClick={onExclusionOpen}
+                        size="xs" variant="outline"
+                        colorScheme="green"icon={<AddIcon />} />
+                </HStack>
+                <TableContainer w="full" pb={8}>
                     <Table size='sm'>
                         <Thead>
                             <Tr>
@@ -136,9 +140,9 @@ export default function Home() {
                         </Tbody>
                     </Table>
                 </TableContainer>
-                <Upload toast={toast} session={session} admin/>
-                <AddCampaigns isOpen={isCampaignOpen} onClose={onCampaignClose} toast={toast} session={session}/>
-                <AddExclusions isOpen={isExclusionOpen} onClose={onExclusionClose} toast={toast} session={session}/>
+                <Upload toast={toast} session={session} refresh={refresh} admin />
+                <AddCampaigns isOpen={isCampaignOpen} onClose={onCampaignClose} toast={toast} session={session} refresh={refresh} />
+                <AddExclusions isOpen={isExclusionOpen} onClose={onExclusionClose} toast={toast} session={session} refresh={refresh} />
             </VStack>
         </Navbar>
     );

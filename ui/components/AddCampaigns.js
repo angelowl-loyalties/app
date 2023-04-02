@@ -50,6 +50,18 @@ export default function AddCampaigns(props) {
             merchant: merchant,
             foreign_currency: foreignCurrency,
         };
+
+        if (!Object.values(body).every(value => value)) {
+            props.toast.closeAll();
+            props.toast({
+                title: "Empty field(s)",
+                description: "Please fill in all the fields",
+                status: "warning",
+                duration: 9000,
+                isClosable: true,
+            });
+            return
+        }
         axios
             .post(`https://itsag1t2.com/campaign`, body, {
                 headers: {
@@ -66,6 +78,7 @@ export default function AddCampaigns(props) {
                     duration: 9000,
                     isClosable: true,
                 });
+                props.refresh()
                 props.onClose()
             })
             .catch((error) => {
