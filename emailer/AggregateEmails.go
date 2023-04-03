@@ -3,11 +3,12 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 
-	"strconv"
 	"time"
 
 	"github.com/aws/aws-lambda-go/lambda"
@@ -17,8 +18,6 @@ import (
 	"github.com/aws/aws-sdk-go/service/ses"
 	"github.com/gocql/gocql"
 	"github.com/google/uuid"
-	"github.com/scylladb/gocqlx"
-	"github.com/scylladb/gocqlx/qb"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -60,7 +59,8 @@ type User struct {
 	UpdatedAt   time.Time
 }
 
-var Cassandra *gocql.Session
+// var Cassandra *gocql.Session
+var informerUrl string
 var Postgres *gorm.DB
 var svc *ses.SES
 
@@ -68,49 +68,53 @@ const YYYYMMDD = "2006-01-02"
 
 // If any of the connections fail, lambda won't run
 func init() {
-	os.Getenv("CASSANDRA_CONN_STRING")
-	dbHost := os.Getenv("CASSANDRA_CONN_STRING")
-	dbPort := os.Getenv("CASSANDRA_PORT")
-	dbKeyspace := os.Getenv("CASSANDRA_PORT")
-	dbUser := os.Getenv("CASSANDRA_USERNAME")
-	dbPass := os.Getenv("CASSANDRA_PASSWORD")
-	dbUseSSL := true
-	ConnectCassandra(dbHost, dbPort, dbUser, dbPass, dbKeyspace, dbUseSSL)
+	// os.Getenv("CASSANDRA_CONN_STRING")
+	// dbHost := os.Getenv("CASSANDRA_CONN_STRING")
+	// dbPort := os.Getenv("CASSANDRA_PORT")
+	// dbKeyspace := os.Getenv("CASSANDRA_PORT")
+	// dbUser := os.Getenv("CASSANDRA_USERNAME")
+	// dbPass := os.Getenv("CASSANDRA_PASSWORD")
+	// dbUseSSL := false
+	// ConnectCassandra(dbHost, dbPort, dbUser, dbPass, dbKeyspace, dbUseSSL)
 
+	informerUrl = os.Getenv("INFORMER_ENDPOINT")
+	if informerUrl == "" {
+		log.Fatalln("INFORMER_ENDPOINT environment variable is not set")
+	}
 	dbConnString := os.Getenv("POSTGRES_CONN_STRING")
 	ConnectPostgres(dbConnString)
 
 	CreateSESSession()
 }
 
-func ConnectCassandra(dbHost, dbPort, username, password, keyspace string, useSSL bool) {
-	cluster := gocql.NewCluster(dbHost)
-	cluster.Keyspace = keyspace
-	cluster.Consistency = gocql.Quorum
+// func ConnectCassandra(dbHost, dbPort, username, password, keyspace string, useSSL bool) {
+// 	cluster := gocql.NewCluster(dbHost)
+// 	cluster.Keyspace = keyspace
+// 	cluster.Consistency = gocql.Quorum
 
-	dbPortInt, err := strconv.Atoi(dbPort)
-	if err == nil {
-		cluster.Port = dbPortInt
-	}
+// 	dbPortInt, err := strconv.Atoi(dbPort)
+// 	if err == nil {
+// 		cluster.Port = dbPortInt
+// 	}
 
-	cluster.Authenticator = gocql.PasswordAuthenticator{
-		Username: username,
-		Password: password,
-	}
+// 	cluster.Authenticator = gocql.PasswordAuthenticator{
+// 		Username: username,
+// 		Password: password,
+// 	}
 
-	if useSSL {
-		cluster.SslOpts = &gocql.SslOptions{
-			CaPath: "./sf-class2-root.crt",
-		}
-	}
+// 	if useSSL {
+// 		cluster.SslOpts = &gocql.SslOptions{
+// 			CaPath: "./sf-class2-root.crt",
+// 		}
+// 	}
 
-	createSession, err := cluster.CreateSession()
-	if err != nil {
-		log.Fatalln(err)
-	}
-	log.Println("Connected to Rewards Cassandra DB")
-	Cassandra = createSession
-}
+// 	createSession, err := cluster.CreateSession()
+// 	if err != nil {
+// 		log.Fatalln(err)
+// 	}
+// 	log.Println("Connected to Rewards Cassandra DB")
+// 	Cassandra = createSession
+// }
 
 func ConnectPostgres(dbConnString string) {
 	db, err := gorm.Open(postgres.Open(dbConnString), &gorm.Config{})
@@ -132,18 +136,37 @@ func CreateSESSession() {
 	svc = ses.New(sess)
 }
 
+// func GetTodaysRewards() (rewards []Reward, _ error) {
+// todaysDate := time.Now().Format(YYYYMMDD)
+// // Create a string literal with open close quotation marks
+// todaysDateLiteral := fmt.Sprintf("'%s'", todaysDate)
+
+// 	// Equivalent to the following query
+// 	// select * from angelowl.rewards where created_at == {today's date} and reward_amount > 0 ALLOW FILTERING;
+// stmt, _ := qb.Select("angelowl.rewards").Where(qb.EqLit("created_at", todaysDateLiteral)).Where(qb.GtLit("reward_amount", "0")).AllowFiltering().ToCql()
+
+// err := gocqlx.Select(&rewards, Cassandra.Query(stmt))
+// if err != nil {
+// 	log.Println(err)
+// 	return nil, err
+// }
+
+// 	return rewards, nil
+// }
+
 func GetTodaysRewards() (rewards []Reward, _ error) {
-	todaysDate := time.Now().Format(YYYYMMDD)
-	// Create a string literal with open close quotation marks
-	todaysDateLiteral := fmt.Sprintf("'%s'", todaysDate)
-
-	// Equivalent to the following query
-	// select * from angelowl.rewards where created_at == {today's date} and reward_amount > 0 ALLOW FILTERING;
-	stmt, _ := qb.Select("angelowl.rewards").Where(qb.EqLit("created_at", todaysDateLiteral)).Where(qb.GtLit("reward_amount", "0")).AllowFiltering().ToCql()
-
-	err := gocqlx.Select(&rewards, Cassandra.Query(stmt))
+	resp, err := http.Get(informerUrl + "/total")
 	if err != nil {
-		log.Println(err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, errors.New("failed to fetch rewards")
+	}
+
+	err = json.NewDecoder(resp.Body).Decode(&rewards)
+	if err != nil {
 		return nil, err
 	}
 
@@ -302,7 +325,6 @@ func HandleRequest(ctx context.Context, placeholder Event) (string, error) {
 
 func main() {
 	lambda.Start(HandleRequest)
-	Cassandra.Close()
 }
 
 // Sample data for testing

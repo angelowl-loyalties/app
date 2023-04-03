@@ -1,12 +1,16 @@
 package models
 
 import (
+	"fmt"
 	"log"
+	"time"
 
 	"github.com/gocql/gocql"
 	"github.com/scylladb/gocqlx"
 	"github.com/scylladb/gocqlx/qb"
 )
+
+const YYYYMMDD = "2006-01-02"
 
 type Reward struct {
 	ID              gocql.UUID `json:"id"`               // cassandra uuid
@@ -39,6 +43,22 @@ func RewardGetAll() (rewards []Reward, _ error) {
 
 func RewardGetByCardID(reqCardId string) (rewards []Reward, _ error) {
 	stmt, _ := qb.Select("angelowl.rewards").Where(qb.EqLit("card_id", reqCardId)).AllowFiltering().ToCql()
+	err := gocqlx.Select(&rewards, DB.Query(stmt))
+	if err != nil {
+		log.Println(err)
+		return nil, err
+	}
+
+	return rewards, nil
+}
+
+func RewardGetTodays() (rewards []Reward, _ error) {
+	todaysDate := time.Now().Format(YYYYMMDD)
+	// Create a string literal with open close quotation marks
+	todaysDateLiteral := fmt.Sprintf("'%s'", todaysDate)
+
+	stmt, _ := qb.Select("angelowl.rewards").Where(qb.EqLit("created_at", todaysDateLiteral)).Where(qb.GtLit("reward_amount", "0")).AllowFiltering().ToCql()
+
 	err := gocqlx.Select(&rewards, DB.Query(stmt))
 	if err != nil {
 		log.Println(err)

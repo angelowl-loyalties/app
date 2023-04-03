@@ -1,11 +1,12 @@
 package internal
 
 import (
-	"github.com/cs301-itsa/project-2022-23t2-g1-t7/informer/models"
-	"github.com/gin-gonic/gin"
 	"math"
 	"net/http"
 	"strconv"
+
+	"github.com/cs301-itsa/project-2022-23t2-g1-t7/informer/models"
+	"github.com/gin-gonic/gin"
 )
 
 // GetRewards - GET /reward
@@ -113,4 +114,23 @@ func GetTotalRewardsByCardID(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"data": totalRewards})
+}
+
+// GetRewardsForToday - GET /reward/today
+// @Summary Get total rewards created today, with reward_amount > 0
+// @Description This endpoint is for email aggregation purposes to notify users of the rewards they earned today
+// @Tags reward
+// @Produce json
+// @Success 200 {array} number
+// @Router /reward/total [get]
+func GetRewardsForToday(c *gin.Context) {
+	var rewards []models.Reward
+
+	rewards, err := models.RewardGetTodays()
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"data": rewards})
 }
