@@ -170,6 +170,14 @@ func GetTodaysRewards() ([]Reward, error) {
 		return nil, errors.New("failed to fetch rewards")
 	}
 
+	// bodyBytes, err := io.ReadAll(resp.Body)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// bodyBuffer := bytes.NewBuffer(bodyBytes)
+
+	// fmt.Println(bodyBuffer.String())
+
 	var parseReward ParseReward
 
 	err = json.NewDecoder(resp.Body).Decode(&parseReward)

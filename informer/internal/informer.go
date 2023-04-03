@@ -132,5 +132,5 @@ func GetRewardsForToday(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"rewards": rewards})
+	c.JSON(http.StatusOK, gin.H{"data": rewards})
 }
