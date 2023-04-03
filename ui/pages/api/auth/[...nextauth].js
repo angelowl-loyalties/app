@@ -1,7 +1,6 @@
-import axios from "axios";
-import NextAuth from "next-auth/next";
-import CredentialsProvider from "next-auth/providers/credentials";
-import { useRouter } from "next/router";
+import axios from 'axios';
+import NextAuth from 'next-auth/next';
+import CredentialsProvider from 'next-auth/providers/credentials';
 
 const authOptions = {
 	providers: [
@@ -28,18 +27,10 @@ const authOptions = {
 							token: "Bearer " + response.data.data.token,
 							is_new: response.data.data.is_new,
 						};
-
-						// if (user.is_new) {
-						// 	const router = useRouter()
-
-						// 	// Redirect to the appropriate page
-						// 	router.push("/changePassword");
-						// }
-
 						return user;
 					})
-					.catch((e) => {
-						console.log(e);
+					.catch((error) => {
+						console.log(error);
 						return null;
 					});
 			},
@@ -61,7 +52,6 @@ const authOptions = {
 				session.userId = token.userId;
 				session.is_new = token.is_new; // Add isFirstTimeLogin to user object
 			}
-
 			return session;
 		},
 	},

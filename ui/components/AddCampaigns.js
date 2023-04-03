@@ -1,5 +1,6 @@
 import {
     Button,
+    Checkbox,
     FormControl,
     FormLabel,
     Input,
@@ -17,7 +18,7 @@ import {
     Stack,
 } from '@chakra-ui/react';
 import axios from 'axios';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 export default function AddCampaigns(props) {
     const [campaignName, setCampaignName] = useState("");
@@ -29,6 +30,7 @@ export default function AddCampaigns(props) {
     const [mcc, setMcc] = useState("0");
     const [foreignCurrency, setForeignCurrency] = useState(false);
     const [merchant, setMerchant] = useState("");
+    const base_reward = useRef();
 
 
     const addCampaign = () => {
@@ -42,6 +44,7 @@ export default function AddCampaigns(props) {
         const body = {
             name: campaignName,
             min_spend: parseFloat(minSpend),
+            base_reward: base_reward.current.checked,
             start_date: startDate + ":00Z",
             end_date: endDate + ":00Z",
             reward_program: rewardProgram,
@@ -69,7 +72,6 @@ export default function AddCampaigns(props) {
                 },
             })
             .then((response) => {
-                console.log(response);
                 props.toast.closeAll();
                 props.toast({
                     title: "Success",
@@ -118,10 +120,10 @@ export default function AddCampaigns(props) {
                                 }}
                             >
                                 <Stack spacing={{ base: 0, md: "24px" }} fontSize={{ base: "small", md: "md" }} direction={{ base: "column", md: "row" }}>
-                                    <Radio size="sm" value="Shopping">Shopping</Radio>
-                                    <Radio size="sm" value="PremiumMiles">PremiumMiles</Radio>
-                                    <Radio size="sm" value="PlatinumMiles">PlatinumMiles</Radio>
-                                    <Radio size="sm" value="Freedom">Freedom</Radio>
+                                    <Radio size="sm" value="scis_shopping">Shopping</Radio>
+                                    <Radio size="sm" value="scis_premiummiles">PremiumMiles</Radio>
+                                    <Radio size="sm" value="scis_platinummiles">PlatinumMiles</Radio>
+                                    <Radio size="sm" value="scis_freedom">Freedom</Radio>
                                 </Stack>
                             </RadioGroup>
 
@@ -144,6 +146,8 @@ export default function AddCampaigns(props) {
                             >
                                 <NumberInputField fontSize="small" />
                             </NumberInput>
+                            <FormLabel mt={4} fontSize="sm" fontWeight={600}>Base reward</FormLabel>
+                            <Checkbox size="sm" ref={base_reward}>Yes, applicable</Checkbox>
                             <FormLabel mt={4} fontSize="sm" fontWeight={600}>For Foreign Currency</FormLabel>
                             <RadioGroup
                                 onChange={(event) => {

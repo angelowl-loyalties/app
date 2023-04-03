@@ -20,17 +20,17 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { FaCcAmex, FaCcDiscover, FaCcMastercard, FaCcVisa, FaCreditCard } from 'react-icons/fa';
 
-
+import Loading from '../components/Loading';
 import Navbar from '../components/Navbar';
 import RewardPanel from '../components/RewardPanel';
-import Loading from '../components/Loading';
+
 
 export default function Transactions() {
     const router = useRouter()
     const [cards, setCards] = useState({})
     const [loading, setLoading] = useState(true)
     const [search, setSearch] = useState('')
-
+    const [tabIndex, setTabIndex] = useState(0)
     const { data: session, status } = useSession({
         required: true,
         onUnauthenticated() {
@@ -44,18 +44,23 @@ export default function Transactions() {
         }
         axios.get(`https://itsag1t2.com/user/${session.userId}`, { headers: { Authorization: session.id } })
             .then((response) => {
-                console.log(response.data.data.CreditCards)
                 setCards(response.data.data.CreditCards)
                 setLoading(false)
             })
-
 
     }, [session])
 
 
     const handleSearch = (e) => {
-        console.log(e.target.value)
         setSearch(e.target.value)
+    }
+
+    const handleIndexChange = (event) => {
+        setTabIndex(parseInt(event.target.value, 10))
+    }
+
+    const handleTabsChange = (index) => {
+        setTabIndex(index)
     }
 
     return (
@@ -71,26 +76,26 @@ export default function Transactions() {
                                 </Text>
                             </VStack>
                         </HStack>
-                        <Tabs variant='solid-rounded' colorScheme="purple" w="full">
+                        <Tabs variant='solid-rounded' colorScheme="purple" w="full" isLazy index={tabIndex} onChange={handleTabsChange}>
                             <HStack>
                                 <Select
-                                    w="25%"
-                                    fontSize="small"
+                                    w="30%"
+                                    fontSize="xs"
                                     display={{ base: "inline-block", lg: "none" }}
-                                    placeholder='All'>
-                                    {cards.map((card) => {
+                                    onChange={handleIndexChange} >
+                                    {cards.map((card, index) => {
                                         const num = card.card_pan.slice(-4)
                                         switch (card.card_pan.charAt(0)) {
                                             case '3':
-                                                return <option fontSize='sm' style={{ borderRadius: 'lg' }} key={num}>(AMEX) {num}</option>
+                                                return <option fontSize='sm' style={{ borderRadius: 'lg' }} key={num} value={index}>(AMEX) {num}</option>
                                             case '4':
-                                                return <option fontSize='sm' style={{ borderRadius: 'lg' }} key={num}>(VISA) {num}</option>
+                                                return <option fontSize='sm' style={{ borderRadius: 'lg' }} key={num} value={index}>(VISA) {num}</option>
                                             case '5':
-                                                return <option fontSize='sm' style={{ borderRadius: 'lg' }} key={num}>(MCC) {num}</option>
+                                                return <option fontSize='sm' style={{ borderRadius: 'lg' }} key={num} value={index}>(MCC) {num}</option>
                                             case '6':
-                                                return <option fontSize='sm' style={{ borderRadius: 'lg' }} key={num}>(DISC) {num}</option>
+                                                return <option fontSize='sm' style={{ borderRadius: 'lg' }} key={num} value={index}>(DISC) {num}</option>
                                             default:
-                                                return <option fontSize='sm' style={{ borderRadius: 'lg' }} key={num}>(OTHERS){num}</option>
+                                                return <option fontSize='sm' style={{ borderRadius: 'lg' }} key={num} value={index}>(OTHERS){num}</option>
                                         }
                                     })}
                                 </Select>
@@ -113,18 +118,17 @@ export default function Transactions() {
                                         })}
                                     </TabList>
                                 </Box>
-                                <Spacer />size={20}
-                                <InputGroup w="30%">
+                                <Spacer w={0} />
+                                <InputGroup w={{ base: "60%", md: "30%" }}>
                                     <InputLeftElement
                                         pointerEvents='none'><Search2Icon color='gray.300' /></InputLeftElement>
-                                    <Input type='text' placeholder='Search' fontSize='sm' onChange={handleSearch} />
+                                    <Input type='text' fontSize={{ base: "xs", md: "sm" }} placeholder="Search for ID, merchant, programme" onChange={handleSearch} />
                                 </InputGroup>
                             </HStack>
-
                             <TabPanels>
                                 {cards.map((card) => {
                                     return (
-                                        <RewardPanel card={card} key={card.id} search={search}/>
+                                        <RewardPanel card={card} key={card.id} search={search} />
                                     )
                                 })}
                             </TabPanels>

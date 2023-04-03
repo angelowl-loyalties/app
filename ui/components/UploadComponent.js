@@ -18,12 +18,10 @@ export default function Upload(props) {
 
     const handleDrop = (event) => {
         event.preventDefault();
-        console.log("Changed transaction", event.dataTransfer.files[0]);
         setFile(event.dataTransfer.files[0]);
     };
     const handleSeedDrop = (event) => {
         event.preventDefault();
-        console.log("Changed seed", event.dataTransfer.files[0]);
         setSeedFile(event.dataTransfer.files[0]);
     };
 
@@ -65,13 +63,11 @@ export default function Upload(props) {
                     }
                     f_file = file
                 }
-                console.log(response)
                 axios.put(response.data, f_file, {
                     headers: {
                         'Content-Type': 'text/csv'
                     }
                 }).then((response) => {
-                    console.log(response)
                     props.toast.closeAll()
                     props.toast({
                         title: 'Success',

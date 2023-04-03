@@ -1,18 +1,17 @@
-import { HStack, Stat, StatGroup, StatHelpText, StatLabel, StatNumber, Text, VStack } from '@chakra-ui/react';
+import { HStack, Text, VStack } from '@chakra-ui/react';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
-import Navbar from '../components/Navbar';
 import Loading from '../components/Loading';
+import Navbar from '../components/Navbar';
 
 export default function Home() {
     const [loading, setLoading] = useState(true)
     const [cards, setCards] = useState({})
     const router = useRouter()
     const types = ['scis_shopping', 'scis_freedom', 'scis_platinummiles', 'scis_premiummiles']
-
     const { data: session, status } = useSession({
         required: true,
         onUnauthenticated() {
@@ -24,15 +23,12 @@ export default function Home() {
         if (!session || session.is_new) {
             return
         }
-
         axios.get(`https://itsag1t2.com/user/${session.userId}`, { headers: { Authorization: session.id } })
             .then((response) => {
                 setCards(response.data.data.CreditCards)
                 response.data.data.CreditCards.map((card, index) => {
-                    console.log(index)
                     axios.get(`https://itsag1t2.com/reward/total/${card.id}`, { headers: { Authorization: session.id } })
                         .then((response) => {
-                            console.log(cards[index])
                             cards[index].total = response.data.data
 
                             axios.get(`https://itsag1t2.com/card/type?${card.card_type}`, { headers: { Authorization: session.id } })
@@ -53,7 +49,6 @@ export default function Home() {
             })
     }, [session])
 
-
     return (
         <>
             {loading ? <Loading /> :
@@ -65,26 +60,7 @@ export default function Home() {
                                 Supercharge your everyday credit cards and get rewarded when you spend
                             </Text>
                             <HStack spacing={28}>
-                                {types.map((type) => {
-                                    const card = cards.filter((card) => {
-                                        // console.log(card)
-                                    })
-                                    if (card.length === 0) {
-                                        return
-                                    }
-                                    const total = cards.reduce((total, card) => total + card.total, 0)
-                                    return (
-                                        <StatGroup key={type}>
-                                            <Stat>
-                                                <StatLabel>{card[0].card_type.reward_unit}</StatLabel>
-                                                <StatNumber>{total}</StatNumber>
-                                                <StatHelpText>
-                                                    23.36%
-                                                </StatHelpText>
-                                            </Stat>
-                                        </StatGroup>
-                                    )
-                                })}
+
                             </HStack>
                         </VStack>
                     </HStack>

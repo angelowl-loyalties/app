@@ -52,7 +52,6 @@ export default function AddExclusions(props) {
                 },
             })
             .then((response) => {
-                console.log(response);
                 props.toast.closeAll();
                 props.toast({
                     title: "Success",

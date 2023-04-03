@@ -46,7 +46,6 @@ export default function LoginPage(props) {
 				redirect: false,
 			}).then(({ ok, error }) => {
 				if (ok) {
-					console.log("OK");
 					router.push("/");
 				} else {
 					setLoading(false);

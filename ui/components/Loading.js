@@ -10,7 +10,6 @@ export default function Loading() {
     const { data: session, status } = useSession({
         required: true,
         onUnauthenticated() {
-            console.log(session)
             router.push("/login")
         },
     });

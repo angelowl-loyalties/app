@@ -251,7 +251,7 @@ function Navbar(props) {
                             </Stack>
                         </Box>
                         <HStack>
-                            <Flex align="center">
+                            <Flex align="center" pt={2}>
                                 <NextLink href="/" passHref>
                                     <img
                                         src="https://ik.imagekit.io/alvinowyong/g1t2/ascenda.webp"
@@ -287,6 +287,7 @@ function Navbar(props) {
                                             icon={<BellIcon />}
                                             variant="ghost"
                                             aria-label="Options"
+                                            pt={4}
                                         />
                                         <MenuList fontSize="xs" textAlign="center">
                                             You have got no messages

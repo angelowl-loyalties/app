@@ -3,7 +3,6 @@ import { ChakraProvider } from '@chakra-ui/react'
 import theme from "../lib/theme"
 import { SessionProvider } from "next-auth/react"
 
-
 function MyApp({ Component, pageProps: { session, ...pageProps }, }) {
     return (
         <SessionProvider session={session}>
@@ -13,6 +12,5 @@ function MyApp({ Component, pageProps: { session, ...pageProps }, }) {
         </SessionProvider>
     )
 }
-
 
 export default MyApp

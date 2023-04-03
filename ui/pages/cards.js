@@ -24,6 +24,7 @@ import { GiLibertyWing, GiShoppingBag } from 'react-icons/gi';
 import { IoDiamond } from 'react-icons/io5';
 import { MdOutlineFlightTakeoff } from 'react-icons/md';
 
+import Loading from '../components/Loading';
 import Navbar from '../components/Navbar';
 
 export default function Cards() {
@@ -84,7 +85,6 @@ export default function Cards() {
                 freedom = response.data.data.CreditCards.filter((el) => {
                     return el.card_type == 'scis_freedom';
                 })
-                console.log(response.data.data.CreditCards)
                 setData([response.data.data.CreditCards, amex, visa, mastercard, discover, others])
                 setLoading(false)
             }).catch((error) => {
@@ -108,19 +108,21 @@ export default function Cards() {
     function renderIssuer(card_pan) {
         switch (card_pan.charAt(0)) {
             case '3':
-                return <FaCcAmex size={70} />
+                return <FaCcAmex size={60} />
             case '4':
-                return <FaCcVisa size={70} />
+                return <FaCcVisa size={60} />
             case '5':
-                return <FaCcMastercard size={70} />
+                return <FaCcMastercard size={60} />
             case '6':
-                return <FaCcDiscover size={70} />
+                return <FaCcDiscover size={60} />
             default:
-                return <FaCreditCard size={70} />
+                return <FaCreditCard size={60} />
         }
     }
 
     return (
+        <>
+        { loading ? <Loading /> : 
         <Navbar user>
             <VStack alignItems='start' w="full">
                 <HStack mb={{ base: 4, lg: 6 }}>
@@ -215,7 +217,6 @@ export default function Cards() {
                                         <Text fontSize='sm' fontWeight={500} color='#d9d9d9' lineHeight='7'>No cards found</Text></Container> :
                                         <Accordion allowMultiple w="full">
                                             {cards1 && cards1.map((card) => {
-                                                console.log(card.card_pan)
                                                 return (
                                                     <AccordionItem key={card.id}>
                                                         <AccordionButton p={{ base: 1, lg: 3 }}>
@@ -239,7 +240,7 @@ export default function Cards() {
                     </TabPanels>
                 </Tabs>
             </VStack>
-        </Navbar>
+        </Navbar>}</>
     );
 }
 
