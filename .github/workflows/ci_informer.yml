@@ -2,13 +2,6 @@ name: Continuous Integration (Informer)
 
 on:
   push:
-    branches: [ '**' ]
-    paths:
-      - ".chart/**"
-      - "informer/**"
-      - .github/workflows/ci_informer.yml
-      - .github/workflows/workflow_container.yml
-  pull_request:
     branches: [ master ]
     paths:
       - ".chart/**"

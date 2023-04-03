@@ -2,12 +2,6 @@ name: Continuous Integration (Pet Rock)
 
 on:
   push:
-    branches: [ '**' ]
-    paths:
-      - "pet-rock/**"
-      - .github/workflows/ci_pet-rock.yml
-      - .github/workflows/workflow_lambda.yml
-  pull_request:
     branches: [ master ]
     paths:
       - "pet-rock/**"

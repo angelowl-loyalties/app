@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"html/template"
 	"io"
 	"log"
 	"net/http"
@@ -74,15 +75,6 @@ const YYYYMMDD = "2006-01-02"
 
 // If any of the connections fail, lambda won't run
 func init() {
-	// os.Getenv("CASSANDRA_CONN_STRING")
-	// dbHost := os.Getenv("CASSANDRA_CONN_STRING")
-	// dbPort := os.Getenv("CASSANDRA_PORT")
-	// dbKeyspace := os.Getenv("CASSANDRA_PORT")
-	// dbUser := os.Getenv("CASSANDRA_USERNAME")
-	// dbPass := os.Getenv("CASSANDRA_PASSWORD")
-	// dbUseSSL := false
-	// ConnectCassandra(dbHost, dbPort, dbUser, dbPass, dbKeyspace, dbUseSSL)
-
 	informerUrl = os.Getenv("INFORMER_ENDPOINT")
 	if informerUrl == "" {
 		log.Fatalln("INFORMER_ENDPOINT environment variable is not set")
@@ -92,35 +84,6 @@ func init() {
 
 	CreateSESSession()
 }
-
-// func ConnectCassandra(dbHost, dbPort, username, password, keyspace string, useSSL bool) {
-// 	cluster := gocql.NewCluster(dbHost)
-// 	cluster.Keyspace = keyspace
-// 	cluster.Consistency = gocql.Quorum
-
-// 	dbPortInt, err := strconv.Atoi(dbPort)
-// 	if err == nil {
-// 		cluster.Port = dbPortInt
-// 	}
-
-// 	cluster.Authenticator = gocql.PasswordAuthenticator{
-// 		Username: username,
-// 		Password: password,
-// 	}
-
-// 	if useSSL {
-// 		cluster.SslOpts = &gocql.SslOptions{
-// 			CaPath: "./sf-class2-root.crt",
-// 		}
-// 	}
-
-// 	createSession, err := cluster.CreateSession()
-// 	if err != nil {
-// 		log.Fatalln(err)
-// 	}
-// 	log.Println("Connected to Rewards Cassandra DB")
-// 	Cassandra = createSession
-// }
 
 func ConnectPostgres(dbConnString string) {
 	db, err := gorm.Open(postgres.Open(dbConnString), &gorm.Config{})
@@ -141,24 +104,6 @@ func CreateSESSession() {
 	// Create an SES session.
 	svc = ses.New(sess)
 }
-
-// func GetTodaysRewards() (rewards []Reward, _ error) {
-// todaysDate := time.Now().Format(YYYYMMDD)
-// // Create a string literal with open close quotation marks
-// todaysDateLiteral := fmt.Sprintf("'%s'", todaysDate)
-
-// 	// Equivalent to the following query
-// 	// select * from angelowl.rewards where created_at == {today's date} and reward_amount > 0 ALLOW FILTERING;
-// stmt, _ := qb.Select("angelowl.rewards").Where(qb.EqLit("created_at", todaysDateLiteral)).Where(qb.GtLit("reward_amount", "0")).AllowFiltering().ToCql()
-
-// err := gocqlx.Select(&rewards, Cassandra.Query(stmt))
-// if err != nil {
-// 	log.Println(err)
-// 	return nil, err
-// }
-
-// 	return rewards, nil
-// }
 
 func GetTodaysRewards() ([]Reward, error) {
 	resp, err := http.Get(informerUrl + "/reward/today")
@@ -256,21 +201,38 @@ func GetRewardsByEmailAndCardID(rewards []Reward, cardIDs []uuid.UUID) (map[stri
 }
 
 func SendEmail(recipient string, cardRewards map[uuid.UUID][]Reward) error {
-	// Assemble the body of the email
-	// TODO: Replace with this with a pretty template
-	htmlBody := ""
-
-	for cardId, rewards := range cardRewards {
-		htmlBody += "Reward For Card ID: " + cardId.String()
-		for _, reward := range rewards {
-			rewardStr, err := json.Marshal(reward)
-			if err != nil {
-				fmt.Println("JSON parse reward failed")
-			}
-			htmlBody += string(rewardStr) + "\n"
-		}
-		htmlBody += "\n"
+	htmlBytes, err := os.ReadFile("/var/task/template.html")
+	if err != nil {
+		fmt.Println("Error reading HTML template file:", err)
+		return err
 	}
+
+	var allRewards []Reward
+
+	for _, rewards := range cardRewards {
+		allRewards = append(allRewards, rewards...)
+	}
+	tmpl, err := template.New("email").Parse(string(htmlBytes))
+	if err != nil {
+		fmt.Println("Error parsing template:", err)
+		return err
+	}
+	data := struct {
+		Email   string
+		Rewards []Reward
+	}{
+		Email:   recipient,
+		Rewards: allRewards,
+	}
+	var buf bytes.Buffer
+	err = tmpl.Execute(&buf, data)
+	if err != nil {
+		fmt.Println("Error rendering template:", err)
+		return err
+	}
+
+	// Assemble the body of the email
+	htmlBody := buf.String()
 
 	// Assemble the email.
 	input := &ses.SendEmailInput{
@@ -296,7 +258,7 @@ func SendEmail(recipient string, cardRewards map[uuid.UUID][]Reward) error {
 	}
 
 	// Attempt to send the email.
-	_, err := svc.SendEmail(input)
+	_, err = svc.SendEmail(input)
 
 	// Display error messages if they occur.
 	if err != nil {

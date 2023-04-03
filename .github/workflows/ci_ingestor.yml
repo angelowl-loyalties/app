@@ -2,12 +2,6 @@ name: Continuous Integration (Ingestor)
 
 on:
   push:
-    branches: [ '**' ]
-    paths:
-      - "ingestor/**"
-      - .github/workflows/ci_ingestor.yml
-      - .github/workflows/workflow_lambda.yml
-  pull_request:
     branches: [ master ]
     paths:
       - "ingestor/**"
