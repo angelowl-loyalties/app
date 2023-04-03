@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"log"
 	"math"
 	"net/http"
 	"strconv"
@@ -51,6 +52,11 @@ func GetRewardsByCardID(c *gin.Context) {
 	}
 
 	rewardsCount := len(rewards)
+	if rewardsCount == 0 {
+		// zero rewards
+		c.JSON(http.StatusOK, gin.H{"page_no": 1, "total_rewards": rewardsCount, "data": rewards})
+		return
+	}
 	pageSizeReq := c.DefaultQuery("page_size", "20")
 	pageNumReq := c.DefaultQuery("page_no", "1")
 	pageSize, err := strconv.Atoi(pageSizeReq)
@@ -71,7 +77,9 @@ func GetRewardsByCardID(c *gin.Context) {
 
 	// calculate number of pages and check that requested page number is valid
 	totalPages := int(math.Ceil(float64(rewardsCount) / float64(pageSize)))
+	log.Println("total pages: ", totalPages)
 	if pageNum > totalPages || pageNum < 1 {
+		// non-zero rewards
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid page number"})
 		return
 	}
