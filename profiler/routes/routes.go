@@ -23,6 +23,7 @@ func InitialiseRoutes(router *gin.Engine) {
 	auth := router.Group("/auth")
 	{
 		auth.POST("/login", internal.LoginUser)
+		auth.POST("/password", internal.ChangeDefaultPassword)
 	}
 
 	user := router.Group("/user")

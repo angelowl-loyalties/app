@@ -1,6 +1,8 @@
 definitions:
   models.AuthResponse:
     properties:
+      is_new:
+        type: boolean
       token:
         type: string
       user_id:
@@ -58,6 +60,22 @@ definitions:
     - reward_program
     - reward_unit
     type: object
+  models.ChangeDefaultPassword:
+    properties:
+      confirm_password:
+        type: string
+      email:
+        type: string
+      old_password:
+        type: string
+      password:
+        type: string
+    required:
+    - confirm_password
+    - email
+    - old_password
+    - password
+    type: object
   models.SignIn:
     properties:
       email:
@@ -83,6 +101,9 @@ definitions:
         type: string
       id:
         type: string
+      isNew:
+        description: is new user, password not changed from default
+        type: boolean
       last_name:
         type: string
       phone:
@@ -141,7 +162,29 @@ paths:
             $ref: '#/definitions/models.AuthResponse'
       summary: User login
       tags:
-      - user
+      - auth
+  /auth/password:
+    post:
+      consumes:
+      - application/json
+      description: Endpoint allows a user to change their default password
+      parameters:
+      - description: Credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/models.ChangeDefaultPassword'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: Change default password
+      tags:
+      - auth
   /card:
     get:
       description: Get all cards

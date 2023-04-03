@@ -43,6 +43,13 @@ type AuthResponse struct {
 	IsNew  bool   `json:"is_new"`
 }
 
+type ChangeDefaultPassword struct {
+	Email           string `json:"email" binding:"required,email"`
+	OldPassword     string `json:"old_password" binding:"required"`
+	Password        string `json:"password" binding:"required"`
+	ConfirmPassword string `json:"confirm_password" binding:"required,eqfield=Password"`
+}
+
 //func (user *User) BeforeCreate(tx *gorm.DB) (err error) {
 //	user.ID = uuid.New()
 //	return

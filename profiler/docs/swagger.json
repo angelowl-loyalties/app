@@ -14,7 +14,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "user"
+                    "auth"
                 ],
                 "summary": "User login",
                 "parameters": [
@@ -33,6 +33,40 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/models.AuthResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/password": {
+            "post": {
+                "description": "Endpoint allows a user to change their default password",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Change default password",
+                "parameters": [
+                    {
+                        "description": "Credentials",
+                        "name": "credentials",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ChangeDefaultPassword"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
                         }
                     }
                 }
@@ -464,6 +498,9 @@
         "models.AuthResponse": {
             "type": "object",
             "properties": {
+                "is_new": {
+                    "type": "boolean"
+                },
                 "token": {
                     "type": "string"
                 },
@@ -546,6 +583,29 @@
                 }
             }
         },
+        "models.ChangeDefaultPassword": {
+            "type": "object",
+            "required": [
+                "confirm_password",
+                "email",
+                "old_password",
+                "password"
+            ],
+            "properties": {
+                "confirm_password": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "old_password": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                }
+            }
+        },
         "models.SignIn": {
             "type": "object",
             "required": [
@@ -582,6 +642,10 @@
                 },
                 "id": {
                     "type": "string"
+                },
+                "isNew": {
+                    "description": "is new user, password not changed from default",
+                    "type": "boolean"
                 },
                 "last_name": {
                     "type": "string"
