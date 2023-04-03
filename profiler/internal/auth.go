@@ -111,7 +111,7 @@ func ChangeDefaultPassword(c *gin.Context) {
 	user.Password = hashedPassword
 	user.IsNew = false
 
-	user, err = models.UserSave(user)
+	_, err = models.UserSave(user)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
