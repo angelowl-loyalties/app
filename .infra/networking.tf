@@ -16,6 +16,13 @@ resource "aws_internet_gateway" "angelowl" {
   }
 }
 
+# S3
+
+resource "aws_vpc_endpoint" "s3" {
+  vpc_id       = aws_vpc.angelowl.id
+  service_name = "com.amazonaws.ap-southeast-1.s3"
+}
+
 # Private subnets and their routing tables
 
 resource "aws_subnet" "angelowl_private_a" {

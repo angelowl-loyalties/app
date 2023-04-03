@@ -8,7 +8,7 @@ resource "aws_security_group" "angelowl_ssh" {
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["10.8.0.0/14"]
   }
 }
 
@@ -22,7 +22,7 @@ resource "aws_security_group" "angelowl_postgres" {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["10.8.0.0/14"]
   }
 }
 
@@ -36,7 +36,7 @@ resource "aws_security_group" "angelowl_kafka" {
     from_port   = 9092
     to_port     = 9096
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["10.8.0.0/14"]
   }
 
   ingress {
@@ -44,7 +44,7 @@ resource "aws_security_group" "angelowl_kafka" {
     from_port   = 2181
     to_port     = 2182
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["10.8.0.0/14"]
   }
 }
 
@@ -72,7 +72,7 @@ resource "aws_security_group" "angelowl_kubeservices" {
     from_port   = 30000
     to_port     = 32767
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["10.8.0.0/14"]
   }
 
   egress {
@@ -80,30 +80,7 @@ resource "aws_security_group" "angelowl_kubeservices" {
     from_port   = 30000
     to_port     = 32767
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    description = "Kubernetes Services for Trusted Network"
-    from_port   = 0
-    to_port     = 0
-    protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/8"]
-  }
-}
-
-
-resource "aws_security_group" "angelowl_keyspaces" {
-  name        = "angelowl-keyspaces-access"
-  description = "Allows inbound Cassandra Keyspaces traffic"
-  vpc_id      = aws_vpc.angelowl.id
-
-  ingress {
-    description = "Cassandra Keyspaces"
-    from_port   = 9142
-    to_port     = 9142
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["10.8.0.0/14"]
   }
 }
 
