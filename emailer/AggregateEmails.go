@@ -42,9 +42,7 @@ type Reward struct {
 }
 
 type ParseReward struct {
-	Data struct {
-		Rewards []Reward
-	} `json:"data"`
+	Rewards []Reward `json:"data"`
 }
 
 type Card struct {
@@ -188,7 +186,7 @@ func GetTodaysRewards() ([]Reward, error) {
 	}
 
 	_ = resp.Body.Close()
-	return parseReward.Data.Rewards, nil
+	return parseReward.Rewards, nil
 }
 
 func GetUniqueCardIds(rewards []Reward) []uuid.UUID {
