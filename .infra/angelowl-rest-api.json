@@ -2439,9 +2439,12 @@
           "type" : "object"
         },
         "Campaign" : {
-          "required" : [ "end_date", "mcc", "merchant", "name", "reward_amount", "reward_program", "start_date" ],
+          "required" : [ "base_reward", "end_date", "mcc", "merchant", "name", "reward_amount", "reward_program", "start_date" ],
           "type" : "object",
           "properties" : {
+            "base_reward": {
+                "type": "boolean"
+            },
             "end_date" : {
               "type" : "string",
               "description" : "should be later than Start"
