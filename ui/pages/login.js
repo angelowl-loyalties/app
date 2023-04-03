@@ -36,6 +36,7 @@ export default function Login(props) {
 
 	const handleLogin = async (e) => {
 		setLoading(true);
+		sessionStorage.setItem("user_email",email.current.value)
 		e.preventDefault();
 		if (email.current.value && password.current.value) {
 			signIn("credentials", {
@@ -47,6 +48,8 @@ export default function Login(props) {
 			}).then(({ ok, error }) => {
 				if (ok) {
 					console.log("OK");
+					console.log(session)
+					console.log(sessionStorage)
 					router.push("/");
 				} else {
 					setLoading(false);

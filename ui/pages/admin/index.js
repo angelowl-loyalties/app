@@ -56,7 +56,6 @@ export default function Home() {
                 headers: { Authorization: session.id },
             })
             .then((response) => {
-                console.log(response.data.data)
                 setCampaigns(response.data.data);
                 axios
                     .get(`https://itsag1t2.com/exclusion`, {
