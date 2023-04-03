@@ -159,7 +159,6 @@ func GetTodaysRewards() (rewards []Reward, _ error) {
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, errors.New("failed to fetch rewards")
@@ -170,6 +169,7 @@ func GetTodaysRewards() (rewards []Reward, _ error) {
 		return nil, err
 	}
 
+	_ = resp.Body.Close()
 	return rewards, nil
 }
 
