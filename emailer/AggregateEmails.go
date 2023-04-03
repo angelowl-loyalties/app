@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -159,6 +160,14 @@ func GetTodaysRewards() (rewards []Reward, _ error) {
 	if err != nil {
 		return nil, err
 	}
+
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		log.Fatal(err)
+	}
+	bodyString := string(bodyBytes)
+
+	fmt.Println(bodyString)
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, errors.New("failed to fetch rewards")
