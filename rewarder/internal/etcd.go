@@ -86,6 +86,7 @@ func handleWatchEvents(watchCh clientv3.WatchChan, key string) {
 					baseCampaignMutex.Lock()
 					BaseCampaignsEtcd[string(event.Kv.Key)] = campaign
 					baseCampaignMutex.Unlock()
+					fmt.Printf("Etcd Put event handled for base campaign: %s", string(event.Kv.Key))
 				} else if key == "promo_campaign" {
 					var campaign models.Campaign
 					err := json.Unmarshal(event.Kv.Value, &campaign)
@@ -95,6 +96,7 @@ func handleWatchEvents(watchCh clientv3.WatchChan, key string) {
 					promoCampaignMutex.Lock()
 					PromoCampaignsEtcd[string(event.Kv.Key)] = campaign
 					promoCampaignMutex.Unlock()
+					fmt.Printf("Etcd Put event handled for promo campaign: %s", string(event.Kv.Key))
 				} else if key == "exclusion" {
 					var exclusion models.Exclusion
 					err := json.Unmarshal(event.Kv.Value, &exclusion)
@@ -104,6 +106,7 @@ func handleWatchEvents(watchCh clientv3.WatchChan, key string) {
 					exclusionsMutex.Lock()
 					ExclusionsEtcd[string(event.Kv.Key)] = exclusion
 					exclusionsMutex.Unlock()
+					fmt.Printf("Etcd Put event handled for exclusion: %s", string(event.Kv.Key))
 				}
 				// testPrint()
 			case clientv3.EventTypeDelete:
@@ -112,14 +115,17 @@ func handleWatchEvents(watchCh clientv3.WatchChan, key string) {
 					baseCampaignMutex.Lock()
 					delete(BaseCampaignsEtcd, string(event.Kv.Key))
 					baseCampaignMutex.Unlock()
+					fmt.Printf("Etcd Delete event handled for base campaign: %s", string(event.Kv.Key))
 				} else if key == "promo_campaign" {
 					promoCampaignMutex.Lock()
 					delete(PromoCampaignsEtcd, string(event.Kv.Key))
 					promoCampaignMutex.Unlock()
+					fmt.Printf("Etcd Delete event handled for promo campaign: %s", string(event.Kv.Key))
 				} else if key == "exclusion" {
 					exclusionsMutex.Lock()
 					delete(ExclusionsEtcd, string(event.Kv.Key))
 					exclusionsMutex.Unlock()
+					fmt.Printf("Etcd Delete event handled for exclusion: %s", string(event.Kv.Key))
 				}
 				//testPrint()
 			}
