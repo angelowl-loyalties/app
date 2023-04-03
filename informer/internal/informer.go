@@ -71,7 +71,13 @@ func GetRewardsByCardID(c *gin.Context) {
 
 	// calculate number of pages and check that requested page number is valid
 	totalPages := int(math.Ceil(float64(rewardsCount) / float64(pageSize)))
+	if totalPages == 0 {
+		// zero rewards
+		c.JSON(http.StatusOK, gin.H{"page_no": 1, "total_rewards": rewardsCount, "data": nil})
+		return
+	}
 	if pageNum > totalPages || pageNum < 1 {
+		// non-zero rewards
 		c.JSON(http.StatusBadRequest, gin.H{"error": "invalid page number"})
 		return
 	}
