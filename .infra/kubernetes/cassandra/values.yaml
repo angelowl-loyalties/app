@@ -1,0 +1,17 @@
+replicaCount: 3
+
+dbUser:
+  name: cassandra
+
+persistence:
+  enabled: true
+  storageClass: "gp2"
+
+service:
+  type: NodePort
+  ports:
+    cql: 9042
+    metrics: 8080
+  nodePorts:
+    cql: 30942
+    metrics: 30943
