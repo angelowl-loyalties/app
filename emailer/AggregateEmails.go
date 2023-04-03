@@ -1,10 +1,12 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -170,17 +172,17 @@ func GetTodaysRewards() ([]Reward, error) {
 		return nil, errors.New("failed to fetch rewards")
 	}
 
-	// bodyBytes, err := io.ReadAll(resp.Body)
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// bodyBuffer := bytes.NewBuffer(bodyBytes)
+	bodyBytes, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+	bodyBuffer := bytes.NewBuffer(bodyBytes)
 
-	// fmt.Println(bodyBuffer.String())
+	fmt.Println(bodyBuffer.String())
 
 	var parseReward ParseReward
 
-	err = json.NewDecoder(resp.Body).Decode(&parseReward)
+	err = json.NewDecoder(bodyBuffer).Decode(&parseReward)
 	if err != nil {
 		return nil, err
 	}
