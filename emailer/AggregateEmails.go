@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"io"
 	"log"
 	"net/http"
 	"os"
@@ -161,19 +160,22 @@ func GetTodaysRewards() (rewards []Reward, _ error) {
 		return nil, err
 	}
 
-	bodyBytes, err := io.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	bodyString := string(bodyBytes)
-
-	fmt.Println(bodyString)
-
 	if resp.StatusCode != http.StatusOK {
 		return nil, errors.New("failed to fetch rewards")
 	}
 
-	err = json.NewDecoder(resp.Body).Decode(&rewards)
+	// Create a new decoder that reads from the response body
+	dec := json.NewDecoder(resp.Body)
+
+	// Use a map[string]interface{} to decode the initial "data" key
+	var data map[string]interface{}
+	err = dec.Decode(&data)
+	if err != nil {
+		return nil, err
+	}
+
+	// Decode the "data" value into the rewards slice
+	err = json.Unmarshal(data["data"].([]byte), &rewards)
 	if err != nil {
 		return nil, err
 	}
