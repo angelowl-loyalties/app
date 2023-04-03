@@ -39,6 +39,12 @@ type Reward struct {
 	Remarks         string     `json:"remarks"`          // cassandra text
 }
 
+type ParseReward struct {
+	Data struct {
+		Rewards []Reward
+	} `json:"data"`
+}
+
 type Card struct {
 	ID               uuid.UUID `json:"id"`
 	CardPan          string    `json:"card_pan"`
@@ -154,7 +160,7 @@ func CreateSESSession() {
 // 	return rewards, nil
 // }
 
-func GetTodaysRewards() (rewards []Reward, _ error) {
+func GetTodaysRewards() ([]Reward, error) {
 	resp, err := http.Get(informerUrl + "/reward/today")
 	if err != nil {
 		return nil, err
@@ -164,24 +170,15 @@ func GetTodaysRewards() (rewards []Reward, _ error) {
 		return nil, errors.New("failed to fetch rewards")
 	}
 
-	// Create a new decoder that reads from the response body
-	dec := json.NewDecoder(resp.Body)
+	var parseReward ParseReward
 
-	// Use a map[string]interface{} to decode the initial "data" key
-	var data map[string]interface{}
-	err = dec.Decode(&data)
-	if err != nil {
-		return nil, err
-	}
-
-	// Decode the "data" value into the rewards slice
-	err = json.Unmarshal(data["data"].([]byte), &rewards)
+	err = json.NewDecoder(resp.Body).Decode(&parseReward)
 	if err != nil {
 		return nil, err
 	}
 
 	_ = resp.Body.Close()
-	return rewards, nil
+	return parseReward.Data.Rewards, nil
 }
 
 func GetUniqueCardIds(rewards []Reward) []uuid.UUID {
