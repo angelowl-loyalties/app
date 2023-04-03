@@ -155,7 +155,7 @@ func CreateSESSession() {
 // }
 
 func GetTodaysRewards() (rewards []Reward, _ error) {
-	resp, err := http.Get(informerUrl + "/reward/total")
+	resp, err := http.Get(informerUrl + "/reward/today")
 	if err != nil {
 		return nil, err
 	}
@@ -324,7 +324,7 @@ func HandleRequest(ctx context.Context, placeholder Event) (string, error) {
 	for email, cardRewards := range mailMap {
 		err = SendEmail(email, cardRewards)
 		if err != nil {
-			log.Println("error sending email to "+ email, err)
+			log.Println("error sending email to "+email, err)
 		}
 	}
 
