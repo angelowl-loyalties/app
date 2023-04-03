@@ -155,7 +155,7 @@ func CreateSESSession() {
 // }
 
 func GetTodaysRewards() (rewards []Reward, _ error) {
-	resp, err := http.Get(informerUrl + "/total")
+	resp, err := http.Get(informerUrl + "/reward/total")
 	if err != nil {
 		return nil, err
 	}
@@ -310,16 +310,22 @@ type Event struct{}
 
 func HandleRequest(ctx context.Context, placeholder Event) (string, error) {
 	rewards, err := GetTodaysRewards()
-	log.Println("error getting today's rewards: ", err)
+	if err != nil {
+		log.Println("error getting today's rewards: ", err)
+	}
 
 	cards := GetUniqueCardIds(rewards)
 
 	mailMap, err := GetRewardsByEmailAndCardID(rewards, cards)
-	log.Println("error getting emails: ", err)
+	if err != nil {
+		log.Println("error getting emails: ", err)
+	}
 
 	for email, cardRewards := range mailMap {
 		err = SendEmail(email, cardRewards)
-		log.Println("error sending email to "+email, err)
+		if err != nil {
+			log.Println("error sending email to "+ email, err)
+		}
 	}
 
 	return "", err

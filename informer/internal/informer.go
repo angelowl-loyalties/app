@@ -122,7 +122,7 @@ func GetTotalRewardsByCardID(c *gin.Context) {
 // @Tags reward
 // @Produce json
 // @Success 200 {array} number
-// @Router /reward/total [get]
+// @Router /reward/today [get]
 func GetRewardsForToday(c *gin.Context) {
 	var rewards []models.Reward
 
