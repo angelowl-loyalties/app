@@ -21,12 +21,8 @@ export default function Home() {
     });
 
     useEffect(() => {
-        if (!session ) {
+        if (!session || session.is_new) {
             return
-        }
-
-        if (status != 'loading' && session.is_new){
-            router.push("/changePassword")
         }
 
         axios.get(`https://itsag1t2.com/user/${session.userId}`, { headers: { Authorization: session.id } })

@@ -89,6 +89,9 @@ function RewardPanel(props) {
     }
 
     useEffect(() => {
+        if (!props) {
+            return
+        }
         // setData([{"card_id": "2aec331f-466f-4797-8fc7-6dfbe3c374e2","transaction_date": "2021-08-28","id": "a4cfcc3b-a23b-4935-9205-b035be2e597f","card_pan": "6771-8952-0817-9082","card_type": "Test","amount": 184.1562,"created_at": "2023-04-01","currency": "USD","mcc": 9909,"merchant": "Fay  Frami and Green","remarks": "","reward_amount": 0,"sgd_amount": 0,"transaction_id": "ac684683d92d61928fac505d0c77b6f55cdfe8f2b360bda514fc32d4710a69d6"},{"card_id": "2aec331f-466f-4797-8fc7-6dfbe3c374e2","transaction_date": "2021-08-28","id": "0b562d90-be44-42a7-a945-00ea0a4630d9","card_pan": "6771-8952-0817-9082","card_type": "","amount": 0.69,"created_at": "2023-04-01","currency": "SGD","mcc": 9650,"merchant": "Considine","remarks": "","reward_amount": 0,"sgd_amount": 0,"transaction_id": "6b6f9dcae3af9dffd22f7cf61e4d9ddc1edb8830c4fd67473b48b37e86d987b0"},{"card_id": "2aec331f-466f-4797-8fc7-6dfbe3c374e2","transaction_date": "2021-08-27","id": "2bd7a6b9-45f0-4629-89e5-51dd2c8c9dfb","card_pan": "6771-8952-0817-9082","card_type": "Test","amount": 7.04,"created_at": "2023-04-01","currency": "SGD","mcc": 8777,"merchant": "Smith  Terry and Anderson","remarks": "","reward_amount": 0,"sgd_amount": 0,"transaction_id": "b9bb18d63ec341aef1da6ca2698c183c13da3c63f45a36e77b85012fa397fa07"}])
         // setFilteredTransactions([{"card_id": "2aec331f-466f-4797-8fc7-6dfbe3c374e2","transaction_date": "2021-08-28","id": "a4cfcc3b-a23b-4935-9205-b035be2e597f","card_pan": "6771-8952-0817-9082","card_type": "Test","amount": 184.1562,"created_at": "2023-04-01","currency": "USD","mcc": 9909,"merchant": "Fay  Frami and Green","remarks": "","reward_amount": 0,"sgd_amount": 0,"transaction_id": "ac684683d92d61928fac505d0c77b6f55cdfe8f2b360bda514fc32d4710a69d6"},{"card_id": "2aec331f-466f-4797-8fc7-6dfbe3c374e2","transaction_date": "2021-08-28","id": "0b562d90-be44-42a7-a945-00ea0a4630d9","card_pan": "6771-8952-0817-9082","card_type": "","amount": 0.69,"created_at": "2023-04-01","currency": "SGD","mcc": 9650,"merchant": "Considine","remarks": "","reward_amount": 0,"sgd_amount": 0,"transaction_id": "6b6f9dcae3af9dffd22f7cf61e4d9ddc1edb8830c4fd67473b48b37e86d987b0"},{"card_id": "2aec331f-466f-4797-8fc7-6dfbe3c374e2","transaction_date": "2021-08-27","id": "2bd7a6b9-45f0-4629-89e5-51dd2c8c9dfb","card_pan": "6771-8952-0817-9082","card_type": "Test","amount": 7.04,"created_at": "2023-04-01","currency": "SGD","mcc": 8777,"merchant": "Smith  Terry and Anderson","remarks": "","reward_amount": 0,"sgd_amount": 0,"transaction_id": "b9bb18d63ec341aef1da6ca2698c183c13da3c63f45a36e77b85012fa397fa07"}])
         // setLoading(false)
@@ -127,11 +130,14 @@ function RewardPanel(props) {
 
         axios.get(`https://itsag1t2.com/card/type?${props.card.card_type}`, { headers: { Authorization: session.id } })
             .then((response) => {
-                setCardType(response.data.data[0])
+                console.log(props.card.card_type)
+                const card = response.data.data.find(card => card.card_type === props.card.card_type)
+                console.log(card)
+                setCardType(card)
             }).catch((error) => {
                 console.log(error)
             })
-    }, [])
+    }, [props])
 
     runningTotal = total
 
@@ -173,7 +179,7 @@ function RewardPanel(props) {
                                             <AccordionIcon display={{ base: "none", md: "block" }} />
                                         </AccordionButton>
                                         <AccordionPanel p={5} backgroundColor={transaction.reward_amount > 0 ? 'green.50' : "blue.50"}>
-                                                <Text fontSize={{ base: 'xs', md: 'sm' }} fontWeight={700} color={transaction.reward_amount > 0 ? 'green.400' : "blue.400"} w={{ base: 'fit-content', lg: "fit-content" }} >{transaction.reward_amount > 0 ? 'Confirmed' : 'Processed'}: {transaction.merchant} ({transaction.transaction_date}) <CheckCircleIcon color={'green.400'} display={transaction.reward_amount > 0 ? "block" : "none"}/></Text>
+                                                <Text fontSize={{ base: 'xs', md: 'sm' }} fontWeight={700} color={transaction.reward_amount > 0 ? 'green.400' : "blue.400"} w={{ base: 'fit-content', lg: "fit-content" }} display="flex" >{transaction.reward_amount > 0 ? 'Confirmed' : 'Processed'}: {transaction.merchant} ({transaction.transaction_date}) <CheckCircleIcon color={'green.400'} display={transaction.reward_amount > 0 ? "block" : "none"}/></Text>
                                                 <Text fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>ID: {transaction.id}<Button size="xs" variant="unstyled"><CopyIcon /></Button></Text>
                                                 <Text fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>Reward Programme: {`${transaction.card_type.replace("_", " ").toUpperCase()}`}</Text>
                                                 <Text fontSize={{ base: 'xs', md: 'sm' }} fontWeight={500} w={{ base: 'fit-content', lg: "fit-content" }}>Amount: {`${transaction.currency} ${transaction.amount}`}</Text>

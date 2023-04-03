@@ -64,17 +64,18 @@ export default function Campaigns() {
     });
     useEffect(() => {
         if (!session) {
-            console.log(status);
             return;
         }
         axios
             .get(`https://itsag1t2.com/campaign`, {
                 headers: { Authorization: session.id },
             }).then((response) => {
+                console.log(response.data.data)
                 setCampaigns(response.data.data);
                 axios.get(`https://itsag1t2.com/exclusion`, {
                     headers: { Authorization: session.id },
                 }).then((response) => {
+                    console.log(response.data.data)
                     setExclusions(response.data.data);
                     setLoading(false);
                 });
@@ -157,7 +158,7 @@ export default function Campaigns() {
                             <TabPanels>
                                 <TabPanel p={{ base: 0, lg: 4 }} mt={{ base: 4, lg: 0 }}>
                                     <Grid templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(3, 1fr)' }} gap={5}>
-                                        {campaigns.filter((campaign) => campaign.reward_program == "Shopping").map((campaign) => {
+                                        {campaigns.filter((campaign) => campaign.reward_program == "scis_shopping").map((campaign) => {
                                             const start = new Date(campaign.start_date);
                                             const end = new Date(campaign.end_date);
 
@@ -205,7 +206,7 @@ export default function Campaigns() {
                                 </TabPanel>
                                 <TabPanel p={{ base: 0, lg: 4 }} mt={{ base: 4, lg: 0 }}>
                                     <Grid templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(3, 1fr)' }} gap={5}>
-                                        {campaigns.filter((campaign) => campaign.reward_program == "PremiumMiles").map((campaign) => {
+                                        {campaigns.filter((campaign) => campaign.reward_program == "scis_premiummiles").map((campaign) => {
                                             const start = new Date(campaign.start_date);
                                             const end = new Date(campaign.end_date);
 
@@ -253,7 +254,7 @@ export default function Campaigns() {
                                 </TabPanel>
                                 <TabPanel p={{ base: 0, lg: 4 }} mt={{ base: 4, lg: 0 }}>
                                     <Grid templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(3, 1fr)' }} gap={5}>
-                                        {campaigns.filter((campaign) => campaign.reward_program == "PlatinumMiles").map((campaign) => {
+                                        {campaigns.filter((campaign) => campaign.reward_program == "scis_platinummiles").map((campaign) => {
                                             const start = new Date(campaign.start_date);
                                             const end = new Date(campaign.end_date);
 
@@ -301,7 +302,7 @@ export default function Campaigns() {
                                 </TabPanel>
                                 <TabPanel p={{ base: 0, lg: 4 }} mt={{ base: 4, lg: 0 }}>
                                     <Grid templateColumns={{ base: 'repeat(1, 1fr)', md: 'repeat(3, 1fr)' }} gap={5}>
-                                        {campaigns.filter((campaign) => campaign.reward_program == "Freedom").map((campaign) => {
+                                        {campaigns.filter((campaign) => campaign.reward_program == "scis_freedom").map((campaign) => {
                                             const start = new Date(campaign.start_date);
                                             const end = new Date(campaign.end_date);
 
