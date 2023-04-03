@@ -170,6 +170,8 @@ func GetTodaysRewards() (rewards []Reward, _ error) {
 	}
 
 	_ = resp.Body.Close()
+	b, _ := json.Marshal(rewards)
+	fmt.Printf("Rewards: %s", string(b))
 	return rewards, nil
 }
 
