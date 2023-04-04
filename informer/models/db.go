@@ -38,7 +38,7 @@ func InitDB(dbHost, dbPort, keyspace, table, username, password string, useSSL, 
 	defer session.Close()
 
 	err = session.Query("CREATE KEYSPACE IF NOT EXISTS " + keyspace +
-		" WITH REPLICATION = {'class' : 'SimpleStrategy', 'replication_factor' : 1};").Exec()
+		" WITH REPLICATION = {'class' : 'SimpleStrategy', 'replication_factor' : 3};").Exec()
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -66,7 +66,7 @@ func InitDB(dbHost, dbPort, keyspace, table, username, password string, useSSL, 
 func ConnectDB(dbHost, dbPort, username, password, keyspace string, useSSL bool) {
 	cluster := gocql.NewCluster(dbHost)
 	cluster.Keyspace = keyspace
-	cluster.Consistency = gocql.Two
+	cluster.Consistency = gocql.One
 
 	dbPortInt, err := strconv.Atoi(dbPort)
 	if err == nil {
