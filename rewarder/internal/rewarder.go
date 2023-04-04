@@ -132,33 +132,36 @@ func IsExcluded(transactionDate time.Time, mcc int) bool {
 	return false
 }
 
-func GetMatchingCampaigns(transaction models.Transaction) (campaign [][]models.Campaign) {
-	//Returns a 2D array of campaigns, [ [BaseMatchedCampaigns], [PromoMatchedCampaigns] ]
+func GetMatchingCampaigns(transaction models.Transaction) [][]models.Campaign {
+    //Returns a 2D array of campaigns, [ [BaseMatchedCampaigns], [PromoMatchedCampaigns] ]
 
-	var baseMatchingCampaigns []models.Campaign
-	var promoMatchingCampaigns []models.Campaign
-	var resultMatchingCampaigns [][]models.Campaign
+    var baseMatchingCampaigns []models.Campaign
+    var promoMatchingCampaigns []models.Campaign
 
-	baseCampaignMutex.RLock()
-	for _, campaign := range BaseCampaignsEtcd {
-		if IsCampaignMatch(campaign, transaction) {
-			baseMatchingCampaigns = append(baseMatchingCampaigns, campaign)
-		}
-	}
-	baseCampaignMutex.RUnlock()
+    baseCampaignMutex.RLock()
+    for _, campaign := range BaseCampaignsEtcd {
+        if IsCampaignMatch(campaign, transaction) {
+            baseMatchingCampaigns = append(baseMatchingCampaigns, campaign)
+        }
+    }
+    baseCampaignMutex.RUnlock()
 
-	promoCampaignMutex.RLock()
-	for _, campaign := range PromoCampaignsEtcd {
-		if IsCampaignMatch(campaign, transaction) {
-			promoMatchingCampaigns = append(promoMatchingCampaigns, campaign)
-		}
-	}
-	promoCampaignMutex.RUnlock()
+    promoCampaignMutex.RLock()
+    for _, campaign := range PromoCampaignsEtcd {
+        if IsCampaignMatch(campaign, transaction) {
+            promoMatchingCampaigns = append(promoMatchingCampaigns, campaign)
+        }
+    }
+    promoCampaignMutex.RUnlock()
 
-	resultMatchingCampaigns = append(resultMatchingCampaigns, baseMatchingCampaigns)
-	resultMatchingCampaigns = append(resultMatchingCampaigns, promoMatchingCampaigns)
+    resultMatchingCampaigns := [][]models.Campaign{baseMatchingCampaigns, promoMatchingCampaigns}
 
-	return resultMatchingCampaigns
+    // Return an empty slice instead of a nil slice when there are no promo campaigns that match the transaction
+    if promoMatchingCampaigns == nil {
+        resultMatchingCampaigns[1] = []models.Campaign{}
+    }
+
+    return resultMatchingCampaigns
 }
 
 func IsCampaignMatch(campaign models.Campaign, transaction models.Transaction) bool {
