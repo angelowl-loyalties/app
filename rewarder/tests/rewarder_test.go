@@ -1,10 +1,13 @@
 package tests
 
 import (
-	"reflect"
+	// "reflect"
 	"sort"
 	"testing"
 	"time"
+	"encoding/json"
+	"fmt"
+	"strings"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/internal"
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
@@ -43,41 +46,53 @@ func Test_IsExcluded(t *testing.T) {
 }
 
 func Test_getMatchingCampaigns(t *testing.T) {
-	etcdAddSeedData()
+    etcdAddSeedData()
 
-	baseMatchingCampaigns := []models.Campaign{}
-	baseMatchingCampaigns = append(baseMatchingCampaigns, internal.BaseCampaignsEtcd["001"])
-	baseMatchingCampaigns = append(baseMatchingCampaigns, internal.BaseCampaignsEtcd["005"])
-	promoMatchingCampaigns := []models.Campaign{}
-	wantCampaign_base_2_promo_0 := [][]models.Campaign{}
-	wantCampaign_base_2_promo_0 = append(wantCampaign_base_2_promo_0, baseMatchingCampaigns)
-	wantCampaign_base_2_promo_0 = append(wantCampaign_base_2_promo_0, promoMatchingCampaigns)
+    baseMatchingCampaigns := []models.Campaign{}
+    baseMatchingCampaigns = append(baseMatchingCampaigns, internal.BaseCampaignsEtcd["001"])
+    baseMatchingCampaigns = append(baseMatchingCampaigns, internal.BaseCampaignsEtcd["005"])
+    promoMatchingCampaigns := []models.Campaign{}
+    wantCampaign_base_2_promo_0 := [][]models.Campaign{}
+    wantCampaign_base_2_promo_0 = append(wantCampaign_base_2_promo_0, baseMatchingCampaigns)
+    wantCampaign_base_2_promo_0 = append(wantCampaign_base_2_promo_0, promoMatchingCampaigns)
 
-	type args struct {
-		transaction models.Transaction
-	}
-	tests := []struct {
-		name         string
-		args         args
-		wantCampaign [][]models.Campaign
-	}{
-		{"base_2_promo_0", args{SeedTransactions["001"]}, wantCampaign_base_2_promo_0},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			gotCampaign := internal.GetMatchingCampaigns(tt.args.transaction)
-			gotBaseCampaign := gotCampaign[0]
-			gotPromoCampaign := gotCampaign[1]
+    type args struct {
+        transaction models.Transaction
+    }
+    tests := []struct {
+        name         string
+        args         args
+        wantCampaign [][]models.Campaign
+    }{
+        {"base_2_promo_0", args{SeedTransactions["001"]}, wantCampaign_base_2_promo_0},
+    }
+    for _, tt := range tests {
+        t.Run(tt.name, func(t *testing.T) {
+            gotCampaign := internal.GetMatchingCampaigns(tt.args.transaction)
+            gotBaseCampaign := gotCampaign[0]
+            gotPromoCampaign := gotCampaign[1]
 
-			// Sort the gotten Base and Promo Campaigns, to ensure order is consistent over different test runs
-			sort.Slice(gotBaseCampaign, func(i, j int) bool { return gotBaseCampaign[i].ID.String() < gotBaseCampaign[j].ID.String() })
-			sort.Slice(gotPromoCampaign, func(i, j int) bool { return gotPromoCampaign[i].ID.String() < gotPromoCampaign[j].Name })
+            // Sort the gotten Base and Promo Campaigns, to ensure order is consistent over different test runs
+            sort.Slice(gotBaseCampaign, func(i, j int) bool {
+				return gotBaseCampaign[i].ID.String() < gotBaseCampaign[j].ID.String()
+			})
+			sort.Slice(gotPromoCampaign, func(i, j int) bool {
+				return gotPromoCampaign[i].ID.String() < gotPromoCampaign[j].ID.String()
+			})
 
-			if !reflect.DeepEqual(gotCampaign, tt.wantCampaign) {
-				t.Errorf("getMatchingCampaigns() = %v, want %v", gotCampaign, tt.wantCampaign)
+			gotJSON, _ := json.Marshal(gotCampaign)
+			wantJSON, _ := json.Marshal(tt.wantCampaign)
+
+			gotStr := fmt.Sprintf("%s", gotJSON)
+			wantStr := fmt.Sprintf("%s", wantJSON)
+
+			diff := strings.Compare(gotStr, wantStr)
+			if diff != 0 {
+			    fmt.Printf("getMatchingCampaigns() = %q, want %q (diff = %d)\n", gotStr, wantStr, diff)
+			    t.Errorf("getMatchingCampaigns() = %v, want %v", gotCampaign, tt.wantCampaign)
 			}
-		})
-	}
+        })
+    }
 }
 
 func Test_isCampaignMatch(t *testing.T) {
@@ -168,7 +183,7 @@ func etcdAddSeedData() {
 		Name:               "Summer Sale",
 		MinSpend:           50.0,
 		Start:              time.Date(2023, 1, 1, 0, 0, 0, 0, time.UTC),
-		End:                time.Date(2023, 8, 31, 23, 59, 59, 0, time.UTC),
+		End:                time.Date(2023, 11, 30, 23, 59, 59, 0, time.UTC),
 		RewardProgram:      "Points",
 		RewardAmount:       500,
 		MCC:                "7011,5963",
