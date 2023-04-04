@@ -62,10 +62,10 @@ data "aws_iam_policy_document" "restapi" {
     # }
   }
 }
-resource "aws_api_gateway_rest_api_policy" "test" {
-  rest_api_id = aws_api_gateway_rest_api.angelowl_rest.id
-  policy      = data.aws_iam_policy_document.restapi.json
-}
+# resource "aws_api_gateway_rest_api_policy" "test" {
+#   rest_api_id = aws_api_gateway_rest_api.angelowl_rest.id
+#   policy      = data.aws_iam_policy_document.restapi.json
+# }
 
 resource "aws_api_gateway_deployment" "default" {
   rest_api_id = aws_api_gateway_rest_api.angelowl_rest.id

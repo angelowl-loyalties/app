@@ -41,10 +41,9 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://campaignex.itsag1t2.com/campaign/{campaign_id}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
-            "uri" : "http://campaignex.itsag1t2.com/campaign/{campaign_id}/",
             "responses" : {
               "default" : {
                 "statusCode" : "200"
@@ -54,7 +53,8 @@
               "integration.request.path.campaign_id" : "method.request.path.campaign_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "put" : {
@@ -99,10 +99,9 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://campaignex.itsag1t2.com/campaign/{campaign_id}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "PUT",
-            "uri" : "http://campaignex.itsag1t2.com/campaign/{campaign_id}/",
             "responses" : {
               "default" : {
                 "statusCode" : "200"
@@ -112,7 +111,8 @@
               "integration.request.path.campaign_id" : "method.request.path.campaign_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "delete" : {
@@ -141,10 +141,9 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://campaignex.itsag1t2.com/campaign/{campaign_id}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "DELETE",
-            "uri" : "http://campaignex.itsag1t2.com/campaign/{campaign_id}/",
             "responses" : {
               "default" : {
                 "statusCode" : "200"
@@ -154,7 +153,8 @@
               "integration.request.path.campaign_id" : "method.request.path.campaign_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -201,21 +201,21 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
                   "method.response.header.Access-Control-Allow-Methods" : "'DELETE,GET,OPTIONS,PUT'",
                   "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -252,15 +252,14 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://campaignex.itsag1t2.com/exclusion/{exclusion_id}",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
-            "uri" : "http://campaignex.itsag1t2.com/exclusion/{exclusion_id}",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
@@ -268,7 +267,8 @@
               "integration.request.path.exclusion_id" : "method.request.path.exclusion_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "put" : {
@@ -313,15 +313,14 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://campaignex.itsag1t2.com/exclusion/{exclusion_id}",
             "connectionId" : "gzj0gl",
             "httpMethod" : "PUT",
-            "uri" : "http://campaignex.itsag1t2.com/exclusion/{exclusion_id}",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
@@ -329,7 +328,8 @@
               "integration.request.path.exclusion_id" : "method.request.path.exclusion_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "delete" : {
@@ -358,15 +358,14 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://campaignex.itsag1t2.com/exclusion/{exclusion_id}",
             "connectionId" : "gzj0gl",
             "httpMethod" : "DELETE",
-            "uri" : "http://campaignex.itsag1t2.com/exclusion/{exclusion_id}",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
@@ -374,7 +373,8 @@
               "integration.request.path.exclusion_id" : "method.request.path.exclusion_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -421,21 +421,21 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
                   "method.response.header.Access-Control-Allow-Methods" : "'DELETE,GET,OPTIONS,PUT'",
                   "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -464,20 +464,20 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://campaignex.itsag1t2.com/campaign/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
-            "uri" : "http://campaignex.itsag1t2.com/campaign/",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "post" : {
@@ -514,20 +514,20 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://campaignex.itsag1t2.com/campaign/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "POST",
-            "uri" : "http://campaignex.itsag1t2.com/campaign/",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -561,21 +561,21 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
                   "method.response.header.Access-Control-Allow-Methods" : "'GET,OPTIONS,POST'",
                   "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -604,19 +604,19 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "aws",
-            "httpMethod" : "POST",
             "uri" : "arn:aws:apigateway:ap-southeast-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-southeast-1:276374573009:function:angel-owl-user-presigned/invocations",
+            "httpMethod" : "POST",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "contentHandling" : "CONVERT_TO_TEXT"
+            "contentHandling" : "CONVERT_TO_TEXT",
+            "type" : "aws"
           }
         },
         "options" : {
@@ -650,21 +650,21 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
                   "method.response.header.Access-Control-Allow-Methods" : "'GET,OPTIONS'",
                   "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -715,15 +715,14 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://informer.itsag1t2.com/reward/{cardId}",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
-            "uri" : "http://informer.itsag1t2.com/reward/{cardId}",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
@@ -733,7 +732,8 @@
               "integration.request.querystring.page_no" : "method.request.querystring.page_no"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -780,21 +780,21 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
                   "method.response.header.Access-Control-Allow-Methods" : "'GET,OPTIONS'",
                   "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -827,20 +827,20 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://profiler.itsag1t2.com/auth/password",
             "connectionId" : "gzj0gl",
             "httpMethod" : "POST",
-            "uri" : "http://profiler.itsag1t2.com/auth/password",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -874,21 +874,21 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
                   "method.response.header.Access-Control-Allow-Methods" : "'OPTIONS,POST'",
                   "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -925,15 +925,14 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://informer.itsag1t2.com/reward/total/{cardId}",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
-            "uri" : "http://informer.itsag1t2.com/reward/total/{cardId}",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
@@ -941,7 +940,8 @@
               "integration.request.path.cardId" : "method.request.path.cardId"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -988,21 +988,21 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
                   "method.response.header.Access-Control-Allow-Methods" : "'GET,OPTIONS'",
                   "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -1027,20 +1027,23 @@
               }
             }
           },
+          "security" : [ {
+            "angelowl-authorizer" : [ ]
+          } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "aws",
-            "httpMethod" : "POST",
             "uri" : "arn:aws:apigateway:ap-southeast-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-southeast-1:276374573009:function:angel-owl-publish-single-msk/invocations",
+            "httpMethod" : "POST",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "contentHandling" : "CONVERT_TO_TEXT"
+            "contentHandling" : "CONVERT_TO_TEXT",
+            "type" : "aws"
           }
         },
         "options" : {
@@ -1054,11 +1057,6 @@
                   }
                 },
                 "Access-Control-Allow-Methods" : {
-                  "schema" : {
-                    "type" : "string"
-                  }
-                },
-                "Access-Control-Allow-Credentials" : {
                   "schema" : {
                     "type" : "string"
                   }
@@ -1078,25 +1076,22 @@
               }
             }
           },
-          "security" : [ {
-            "angelowl-authorizer" : [ ]
-          } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
                   "method.response.header.Access-Control-Allow-Methods" : "'OPTIONS,POST'",
                   "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -1122,17 +1117,17 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://profiler.itsag1t2.com/auth/login",
             "connectionId" : "gzj0gl",
             "httpMethod" : "POST",
-            "uri" : "http://profiler.itsag1t2.com/auth/login",
             "responses" : {
               "default" : {
                 "statusCode" : "200"
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -1166,21 +1161,21 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
                   "method.response.header.Access-Control-Allow-Methods" : "'OPTIONS,POST'",
                   "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -1206,20 +1201,20 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://profiler.itsag1t2.com/health",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
-            "uri" : "http://profiler.itsag1t2.com/health",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         }
       },
@@ -1248,19 +1243,19 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "aws",
-            "httpMethod" : "POST",
             "uri" : "arn:aws:apigateway:ap-southeast-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-southeast-1:276374573009:function:angel-owl-presigned/invocations",
+            "httpMethod" : "POST",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "contentHandling" : "CONVERT_TO_TEXT"
+            "contentHandling" : "CONVERT_TO_TEXT",
+            "type" : "aws"
           }
         },
         "options" : {
@@ -1299,21 +1294,21 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
                   "method.response.header.Access-Control-Allow-Methods" : "'GET,OPTIONS'",
                   "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -1357,15 +1352,14 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://profiler.itsag1t2.com/card/type/{card_type_pk}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
-            "uri" : "http://profiler.itsag1t2.com/card/type/{card_type_pk}/",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
@@ -1373,7 +1367,8 @@
               "integration.request.path.card_type_pk" : "method.request.path.card_type_pk"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "put" : {
@@ -1418,15 +1413,14 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://profiler.itsag1t2.com/card/type/{card_type_pk}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "PUT",
-            "uri" : "http://profiler.itsag1t2.com/card/type/{card_type_pk}/",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
@@ -1434,7 +1428,8 @@
               "integration.request.path.card_type_pk" : "method.request.path.card_type_pk"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "delete" : {
@@ -1463,15 +1458,14 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://profiler.itsag1t2.com/card/type/{card_type_pk}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "DELETE",
-            "uri" : "http://profiler.itsag1t2.com/card/type/{card_type_pk}/",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
@@ -1479,7 +1473,8 @@
               "integration.request.path.card_type_pk" : "method.request.path.card_type_pk"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -1526,21 +1521,21 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
                   "method.response.header.Access-Control-Allow-Methods" : "'DELETE,GET,OPTIONS,PUT'",
                   "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -1577,15 +1572,14 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://profiler.itsag1t2.com/card/{card_id}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
-            "uri" : "http://profiler.itsag1t2.com/card/{card_id}/",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
@@ -1593,7 +1587,8 @@
               "integration.request.path.card_id" : "method.request.path.card_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "delete" : {
@@ -1622,15 +1617,14 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://profiler.itsag1t2.com/card/{card_id}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "DELETE",
-            "uri" : "http://profiler.itsag1t2.com/card/{card_id}/",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
@@ -1638,7 +1632,8 @@
               "integration.request.path.card_id" : "method.request.path.card_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -1685,21 +1680,21 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
                   "method.response.header.Access-Control-Allow-Methods" : "'DELETE,GET,OPTIONS'",
                   "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -1728,20 +1723,20 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://profiler.itsag1t2.com/card/type/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
-            "uri" : "http://profiler.itsag1t2.com/card/type/",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "post" : {
@@ -1778,20 +1773,20 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://profiler.itsag1t2.com/card/type/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "POST",
-            "uri" : "http://profiler.itsag1t2.com/card/type/",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -1830,21 +1825,21 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
                   "method.response.header.Access-Control-Allow-Methods" : "'GET,OPTIONS,POST'",
                   "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -1873,20 +1868,20 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://profiler.itsag1t2.com/user/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
-            "uri" : "http://profiler.itsag1t2.com/user/",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -1925,21 +1920,21 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
                   "method.response.header.Access-Control-Allow-Methods" : "'GET,OPTIONS,POST'",
                   "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -1968,20 +1963,20 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://profiler.itsag1t2.com/card/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
-            "uri" : "http://profiler.itsag1t2.com/card/",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -2020,21 +2015,21 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
                   "method.response.header.Access-Control-Allow-Methods" : "'GET,OPTIONS,POST'",
                   "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -2071,15 +2066,14 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://profiler.itsag1t2.com/user/{user_id}",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
-            "uri" : "http://profiler.itsag1t2.com/user/{user_id}",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
@@ -2087,7 +2081,8 @@
               "integration.request.path.user_id" : "method.request.path.user_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "put" : {
@@ -2132,15 +2127,14 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://profiler.itsag1t2.com/user/{user_id}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "PUT",
-            "uri" : "http://profiler.itsag1t2.com/user/{user_id}/",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
@@ -2148,7 +2142,8 @@
               "integration.request.path.user_id" : "method.request.path.user_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "delete" : {
@@ -2177,15 +2172,14 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://profiler.itsag1t2.com/user/{user_id}/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "DELETE",
-            "uri" : "http://profiler.itsag1t2.com/user/{user_id}/",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
@@ -2193,7 +2187,8 @@
               "integration.request.path.user_id" : "method.request.path.user_id"
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -2240,21 +2235,21 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
                   "method.response.header.Access-Control-Allow-Methods" : "'DELETE,GET,OPTIONS,PUT'",
                   "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       },
@@ -2283,20 +2278,20 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://campaignex.itsag1t2.com/exclusion/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "GET",
-            "uri" : "http://campaignex.itsag1t2.com/exclusion/",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "post" : {
@@ -2333,20 +2328,20 @@
             "angelowl-authorizer" : [ ]
           } ],
           "x-amazon-apigateway-integration" : {
-            "type" : "http",
+            "uri" : "http://campaignex.itsag1t2.com/exclusion/",
             "connectionId" : "gzj0gl",
             "httpMethod" : "POST",
-            "uri" : "http://campaignex.itsag1t2.com/exclusion/",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "passthroughBehavior" : "when_no_match",
-            "connectionType" : "VPC_LINK"
+            "connectionType" : "VPC_LINK",
+            "type" : "http"
           }
         },
         "options" : {
@@ -2385,21 +2380,21 @@
             }
           },
           "x-amazon-apigateway-integration" : {
-            "type" : "mock",
             "responses" : {
               "default" : {
                 "statusCode" : "200",
                 "responseParameters" : {
                   "method.response.header.Access-Control-Allow-Methods" : "'GET,OPTIONS,POST'",
                   "method.response.header.Access-Control-Allow-Headers" : "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
-                  "method.response.header.Access-Control-Allow-Origin" : "'*'"
+                  "method.response.header.Access-Control-Allow-Origin" : "'https://dashboard.itsag1t2.com'"
                 }
               }
             },
             "requestTemplates" : {
               "application/json" : "{\"statusCode\": 200}"
             },
-            "passthroughBehavior" : "when_no_match"
+            "passthroughBehavior" : "when_no_match",
+            "type" : "mock"
           }
         }
       }
@@ -2708,23 +2703,11 @@
           "in" : "header",
           "x-amazon-apigateway-authtype" : "custom",
           "x-amazon-apigateway-authorizer" : {
-            "type" : "token",
             "authorizerUri" : "arn:aws:apigateway:ap-southeast-1:lambda:path/2015-03-31/functions/arn:aws:lambda:ap-southeast-1:276374573009:function:angel-owl-authorizer/invocations",
-            "authorizerResultTtlInSeconds" : 300
+            "authorizerResultTtlInSeconds" : 300,
+            "type" : "token"
           }
         }
       }
-    },
-    "x-amazon-apigateway-policy" : {
-      "Version" : "2012-10-17",
-      "Statement" : [ {
-        "Sid" : "",
-        "Effect" : "Allow",
-        "Principal" : {
-          "AWS" : "*"
-        },
-        "Action" : "execute-api:Invoke",
-        "Resource" : [ "arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/*/*", "arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/*", "arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl" ]
-      } ]
     }
   }

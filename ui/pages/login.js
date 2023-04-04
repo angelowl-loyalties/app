@@ -35,9 +35,13 @@ export default function Login(props) {
     const toast = useToast();
 
     const handleLogin = async (e) => {
+        e.preventDefault();
+        if (!email.current.value || !password.current.value) {
+            setErrorMessage("Email or password cannot be empty");
+            return;
+        }
         setLoading(true);
         sessionStorage.setItem("user_email", email.current.value)
-        e.preventDefault();
         if (email.current.value && password.current.value) {
             signIn("credentials", {
                 email: email.current.value,
