@@ -36,15 +36,15 @@
 
 As we have followed a monorepo strategy, you'll find one folder for each service. The following folders are not directly related to a service but are crucial to our deployments
 
-- `.charts/`
+- [`.charts/`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/.charts)
     - These consist of Helm charts that are used in our Github Action for deployment. This folder specifies yamls that describe our Kubernetes resources, secrets and others so we can declare how we want our cluster to look like at the end of a deployment.
-- `.github/workflows/`
+- [`.github/workflows/`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/.github/workflows)
     - This file consists of 2 reusable workflows, `workflow_container.yml` and `workflow_lambda.yml`, and `ci_` files that reference the worflows. These CI files help automate our CI/CD pipeline, from linting to auto-deploying to production.
     - Some miscellaneous files include a yaml for sending notifications to our Telegram group when a PR or a code review is submitted
-- `.infra/`
+- [`.infra/`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/.infra)
     - Consists of all the Terraform files that declare the goal state of our deployments. One could use the Terraform commands `init`, `plan`, `apply`/`destroy` to make changes to our deployed infrastructure on AWS.
-- `docs/`
-    - This folder stores some images for documentation purposes
+- [`docs/`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/docs)
+    - This folder stores some images that you can see at the bottom of this README
 
 The remaining folders are either containerised services, or containerised lambdas that we will explore in the next section.
 
@@ -59,8 +59,6 @@ We can first describe some of the common environment variables we utilise in the
 
 |Environment Variable|Description|
 |:---:|:---:|
-|AWS_ACCESS_KEY_ID|This is added mainly in the Lambdas, due to the various roles they perform (put files into S3, send emails). In production lambdas, these environment variables are added by default, so these are mainly added for local testing purposes.|
-|AWS_SECRET_ACCESS_KEY|Similar reasons as the above|
 |DB_CONN_STRING|This is generally used with regards to our RDS Postgres databases, specifying the host, port, username and password for connection when a service starts up. In some cases, it could be the URL of our Cassandra database, also used for connection purposes|
 |ETCD_ENDPOINTS|This is used to specify the host URL of ETCD, whether it is deployed or locally.|
 |BROKER_HOST|Specifies the URL of the Kafka broker|
@@ -68,18 +66,20 @@ We can first describe some of the common environment variables we utilise in the
 |DB_KEYSPACE|Cassandra DB keyspace|
 |PROFILER_ENDPOINT|This is specified in the user-aggregator (pet-rock) lambda, so as to make a POST request to the profiler service to create a batch of users from a CSV file of new user information|
 |INFORMER_ENDPOINT|This is specified in the emailer lambda, so as to make a GET request to the informer endpoint to retrieve rewards of the day|
+|AWS_ACCESS_KEY_ID|This is added mainly in the Lambdas, due to the various roles they perform (put files into S3, send emails). In production lambdas, these environment variables are added by default, so these are mainly added for local testing purposes.|
+|AWS_SECRET_ACCESS_KEY|Similar reasons as the above|
 
 
 ### Containerised Services
 ---
 For all non-lambda services, a sample `.env` file can be found at `/config/dev.env`. A `.env` file with your own environment variables could be used to pass in relevant values into the docker-compose file.
-- `campaignex`
+- [`campaignex`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/campaignex)
     - This service uses the Golang REST framework Gin, exposing CRUD operations for merchant managers to create and manage Campaigns and Exclusions. This service is responsible to write these into etcd, as well as its own PostgreSQL database as a layer of redundancy, or for auditing needs.
-- `rewarder`
+- [`rewarder`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/rewarder)
     - This service isn’t a REST API, but acts as an orchestrator to process transactions it consumes from Kafka and to determine the appropriate reward a transaction will receive. It is also responsible for writing these processed transactions into the Cassandra database.
-- `informer`
+- [`informer`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/informer)
     - This service uses the Golang REST framework Gin, exposing Read operations that the frontend web client calls to retrieve the rewards history pertaining to a requested card from the Cassandra database.
-- `profiler`
+- [`profiler`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/profiler)
     - This service uses the Golang REST framework Gin, exposing CRUD operations on User and Customer information. The frontend and some other services call on this service to obtain user data.
 
 ### Lambdas
@@ -87,17 +87,17 @@ For all non-lambda services, a sample `.env` file can be found at `/config/dev.e
 For all lambda services, an `.env.example` is provided to the same effect. For lambda services, the Dockerfiles and the corresponding docker-compose.yml follow AWS' guide on deploying lambdas locally so that they replicate the behaviour of production Lambdas, using AWS Lambda Runtime Interface Emulator (RIE). The AWS Lambda RIE is a proxy for the Lambda Runtime API that allows you to locally test your Lambda function packaged as a container image.
 
 The lambdas are 
-- `authorizer`
+- [`authorizer`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/authorizer)
     - A serverless function for authorization needs, it is linked directly to our API gateway to authorise relevant requests
-- `emailer`
+- [`emailer`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/emailer)
     - This lambda runs as a job scheduled from AWS EventBridge once every night to send emails to users who have earned rewards amounting to more than $0, also informing them of the transactions that led to the corresponding rewards.
--  `ingestor` (Batch transaction upload)
+-  [`ingestor`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/ingestor) (Batch transaction upload)
     - This lambda takes in the file of batch transactions from S3, triggered when the pre-signed URL directs the user's file into our S3 bucket. It validates data (i.e valid MCC, valid length CardPan); and sends them to Kafka. This service is highly performant and crucial to the functionality of the application.
-- `pet-rock` (Batch user creation)
+- [`pet-rock`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/pet-rock) (Batch user creation)
     - This lambda, similar to ingestor ingests a csv file of new users that an admin uploaded. It processes them line by line and creates a user on the backend for them.
-- `passworder`
+- [`passworder`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/passworder)
     - This lambda is called directly after the user-aggregator, sending emails to the newly created users, sending them their first-time password so they can login. They will then be prompted by the UI to change their password after first login.
-- `publish-single` (Transaction API)
+- [`publish-single`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/publish-single) (Transaction API)
     - Similar functionality and code to Ingestor, except instead of a file, this lambda takes in a JSON body to send a single transaction to Kafka. This lambda is triggered solely from the API Gateway, using the JSON body of the /publish API to send a single transaction to Kafka to be processed by rewarder.
 
 ### Important Libraries/Frameworks used
