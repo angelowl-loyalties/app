@@ -36,7 +36,7 @@
 
 As we have followed a monorepo strategy, you'll find one folder for each service. The following folders are not directly related to a service but are crucial to our deployments
 
-- [`.charts/`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/.charts)
+- [`.chart/`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/.chart)
     - These consist of Helm charts that are used in our Github Action for deployment. This folder specifies yamls that describe our Kubernetes resources, secrets and others so we can declare how we want our cluster to look like at the end of a deployment.
 - [`.github/workflows/`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/.github/workflows)
     - This file consists of 2 reusable workflows, `workflow_container.yml` and `workflow_lambda.yml`, and `ci_` files that reference the worflows. These CI files help automate our CI/CD pipeline, from linting to auto-deploying to production.
@@ -122,7 +122,7 @@ The lambdas are
 ### Frontend
 ---
 
-- The /ui folder is the folder containing the frontend. We utilise the NextJS framework that provides us with powerful server-side rendering capabilities using React and Typescript. For the UI library, we mainly use Chakra UI to create a pleasant User Experience.
+- The [`/ui`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/ui) folder is the folder containing the frontend. We utilise the NextJS framework that provides us with powerful server-side rendering capabilities using React and Typescript. For the UI library, we mainly use Chakra UI to create a pleasant User Experience.
 - We have configured an auto deploy to our production URL as well as staging environments using Vercel, a popular site hosting SaaS. We've configured auto-deployments on Vercel's end, hence automating the CI/CD of our frontend.
 
 
