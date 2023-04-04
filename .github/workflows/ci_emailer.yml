@@ -2,12 +2,6 @@ name: Continuous Integration (Emailer)
 
 on:
   push:
-    branches: [ '**' ]
-    paths:
-      - "emailer/**"
-      - .github/workflows/ci_emailer.yml
-      - .github/workflows/workflow_lambda.yml
-  pull_request:
     branches: [ master ]
     paths:
       - "emailer/**"

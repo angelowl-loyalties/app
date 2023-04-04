@@ -2,18 +2,12 @@ name: Continuous Integration (PublishSingle)
 
 on:
   push:
-    branches: [ '**' ]
-    paths:
-      - "publish-single/**"
-      - .github/workflows/ci_publish-single.yml
-      - .github/workflows/workflow_lambda.yml
-  pull_request:
     branches: [ master ]
     paths:
       - "publish-single/**"
       - .github/workflows/ci_publish-single.yml
       - .github/workflows/workflow_lambda.yml
-
+      
 permissions:
   id-token: write
   contents: read 
