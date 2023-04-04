@@ -78,6 +78,8 @@ func handleRequest(ctx context.Context, event events.APIGatewayCustomAuthorizerR
 		return events.APIGatewayCustomAuthorizerResponse{}, errors.New("invalid role")
 	}
 
+	log.Println("user: " + principalID + " has role: " + role)
+
 	// arn:partition:execute-api:region:account-id:api-id/authorizers/authorizer-id
 	// requestARN := event.MethodArn not needed
 	roleMapping := map[string][]string{
@@ -106,6 +108,11 @@ func handleRequest(ctx context.Context, event events.APIGatewayCustomAuthorizerR
 			// exclusion
 			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/*/exclusion",
 			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/*/exclusion/*",
+			// transactions upload
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/POST/publish",
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/GET/publish/presigned",
+			// users upload
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/GET/user/presigned",
 		},
 		"admin": {"*"},
 	}
@@ -114,7 +121,7 @@ func handleRequest(ctx context.Context, event events.APIGatewayCustomAuthorizerR
 	// if new user and password not changed, restrict access to only the update password
 	if claims.IsNew {
 		resources = []string{
-			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/PUT/user/*",
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/POST/auth/password",
 		}
 	}
 
