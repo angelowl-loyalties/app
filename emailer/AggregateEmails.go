@@ -121,8 +121,6 @@ func GetTodaysRewards() ([]Reward, error) {
 	}
 	bodyBuffer := bytes.NewBuffer(bodyBytes)
 
-	fmt.Println(bodyBuffer.String())
-
 	var parseReward ParseReward
 
 	err = json.NewDecoder(bodyBuffer).Decode(&parseReward)
