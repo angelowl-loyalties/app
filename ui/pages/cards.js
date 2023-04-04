@@ -47,6 +47,7 @@ export default function Cards() {
         }
         axios.get(`https://itsag1t2.com/user/${session.userId}`, { headers: { Authorization: session.id } })
             .then((response) => {
+                console.log(response.data.data.CreditCards)
                 setCards(response.data.data.CreditCards.map((card) => card.card_pan))
 
                 amex = visa = mastercard = discover = others = shopping = premium = platinum = freedom = [];
@@ -67,7 +68,7 @@ export default function Cards() {
                 })
 
                 others = response.data.data.CreditCards.filter((el) => {
-                    return el.card_pan.charAt(0) == 7;
+                    return el.card_pan.charAt(0) === "*";
                 })
 
                 shopping = response.data.data.CreditCards.filter((el) => {
@@ -85,7 +86,7 @@ export default function Cards() {
                 freedom = response.data.data.CreditCards.filter((el) => {
                     return el.card_type == 'scis_freedom';
                 })
-                setData([response.data.data.CreditCards, amex, visa, mastercard, discover, others])
+                setData([amex, visa, mastercard, discover, others])
                 setLoading(false)
             }).catch((error) => {
                 console.log(error)
@@ -138,8 +139,7 @@ export default function Cards() {
                         <Select
                             w="25%"
                             fontSize="small"
-                            display={{ base: "inline-block", lg: "none" }}
-                            placeholder='All'>
+                            display={{ base: "inline-block", lg: "none" }}>
                             <option>
                                 {toggle ? 'AMEX' : 'Shopping'}
                             </option>
@@ -159,11 +159,6 @@ export default function Cards() {
                         <Box p={2} bgColor="gray.100" borderRadius="xl" display={{ base: "none", lg: "inline-block" }}>
                             <HStack>
                                 <TabList maxW={{ base: "xs", md: "2xl" }} >
-                                    <Tab borderRadius='lg'>
-                                        <Text mx={1} textStyle="tab">
-                                            All
-                                        </Text>
-                                    </Tab>
                                     <Tab borderRadius='lg'>
                                         {toggle ? <FaCcAmex size={23} /> : <GiShoppingBag size={23} />}
                                         <Text ml={1} textStyle="tab" isSelected>
