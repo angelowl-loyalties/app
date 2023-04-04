@@ -94,7 +94,7 @@ function Navbar(props) {
             >
                     <AlertIcon h="4" />
                     <Text fontSize="xs" textColor={props.bank ? "blue" : "red"}>
-                        Notice: You are currently logged in as an {props.bank ? "Organisational User from SCIS Bank" : "Adminstrator"}
+                        Notice: You are currently logged in as an {props.bank ? "User from SCIS Bank" : "Adminstrator"}
                     </Text>
             </Alert>
             <Stack
