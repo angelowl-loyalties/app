@@ -232,49 +232,62 @@ func SendEmail(recipient string, cardRewards map[uuid.UUID][]Reward) error {
 	// Assemble the body of the email
 	htmlBody := buf.String()
 
-	// Assemble the email.
-	input := &ses.SendEmailInput{
-		Destination: &ses.Destination{
-			CcAddresses: []*string{},
-			ToAddresses: []*string{
-				aws.String(recipient),
-			},
-		},
-		Message: &ses.Message{
-			Body: &ses.Body{
-				Html: &ses.Content{
-					Charset: aws.String("UTF-8"),
-					Data:    aws.String(htmlBody),
-				},
-			},
-			Subject: &ses.Content{
-				Charset: aws.String("UTF-8"),
-				Data:    aws.String("Your AngelOwl rewards accumulated today"),
-			},
-		},
-		Source: aws.String("noreply@itsag1t2.com"),
+	emailWhiteList := map[string]bool{
+		"omerbaggia123@gmail.com": true,
+		"alvinowyong@gmail.com":   true,
+		"nicholasongck@gmail.com": true,
+		"wenlianggg@gmail.com":    true,
+		"lyejianyi@gmail.com":     true,
+		"awkhailoong@gmail.com":   true,
+		"justin.100600@gmail.com": true,
 	}
 
-	// Attempt to send the email.
-	_, err = svc.SendEmail(input)
-
-	// Display error messages if they occur.
-	if err != nil {
-		if aerr, ok := err.(awserr.Error); ok {
-			switch aerr.Code() {
-			case ses.ErrCodeMessageRejected:
-				fmt.Println(ses.ErrCodeMessageRejected, aerr.Error())
-			case ses.ErrCodeMailFromDomainNotVerifiedException:
-				fmt.Println(ses.ErrCodeMailFromDomainNotVerifiedException, aerr.Error())
-			case ses.ErrCodeConfigurationSetDoesNotExistException:
-				fmt.Println(ses.ErrCodeConfigurationSetDoesNotExistException, aerr.Error())
-			default:
-				fmt.Println(aerr.Error())
-			}
-		} else {
-			fmt.Println(err.Error())
+	if emailWhiteList[recipient] {
+		// Assemble the email.
+		input := &ses.SendEmailInput{
+			Destination: &ses.Destination{
+				CcAddresses: []*string{},
+				ToAddresses: []*string{
+					aws.String(recipient),
+				},
+			},
+			Message: &ses.Message{
+				Body: &ses.Body{
+					Html: &ses.Content{
+						Charset: aws.String("UTF-8"),
+						Data:    aws.String(htmlBody),
+					},
+				},
+				Subject: &ses.Content{
+					Charset: aws.String("UTF-8"),
+					Data:    aws.String("Your AngelOwl rewards accumulated today"),
+				},
+			},
+			Source: aws.String("noreply@itsag1t2.com"),
 		}
-		return err
+
+		// Attempt to send the email.
+		_, err = svc.SendEmail(input)
+
+		// Display error messages if they occur.
+		if err != nil {
+			if aerr, ok := err.(awserr.Error); ok {
+				switch aerr.Code() {
+				case ses.ErrCodeMessageRejected:
+					fmt.Println(ses.ErrCodeMessageRejected, aerr.Error())
+				case ses.ErrCodeMailFromDomainNotVerifiedException:
+					fmt.Println(ses.ErrCodeMailFromDomainNotVerifiedException, aerr.Error())
+				case ses.ErrCodeConfigurationSetDoesNotExistException:
+					fmt.Println(ses.ErrCodeConfigurationSetDoesNotExistException, aerr.Error())
+				default:
+					fmt.Println(aerr.Error())
+				}
+			} else {
+				fmt.Println(err.Error())
+			}
+			return err
+		}
+
 	}
 
 	return nil
@@ -308,262 +321,3 @@ func HandleRequest(ctx context.Context, placeholder Event) (string, error) {
 func main() {
 	lambda.Start(HandleRequest)
 }
-
-// Sample data for testing
-// mailMap := map[string]map[uuid.UUID][]Reward{
-// 	"omerwai.2020@scis.smu.edu.sg": {
-// 		uuid.New(): []Reward{
-// 			{
-// 				ID:              gocql.TimeUUID(),
-// 				CardID:          gocql.TimeUUID(),
-// 				Merchant:        "Merchant A",
-// 				MCC:             123,
-// 				Currency:        "SGD",
-// 				Amount:          100.0,
-// 				SGDAmount:       100.0,
-// 				TransactionID:   "123456",
-// 				TransactionDate: "2022-01-01",
-// 				CardPAN:         "1234 1234 1234 1234",
-// 				CardType:        "Visa",
-// 				RewardAmount:    10.0,
-// 				Remarks:         "First reward",
-// 			},
-// 			{
-// 				ID:              gocql.TimeUUID(),
-// 				CardID:          gocql.TimeUUID(),
-// 				Merchant:        "Merchant B",
-// 				MCC:             456,
-// 				Currency:        "SGD",
-// 				Amount:          200.0,
-// 				SGDAmount:       200.0,
-// 				TransactionID:   "234567",
-// 				TransactionDate: "2022-02-02",
-// 				CardPAN:         "1234 1234 1234 1234",
-// 				CardType:        "Visa",
-// 				RewardAmount:    20.0,
-// 				Remarks:         "Second reward",
-// 			},
-// 		},
-// 		uuid.New(): []Reward{
-// 			{
-// 				ID:              gocql.TimeUUID(),
-// 				CardID:          gocql.TimeUUID(),
-// 				Merchant:        "Merchant C",
-// 				MCC:             789,
-// 				Currency:        "SGD",
-// 				Amount:          300.0,
-// 				SGDAmount:       300.0,
-// 				TransactionID:   "345678",
-// 				TransactionDate: "2022-03-03",
-// 				CardPAN:         "1234 1234 1234 1234",
-// 				CardType:        "Visa",
-// 				RewardAmount:    30.0,
-// 				Remarks:         "Third reward",
-// 			},
-// 		},
-// 	},
-// 	"jwowyong.2020@scis.smu.edu.sg": {
-// 		uuid.New(): []Reward{
-// 			{
-// 				ID:              gocql.TimeUUID(),
-// 				CardID:          gocql.TimeUUID(),
-// 				Merchant:        "Merchant D",
-// 				MCC:             147,
-// 				Currency:        "SGD",
-// 				Amount:          400.0,
-// 				SGDAmount:       400.0,
-// 				TransactionID:   "456789",
-// 				TransactionDate: "2022-04-04",
-// 				CardPAN:         "1234 1234 1234 1234",
-// 				CardType:        "Mastercard",
-// 				RewardAmount:    40.0,
-// 				Remarks:         "Fourth reward",
-// 			},
-// 		},
-// 		uuid.New(): []Reward{
-// 			{
-// 				ID:              gocql.TimeUUID(),
-// 				CardID:          gocql.TimeUUID(),
-// 				Merchant:        "Merchant E",
-// 				MCC:             258,
-// 				Currency:        "SGD",
-// 				Amount:          500.0,
-// 				SGDAmount:       500.0,
-// 				TransactionID:   "567890",
-// 				TransactionDate: "2022-05-05",
-// 				CardPAN:         "1234 1234 1234 1234",
-// 				CardType:        "Mastercard",
-// 				RewardAmount:    50.0,
-// 				Remarks:         "Fifth reward",
-// 			},
-// 			{
-// 				ID:              gocql.TimeUUID(),
-// 				CardID:          gocql.TimeUUID(),
-// 				Merchant:        "Merchant F",
-// 				MCC:             369,
-// 				Currency:        "SGD",
-// 				Amount:          600.0,
-// 				SGDAmount:       600.0,
-// 				TransactionID:   "678901",
-// 				TransactionDate: "2022-06-06",
-// 				CardPAN:         "1234 1234 1234 1234",
-// 				CardType:        "Mastercard",
-// 				RewardAmount:    60.0,
-// 				Remarks:         "Sixth reward",
-// 			},
-// 		},
-// 	},
-// 	"justin.lam.2020@scis.smu.edu.sg": {
-// 		uuid.New(): []Reward{
-// 			{
-// 				ID:              gocql.TimeUUID(),
-// 				CardID:          gocql.TimeUUID(),
-// 				Merchant:        "Merchant D",
-// 				MCC:             147,
-// 				Currency:        "SGD",
-// 				Amount:          400.0,
-// 				SGDAmount:       400.0,
-// 				TransactionID:   "456789",
-// 				TransactionDate: "2022-04-04",
-// 				CardPAN:         "1234 1234 1234 1234",
-// 				CardType:        "Mastercard",
-// 				RewardAmount:    40.0,
-// 				Remarks:         "Fourth reward",
-// 			},
-// 		},
-// 		uuid.New(): []Reward{
-// 			{
-// 				ID:              gocql.TimeUUID(),
-// 				CardID:          gocql.TimeUUID(),
-// 				Merchant:        "Merchant E",
-// 				MCC:             258,
-// 				Currency:        "SGD",
-// 				Amount:          500.0,
-// 				SGDAmount:       500.0,
-// 				TransactionID:   "567890",
-// 				TransactionDate: "2022-05-05",
-// 				CardPAN:         "1234 1234 1234 1234",
-// 				CardType:        "Mastercard",
-// 				RewardAmount:    50.0,
-// 				Remarks:         "Fifth reward",
-// 			},
-// 			{
-// 				ID:              gocql.TimeUUID(),
-// 				CardID:          gocql.TimeUUID(),
-// 				Merchant:        "Merchant F",
-// 				MCC:             369,
-// 				Currency:        "SGD",
-// 				Amount:          600.0,
-// 				SGDAmount:       600.0,
-// 				TransactionID:   "678901",
-// 				TransactionDate: "2022-06-06",
-// 				CardPAN:         "1234 1234 1234 1234",
-// 				CardType:        "Mastercard",
-// 				RewardAmount:    60.0,
-// 				Remarks:         "Sixth reward",
-// 			},
-// 		},
-// 	},
-// 	"wlgoh.2020@scis.smu.edu.sg": {
-// 		uuid.New(): []Reward{
-// 			{
-// 				ID:              gocql.TimeUUID(),
-// 				CardID:          gocql.TimeUUID(),
-// 				Merchant:        "Merchant D",
-// 				MCC:             147,
-// 				Currency:        "SGD",
-// 				Amount:          400.0,
-// 				SGDAmount:       400.0,
-// 				TransactionID:   "456789",
-// 				TransactionDate: "2022-04-04",
-// 				CardPAN:         "1234 1234 1234 1234",
-// 				CardType:        "Mastercard",
-// 				RewardAmount:    40.0,
-// 				Remarks:         "Fourth reward",
-// 			},
-// 		},
-// 		uuid.New(): []Reward{
-// 			{
-// 				ID:              gocql.TimeUUID(),
-// 				CardID:          gocql.TimeUUID(),
-// 				Merchant:        "Merchant E",
-// 				MCC:             258,
-// 				Currency:        "SGD",
-// 				Amount:          500.0,
-// 				SGDAmount:       500.0,
-// 				TransactionID:   "567890",
-// 				TransactionDate: "2022-05-05",
-// 				CardPAN:         "1234 1234 1234 1234",
-// 				CardType:        "Mastercard",
-// 				RewardAmount:    50.0,
-// 				Remarks:         "Fifth reward",
-// 			},
-// 			{
-// 				ID:              gocql.TimeUUID(),
-// 				CardID:          gocql.TimeUUID(),
-// 				Merchant:        "Merchant F",
-// 				MCC:             369,
-// 				Currency:        "SGD",
-// 				Amount:          600.0,
-// 				SGDAmount:       600.0,
-// 				TransactionID:   "678901",
-// 				TransactionDate: "2022-06-06",
-// 				CardPAN:         "1234 1234 1234 1234",
-// 				CardType:        "Mastercard",
-// 				RewardAmount:    60.0,
-// 				Remarks:         "Sixth reward",
-// 			},
-// 		},
-// 	},
-// 	"nicholasong.2020@scis.smu.edu.sg": {
-// 		uuid.New(): []Reward{
-// 			{
-// 				ID:              gocql.TimeUUID(),
-// 				CardID:          gocql.TimeUUID(),
-// 				Merchant:        "Merchant D",
-// 				MCC:             147,
-// 				Currency:        "SGD",
-// 				Amount:          400.0,
-// 				SGDAmount:       400.0,
-// 				TransactionID:   "456789",
-// 				TransactionDate: "2022-04-04",
-// 				CardPAN:         "1234 1234 1234 1234",
-// 				CardType:        "Mastercard",
-// 				RewardAmount:    40.0,
-// 				Remarks:         "Fourth reward",
-// 			},
-// 		},
-// 		uuid.New(): []Reward{
-// 			{
-// 				ID:              gocql.TimeUUID(),
-// 				CardID:          gocql.TimeUUID(),
-// 				Merchant:        "Merchant E",
-// 				MCC:             258,
-// 				Currency:        "SGD",
-// 				Amount:          500.0,
-// 				SGDAmount:       500.0,
-// 				TransactionID:   "567890",
-// 				TransactionDate: "2022-05-05",
-// 				CardPAN:         "1234 1234 1234 1234",
-// 				CardType:        "Mastercard",
-// 				RewardAmount:    50.0,
-// 				Remarks:         "Fifth reward",
-// 			},
-// 			{
-// 				ID:              gocql.TimeUUID(),
-// 				CardID:          gocql.TimeUUID(),
-// 				Merchant:        "Merchant F",
-// 				MCC:             369,
-// 				Currency:        "SGD",
-// 				Amount:          600.0,
-// 				SGDAmount:       600.0,
-// 				TransactionID:   "678901",
-// 				TransactionDate: "2022-06-06",
-// 				CardPAN:         "1234 1234 1234 1234",
-// 				CardType:        "Mastercard",
-// 				RewardAmount:    60.0,
-// 				Remarks:         "Sixth reward",
-// 			},
-// 		},
-// 	},
-// }
