@@ -95,6 +95,9 @@ func handleRequest(ctx context.Context, event events.APIGatewayCustomAuthorizerR
 			// campaign
 			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/GET/campaign",
 			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/GET/campaign/*",
+			// exclusion
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/GET/exclusion",
+			"arn:aws:execute-api:ap-southeast-1:276374573009:8oh7459vbl/*/GET/exclusion/*",
 		},
 		"bank": {
 			// user account
