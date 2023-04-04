@@ -10,8 +10,13 @@ export default function Loading() {
 		required: true,
 		onUnauthenticated() {
 			if (router.pathname === "/admin/login") {
+                console.log("Pushing to /admin/login")
 				router.push("/admin/login");
 			} else {
+                if (router.pathname === "/login") {
+                    return
+                }
+                console.log("Pushing to /login")
 				router.push("/login");
 			}
 		},

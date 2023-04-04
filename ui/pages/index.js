@@ -23,6 +23,7 @@ export default function Home() {
         if (!session || session.is_new) {
             return
         }
+        
         axios.get(`https://itsag1t2.com/user/${session.userId}`, { headers: { Authorization: session.id } })
             .then((response) => {
                 setCards(response.data.data.CreditCards)
@@ -30,22 +31,20 @@ export default function Home() {
                     axios.get(`https://itsag1t2.com/reward/total/${card.id}`, { headers: { Authorization: session.id } })
                         .then((response) => {
                             cards[index].total = response.data.data
-
                             axios.get(`https://itsag1t2.com/card/type?${card.card_type}`, { headers: { Authorization: session.id } })
                             .then((response) => {
                                 cards[index].card_type = response.data.data[0]
-                                setLoading(false)
                             }).catch((error) => {
-                                setLoading(false)
                                 console.log(error)
                             })
                             
                         }).catch((error) => {
-                            setLoading(false)
                             console.log(error)
                         })
                     console.log(cards)
                 })
+            }).finally(() => {
+                setLoading(false)
             })
     }, [session])
 
