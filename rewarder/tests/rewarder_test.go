@@ -2,20 +2,22 @@ package tests
 
 import (
 	// "reflect"
-	"sort"
-	"testing"
-	"time"
 	"encoding/json"
 	"fmt"
+	"sort"
 	"strings"
+	"testing"
+	"time"
+
+	"github.com/google/uuid"
 
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/internal"
 	"github.com/cs301-itsa/project-2022-23t2-g1-t7/rewarder/models"
-	"github.com/google/uuid"
 )
 
 // global variable for seed transactions for testing
 var SeedTransactions = make(map[string]models.Transaction)
+
 // var SeedBaseCampaigns = make(map[string]models.Campaign)
 // var SeedPromoCampaigns = make(map[string]models.Campaign)
 // var SeedExclusions = make(map[string]models.Exclusion)
@@ -46,34 +48,34 @@ func Test_IsExcluded(t *testing.T) {
 }
 
 func Test_getMatchingCampaigns(t *testing.T) {
-    etcdAddSeedData()
+	etcdAddSeedData()
 
-    baseMatchingCampaigns := []models.Campaign{}
-    baseMatchingCampaigns = append(baseMatchingCampaigns, internal.BaseCampaignsEtcd["001"])
-    baseMatchingCampaigns = append(baseMatchingCampaigns, internal.BaseCampaignsEtcd["005"])
-    promoMatchingCampaigns := []models.Campaign{}
-    wantCampaign_base_2_promo_0 := [][]models.Campaign{}
-    wantCampaign_base_2_promo_0 = append(wantCampaign_base_2_promo_0, baseMatchingCampaigns)
-    wantCampaign_base_2_promo_0 = append(wantCampaign_base_2_promo_0, promoMatchingCampaigns)
+	baseMatchingCampaigns := []models.Campaign{}
+	baseMatchingCampaigns = append(baseMatchingCampaigns, internal.BaseCampaignsEtcd["001"])
+	baseMatchingCampaigns = append(baseMatchingCampaigns, internal.BaseCampaignsEtcd["005"])
+	promoMatchingCampaigns := []models.Campaign{}
+	wantCampaign_base_2_promo_0 := [][]models.Campaign{}
+	wantCampaign_base_2_promo_0 = append(wantCampaign_base_2_promo_0, baseMatchingCampaigns)
+	wantCampaign_base_2_promo_0 = append(wantCampaign_base_2_promo_0, promoMatchingCampaigns)
 
-    type args struct {
-        transaction models.Transaction
-    }
-    tests := []struct {
-        name         string
-        args         args
-        wantCampaign [][]models.Campaign
-    }{
-        {"base_2_promo_0", args{SeedTransactions["001"]}, wantCampaign_base_2_promo_0},
-    }
-    for _, tt := range tests {
-        t.Run(tt.name, func(t *testing.T) {
-            gotCampaign := internal.GetMatchingCampaigns(tt.args.transaction)
-            gotBaseCampaign := gotCampaign[0]
-            gotPromoCampaign := gotCampaign[1]
+	type args struct {
+		transaction models.Transaction
+	}
+	tests := []struct {
+		name         string
+		args         args
+		wantCampaign [][]models.Campaign
+	}{
+		{"base_2_promo_0", args{SeedTransactions["001"]}, wantCampaign_base_2_promo_0},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			gotCampaign := internal.GetMatchingCampaigns(tt.args.transaction)
+			gotBaseCampaign := gotCampaign[0]
+			gotPromoCampaign := gotCampaign[1]
 
-            // Sort the gotten Base and Promo Campaigns, to ensure order is consistent over different test runs
-            sort.Slice(gotBaseCampaign, func(i, j int) bool {
+			// Sort the gotten Base and Promo Campaigns, to ensure order is consistent over different test runs
+			sort.Slice(gotBaseCampaign, func(i, j int) bool {
 				return gotBaseCampaign[i].ID.String() < gotBaseCampaign[j].ID.String()
 			})
 			sort.Slice(gotPromoCampaign, func(i, j int) bool {
@@ -83,16 +85,16 @@ func Test_getMatchingCampaigns(t *testing.T) {
 			gotJSON, _ := json.Marshal(gotCampaign)
 			wantJSON, _ := json.Marshal(tt.wantCampaign)
 
-			gotStr := fmt.Sprintf("%s", gotJSON)
-			wantStr := fmt.Sprintf("%s", wantJSON)
+			gotStr := string(gotJSON)
+			wantStr := string(wantJSON)
 
 			diff := strings.Compare(gotStr, wantStr)
 			if diff != 0 {
-			    fmt.Printf("getMatchingCampaigns() = %q, want %q (diff = %d)\n", gotStr, wantStr, diff)
-			    t.Errorf("getMatchingCampaigns() = %v, want %v", gotCampaign, tt.wantCampaign)
+				fmt.Printf("getMatchingCampaigns() = %q, want %q (diff = %d)\n", gotStr, wantStr, diff)
+				t.Errorf("getMatchingCampaigns() = %v, want %v", gotCampaign, tt.wantCampaign)
 			}
-        })
-    }
+		})
+	}
 }
 
 func Test_isCampaignMatch(t *testing.T) {
@@ -188,7 +190,7 @@ func etcdAddSeedData() {
 		RewardAmount:       500,
 		MCC:                "7011,5963",
 		Merchant:           "Best Buy",
-		IsBaseReward:		true,
+		IsBaseReward:       true,
 		ForForeignCurrency: true,
 	}
 
@@ -202,7 +204,7 @@ func etcdAddSeedData() {
 		RewardAmount:       25,
 		MCC:                "5913",
 		Merchant:           "Grab",
-		IsBaseReward:		true,
+		IsBaseReward:       true,
 		ForForeignCurrency: true,
 	}
 
@@ -216,7 +218,7 @@ func etcdAddSeedData() {
 		RewardAmount:       25,
 		MCC:                "5913",
 		Merchant:           "Grab",
-		IsBaseReward:		false,
+		IsBaseReward:       false,
 		ForForeignCurrency: false,
 	}
 
@@ -230,7 +232,7 @@ func etcdAddSeedData() {
 		RewardAmount:       300,
 		MCC:                "5963",
 		Merchant:           "",
-		IsBaseReward:		false,
+		IsBaseReward:       false,
 		ForForeignCurrency: false,
 	}
 
@@ -244,9 +246,8 @@ func etcdAddSeedData() {
 		RewardAmount:       600,
 		MCC:                "5963,7011",
 		Merchant:           "",
-		IsBaseReward:		true,
+		IsBaseReward:       true,
 		ForForeignCurrency: true,
-		
 	}
 
 	// Add Transactions
