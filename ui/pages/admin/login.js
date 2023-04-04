@@ -113,7 +113,7 @@ export default function Login() {
 
                         <Box minW={{ base: "90%", md: "100%" }}>
                             <Center w="full">
-                                <Badge fontSize="xs" colorScheme="red" variant="outline">Administrator's portal</Badge>
+                                <Badge fontSize="xs" colorScheme="red" variant="outline">Administrator&apos;s portal</Badge>
                             </Center>
                             <form>
                                 <Stack spacing={4} p="1rem">
