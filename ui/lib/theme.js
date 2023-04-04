@@ -6,7 +6,6 @@ const theme = extendTheme({
     textStyles: {
         title: {
             fontWeight: "bold",
-            mb: {base: 0, lg: 2},
             fontSize: {base: 'md', lg: '2xl'},
             fontWeight: {base: 'bold', lg: "semibold"},
         },
@@ -15,6 +14,12 @@ const theme = extendTheme({
             color: "gray.500",
             fontSize: {base: 'small', lg: 'sm'},
             fontWeight: {base: 500, lg: 600}
+        },
+        head: {
+            fontWeight: "bold",
+            mb: {base: 0, lg: 2},
+            fontSize: {base: 'sm', lg: 'lg'},
+            fontWeight: {base: 'bold', lg: "semibold"},
         },
         tab: {
             fontSize: {base: "xs", lg: "sm"},
