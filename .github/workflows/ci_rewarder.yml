@@ -25,8 +25,14 @@ jobs:
     uses: ./.github/workflows/sast_golang.yml
     with:
       workdir: 'rewarder'
-  ci:
+  test:
     needs: [lint, sast]
+    name: Golang Test
+    uses: ./.github/workflows/test_golang.yml
+    with:
+      workdir: 'rewarder'
+  ci:
+    needs: [lint, sast, test]
     name: Continuous Integration
     uses: ./.github/workflows/workflow_container.yml
     with:
