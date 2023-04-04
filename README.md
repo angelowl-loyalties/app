@@ -100,7 +100,43 @@ The lambdas are
 - [`publish-single`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/publish-single) (Transaction API)
     - Similar functionality and code to Ingestor, except instead of a file, this lambda takes in a JSON body to send a single transaction to Kafka. This lambda is triggered solely from the API Gateway, using the JSON body of the /publish API to send a single transaction to Kafka to be processed by rewarder.
 
-### Important Libraries/Frameworks used
+### Deploying services locally
+As mentioned, each folder has a Dockerfile, which allows us to start all the services up from a docker-compose.yml file, by specifying a Dockerfile target. You can use the following syntax, using the informer service as an example
+
+```
+  informer-service:
+    build: 
+      context: ./informer
+      dockerfile: Dockerfile.prod
+    
+    ...other properties
+```
+
+ If you'd like to deploy all services, you can use the [`docker-compose.yml`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/docker-compose.yml) at the root of the repository as a reference. 
+
+While that file runs select services, one could add the remaining ones or start them up as containers separately. To compose up, use:
+
+```bash
+docker compose up -d --build
+```
+
+To compose down, use:
+```bash
+docker compose down
+```
+
+### Frontend
+---
+
+- The [`/ui`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/ui) folder is the folder containing the frontend. We utilise the NextJS framework that provides us with powerful server-side rendering capabilities using React and Typescript. For the UI library, we mainly use Chakra UI to create a pleasant User Experience.
+- We have configured an auto deploy to our production URL as well as staging environments using Vercel, a popular site hosting SaaS. We've configured auto-deployments on Vercel's end, hence automating the CI/CD of our frontend.
+- The client can be deployed locally with the following instructions
+
+```bash
+npm i && npm run dev
+```
+
+## Important Libraries/Frameworks used
 ---
 
 - [Gin](https://github.com/gin-gonic/gin)
@@ -118,12 +154,6 @@ The lambdas are
 - [Viper](https://github.com/spf13/viper)
     - Popular configuration & secrets management library for Golang. This library parses our environment variables neatly on application startup
 
-
-### Frontend
----
-
-- The [`/ui`](https://github.com/cs301-itsa/project-2022-23t2-g1-t2/tree/master/ui) folder is the folder containing the frontend. We utilise the NextJS framework that provides us with powerful server-side rendering capabilities using React and Typescript. For the UI library, we mainly use Chakra UI to create a pleasant User Experience.
-- We have configured an auto deploy to our production URL as well as staging environments using Vercel, a popular site hosting SaaS. We've configured auto-deployments on Vercel's end, hence automating the CI/CD of our frontend.
 
 
 ## Images of our app

@@ -1,11 +1,4 @@
-# Docker compose to run the following flow
-# - Start ingestor lambda to allow producing messages into Prod Kafka
-# - Start cassandra (for rewarder to write into)
-# - Start etcd: campaignex will write into these and rewarder listens for changes
-# - Start postgres for campaignex to write into
-# - Start campaignex. These will write into etcd
-# - Start rewarder. This will begin consumption from the queue
-# - Start informer. /reward endoint will show you the transactions that have successfully been processed
+# Docker compose to run select services, a good template for starting the whole application up
 
 version: "3.1"
 
