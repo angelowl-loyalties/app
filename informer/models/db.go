@@ -45,9 +45,9 @@ func InitDB(dbHost, dbPort, keyspace, table, username, password string, useSSL, 
 	log.Println("Created keyspace: ", keyspace)
 
 	err = session.Query("CREATE TABLE IF NOT EXISTS " + keyspace + "." + table +
-		" (id uuid, card_id uuid, merchant text, mcc int, currency text, amount double, sgd_amount double, " +
-		"transaction_id text, transaction_date date, card_pan text, card_type text, reward_amount double, " +
-		"remarks text, PRIMARY KEY(id));").Exec()
+		" (card_id uuid, id uuid, transaction_date date, created_at date, amount double, currency text, mcc int, merchant text, remarks text, " +
+		"reward_amount double, sgd_amount double, transaction_id text, card_pan text static, card_type text static, " +
+		"PRIMARY KEY(card_id, transaction_date, id)) WITH CLUSTERING ORDER BY (transaction_date DESC, id ASC);").Exec()
 	if err != nil {
 		log.Fatalln(err)
 	}
