@@ -30,7 +30,7 @@ export default function Upload(props) {
             title: 'In progress',
             description: "Please hold while we upload your file",
             status: 'info',
-            duration: 9000,
+            duration: 20000,
             isClosable: true,
         })
         axios.get(`https://itsag1t2.com/${type}/presigned`, { headers: { Authorization: props.session.id } })
