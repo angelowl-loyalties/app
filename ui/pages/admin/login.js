@@ -50,7 +50,7 @@ export default function Login() {
                 redirect: false,
             }).then(({ ok, error }) => {
                 if (ok) {
-                    router.push("/admin/upload");
+                    router.push("/admin");
                 } else {
                     setLoading(false);
                     toast({
