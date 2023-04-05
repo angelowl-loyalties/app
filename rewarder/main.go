@@ -9,6 +9,9 @@ import (
 )
 
 func main() {
+
+	log.Println("Rewarder started")
+
 	c, err := config.LoadConfig()
 	if err != nil {
 		log.Fatalln("Failed at config", err)
