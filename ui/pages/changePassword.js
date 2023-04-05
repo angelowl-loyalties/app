@@ -48,7 +48,7 @@ export default function ChangePassword(props) {
         const passwordValue = password.current.value
         if (confirmPassword.current.value === password.current.value) {
             axios.post(
-                `https://itsag1t2.com/auth/password/`,
+                `https://itsag1t2.com/auth/password`,
                 {
                     email: emailValue,
                     password: password.current.value,
