@@ -10,7 +10,7 @@ import (
 
 func main() {
 
-	log.Println("Rewarder started")
+	log.Println("Rewarder started !!!11!!!")
 
 	c, err := config.LoadConfig()
 	if err != nil {
